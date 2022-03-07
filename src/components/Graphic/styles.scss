@@ -1,0 +1,55 @@
+@import '../../constants.scss';
+
+.root {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+  font-family: ABCSans, system-ui, sans-serif;
+  -webkit-font-smoothing: initial;
+  -moz-osx-font-smoothing: initial;
+}
+
+[data-mount][id^='lhgraphic']:global(.u-pull) > .root {
+  padding: 0 1rem;
+  margin: 0 auto;
+  max-width: 59.5rem;
+}
+
+@media (min-width: 668px) {
+  [data-mount][id^='lhgraphic']:global(.u-pull) > .root {
+    padding: 0;
+    max-width: 57.5rem;
+  }
+}
+
+[data-mount][id^='lhgraphic']:not(:global(.u-pull)) > .root {
+  border: 0.0625rem solid $color_Grey;
+  background-color: $color_BG;
+  padding: 0.5rem;
+}
+
+@media (min-width: 668px) {
+  [data-mount][id^='lhgraphic']:not(:global(.u-pull)) > .root {
+    padding: 1rem;
+  }
+}
+
+.header {
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+@media (min-width: 668px) {
+  .header {
+    margin-bottom: 1rem;
+  }
+}
+
+.header[data-is-counting] {
+  opacity: 1;
+}

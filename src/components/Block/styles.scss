@@ -1,0 +1,231 @@
+@import '../../constants.scss';
+
+.scrollyteller {
+  background-color: inherit;
+  clip: rect(0, auto, auto, 0);
+}
+
+// Override Scrollyteller's internal snapping behaviour
+
+.scrollyteller > :first-child {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: auto !important;
+  left: 0 !important;
+  z-index: -1 !important;
+  will-change: transform;
+}
+
+.scrollyteller > :first-child[data-ie] {
+  z-index: 0 !important;
+}
+
+.scrollyteller > :first-child[data-stage='above'],
+.scrollyteller > :first-child[data-stage='below'] {
+  position: absolute !important;
+}
+
+.scrollyteller > :first-child[data-stage='below'] {
+  top: auto !important;
+  bottom: 0 !important;
+}
+
+.graphic {
+  margin: 0 auto;
+  padding: 1rem 0 0;
+  width: calc(100% - 2rem);
+  max-width: 57.5rem;
+
+  @media (min-width: 100rem) {
+    margin-left: 50%;
+    padding: 7.5vw 0 0;
+    max-width: 40vw;
+  }
+}
+
+.scrollyteller .panel {
+  -webkit-font-smoothing: initial;
+  -moz-osx-font-smoothing: initial;
+
+  @media (min-width: 100rem) {
+    margin-right: 55%;
+    max-width: 40vw;
+  }
+}
+
+.scrollyteller .panel.firstPanel {
+  margin-top: 80vh;
+
+  @media (min-width: 100rem) {
+    margin-top: 33.3vh;
+  }
+}
+
+.scrollyteller .panel.lastPanel {
+  margin-bottom: 80vh;
+
+  @media (min-width: 100rem) {
+    margin-bottom: 33.3vh;
+  }
+}
+
+.panel::before {
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.26);
+
+  @media only screen and (max-width: 667px) {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.26);
+  }
+}
+
+.panel > :not(p) {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 0;
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
+  width: 66.666667%;
+  font-size: 1.375rem;
+  line-height: 1.666666667;
+  color: #000 !important;
+}
+
+@media only screen and (max-width: 667px) {
+  .panel > :not(p) {
+    width: 83.333333%;
+    font-size: 1.125rem;
+    line-height: 1.555555556;
+  }
+}
+
+.panel > :not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
+.panel > h2,
+.panel > h3 {
+  max-width: 30rem;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: none;
+}
+
+.panel > h2 {
+  font-size: 2.25rem;
+}
+
+@media only screen and (max-width: 667px) {
+  .panel > h2 {
+    font-size: 1.75rem;
+  }
+}
+
+.panel > h3 {
+  font-size: 1.75rem;
+}
+
+@media only screen and (max-width: 667px) {
+  .panel > h3 {
+    font-size: 1.5rem;
+  }
+}
+
+.panel ul {
+  list-style: none;
+}
+
+.panel ul li {
+  margin-bottom: 0.5rem;
+  padding-left: 1em;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPgogIDxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiM2NjY2NjYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8L3N2Zz4K);
+  background-position: 0 0.65em;
+  background-repeat: no-repeat;
+  line-height: 1.556;
+}
+
+.panel a:link,
+.panel a:hover,
+.panel a:active,
+.panel a:visited {
+  color: inherit !important;
+  text-decoration: underline !important;
+}
+
+.panel a:hover,
+.panel a:active {
+  text-decoration-color: #fff !important;
+}
+
+.panel > :last-child {
+  margin-bottom: 0;
+}
+
+@media only screen and (min-width: 668px) and (max-width: 1022px) {
+  .panel {
+    width: 42rem;
+  }
+}
+
+.state {
+  margin: 0 0.05em;
+  border: 0.125rem solid $color_Yes;
+  padding: 0 0.2em;
+  display: inline-block;
+  background-color: $color_None;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.state[data-is-first-encounter]::after {
+  content: ' (' attr(data-state) ')';
+}
+
+.state[data-main-allocation='#{$Allocation_Dem}'] {
+  background-color: $color_Dem;
+}
+
+.state[data-main-allocation='#{$Allocation_LikelyDem}'] {
+  background-color: $color_LikelyDem;
+}
+
+.state[data-main-allocation='#{$Allocation_Tossup}'] {
+  background-color: $color_Tossup;
+}
+
+.state[data-main-allocation='#{$Allocation_LikelyGOP}'] {
+  background-color: $color_LikelyGOP;
+}
+
+.state[data-main-allocation='#{$Allocation_GOP}'] {
+  background-color: $color_GOP;
+}
+
+.state[data-relative-main-allocation='#{$Allocation_Dem}'] {
+  border-color: $color_Dem;
+}
+
+.state[data-relative-main-allocation='#{$Allocation_GOP}'] {
+  border-color: $color_GOP;
+}
+
+.state[data-main-allocation='#{$Allocation_Dem}'],
+.state[data-main-allocation='#{$Allocation_GOP}'],
+.state[data-main-allocation='#{$Allocation_Tossup}'] {
+  color: $color_BG;
+}
+
+.state[data-main-allocation='#{$Allocation_Dem}'],
+.state[data-main-allocation='#{$Allocation_GOP}'] {
+  border-color: transparent;
+}
+
+/* Environment hacks */
+
+[class*='u-richtext'][class*='u-richtext'] > h3 {
+  padding-top: 2rem;
+  font-family: 'ABCSerif', sans-serif;
+  text-align: center;
+}
+
+[data-component='StickyHeader'] {
+  display: none;
+}

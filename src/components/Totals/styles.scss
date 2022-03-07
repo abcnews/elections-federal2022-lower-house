@@ -1,0 +1,144 @@
+@import '../../constants.scss';
+
+$heightBar: 1.5rem;
+$heightBigBar: 2rem;
+
+.root {
+  overflow: hidden;
+  font-size: 0.75rem;
+  letter-spacing: 0.0625rem;
+}
+
+@media (min-width: 668px) and (min-height: 480px) {
+  .root {
+    font-size: 0.9375rem;
+  }
+}
+
+.text {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.side {
+  display: flex;
+  align-items: flex-end;
+
+  @media (max-width: 360px) {
+    align-items: flex-start;
+  }
+}
+
+.side:first-child {
+  flex-direction: row-reverse;
+}
+
+.side[data-allocation='#{$Allocation_GOP}'] {
+  color: $color_GOP;
+}
+
+.side[data-allocation='#{$Allocation_Dem}'] {
+  color: $color_Dem;
+}
+
+.value {
+  font-size: 275%;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.label {
+  margin: 0 0.25rem 0.375rem;
+
+  @media (max-width: 360px) {
+    margin: 0.4375rem 0.25rem 0;
+  }
+
+  @media (min-width: 668px) and (min-height: 480px) {
+    margin: 0 0.25rem 0.5rem;
+  }
+}
+
+.track {
+  position: relative;
+  margin: 0 auto $heightBar / 4 auto;
+  width: 100%;
+  height: $heightBar;
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+@media (min-width: 668px) and (min-height: 480px) {
+  .track {
+    margin: 0 auto $heightBigBar / 4 auto;
+    height: $heightBigBar;
+  }
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.root[data-consistent-incumbent] .bar {
+  transition: transform $allocationTransitionDuration;
+}
+
+.bar[data-allocation='#{$Allocation_GOP}'] {
+  background-color: $color_GOP;
+}
+
+.bar[data-allocation='#{$Allocation_Dem}'] {
+  background-color: $color_Dem;
+}
+
+.bar[data-allocation='#{$Allocation_LikelyGOP}'] {
+  background-color: $color_LikelyGOP;
+}
+
+.root[data-incumbent='#{$Allocation_Dem}'] .bar[data-allocation='#{$Allocation_LikelyGOP}'] {
+  border-left: 0.0625rem solid $color_GOP;
+}
+
+.root[data-incumbent='#{$Allocation_GOP}'] .bar[data-allocation='#{$Allocation_LikelyGOP}'] {
+  border-right: 0.0625rem solid $color_GOP;
+}
+
+.bar[data-allocation='#{$Allocation_LikelyDem}'] {
+  background-color: $color_LikelyDem;
+}
+
+.root[data-incumbent='#{$Allocation_Dem}'] .bar[data-allocation='#{$Allocation_LikelyDem}'] {
+  border-right: 0.0625rem solid $color_Dem;
+}
+
+.root[data-incumbent='#{$Allocation_GOP}'] .bar[data-allocation='#{$Allocation_LikelyDem}'] {
+  border-left: 0.0625rem solid $color_Dem;
+}
+
+.midpoint {
+  position: absolute;
+  bottom: $heightBar / -4;
+  left: calc(50% - 0.03125rem);
+  border-left: 0.0625rem dashed currentColor;
+  width: 0;
+  height: calc(100% + #{$heightBar / 2});
+}
+
+@media (min-width: 668px) and (min-height: 480px) {
+  .midpoint {
+    bottom: $heightBigBar / -4;
+    height: calc(100% + #{$heightBigBar / 2});
+  }
+}
+
+.midpointLabel {
+  transform: translate(-50%, 0);
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  white-space: nowrap;
+}

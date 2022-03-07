@@ -1,0 +1,36 @@
+// Allocation enum
+$Allocation_None: 'n';
+$Allocation_Dem: 'd';
+$Allocation_LikelyDem: 's';
+$Allocation_Tossup: 'u';
+$Allocation_LikelyGOP: 'e';
+$Allocation_GOP: 'r';
+
+// Focus enum
+$Focus_No: 'n';
+$Focus_Yes: 'y';
+
+// Theming
+$color_Black: #000;
+$color_Grey: #989494;
+$color_White: #fff;
+$color_Text: $color_Black;
+$color_BG: $color_White;
+$color_None: $color_White;
+$color_Dem: #006dbd;
+$color_LikelyDem: #bdd4ef;
+$color_Tossup: $color_Grey;
+$color_LikelyGOP: #eaaeae;
+$color_GOP: #c21718;
+$color_No: $color_White;
+$color_Yes: $color_Black;
+
+// Stroke widths
+$swNone: 0;
+$swLight: 1;
+$swLight_SM: 2;
+$swHeavy: 5;
+$swHeavy_SM: 8;
+
+// Transitioning
+$allocationTransitionDuration: 0.75s;
