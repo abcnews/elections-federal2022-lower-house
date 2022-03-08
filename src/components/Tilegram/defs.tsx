@@ -1,7 +1,14 @@
 import React, { memo } from 'react';
 import { GroupID, GROUPS, StateID, STATES } from '../../constants';
 import { getGroupIDForStateIDAndDelegateIndex } from '../../utils';
-import { COUNTRY_PATHS, STATES_DELEGATE_HEXES, STATES_SHAPES, STATES_LABELS } from './data';
+import {
+  COUNTRY_PATHS,
+  STATES_DELEGATES_PATHS,
+  STATES_DELEGATES_POINTS,
+  STATES_LABELS,
+  STATES_PATHS,
+  STATES_POINTS
+} from './data';
 
 const POLY_KEY_NAMES = ['path', 'clip', 'target'];
 
@@ -29,35 +36,37 @@ const Defs: React.FC<DefsProps> = ({ componentID }) => {
           <path key={index} d={d}></path>
         ))}
       </g>
-      {Object.keys(STATES_DELEGATE_HEXES).reduce<JSX.Element[]>((memo, stateID) => {
+      {Object.keys(STATES_DELEGATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
         return memo.concat(
-          STATES_DELEGATE_HEXES[stateID].reduce<JSX.Element[]>((memo, points, index) => {
+          STATES_DELEGATES_PATHS[stateID].reduce<JSX.Element[]>((memo, path, index) => {
             const groupID = getGroupIDForStateIDAndDelegateIndex(stateID, index);
             const keys = generatePolyKeys(componentID, 'group', groupID, index);
+            const points = STATES_DELEGATES_POINTS[stateID][index];
 
             return memo.concat([
-              <path key={keys['path']} id={keys['path']} d={`M${points}z`}></path>,
+              <path key={keys['path']} id={keys['path']} d={path}></path>,
               <clipPath key={keys['clip']} id={keys['clip']}>
                 <use xlinkHref={`#${keys['path']}`} />
               </clipPath>,
-              <polygon key={keys['target']} id={keys['target']} points={points}>
+              <polygon key={keys['target']} id={keys['target']} points={points.join(' ')}>
                 <title>{GROUPS.find(({ id }) => id === GroupID[groupID])?.name}</title>
               </polygon>
             ]);
           }, [])
         );
       }, [])}
-      {Object.keys(STATES_SHAPES).reduce<JSX.Element[]>((memo, stateID) => {
+      {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
         return memo.concat(
-          STATES_SHAPES[stateID].reduce<JSX.Element[]>((memo, points, index) => {
+          STATES_PATHS[stateID].reduce<JSX.Element[]>((memo, path, index) => {
             const keys = generatePolyKeys(componentID, 'state', stateID, index);
+            const points = STATES_POINTS[stateID][index];
 
             return memo.concat([
-              <path key={keys['path']} id={keys['path']} d={`M${points}z`}></path>,
+              <path key={keys['path']} id={keys['path']} d={path}></path>,
               <clipPath key={keys['clip']} id={keys['clip']}>
                 <use xlinkHref={`#${keys['path']}`} />
               </clipPath>,
-              <polygon key={keys['target']} id={keys['target']} points={points}>
+              <polygon key={keys['target']} id={keys['target']} points={points.join(' ')}>
                 <title>{STATES.find(({ id }) => id === StateID[stateID])?.name}</title>
               </polygon>
             ]);
@@ -69,7 +78,7 @@ const Defs: React.FC<DefsProps> = ({ componentID }) => {
         const key = generateKey(componentID, 'label', stateID);
 
         return (
-          <text key={key} id={key} data-state={stateID} x={x} y={y + 5 /* shift baseline down */}>
+          <text key={key} id={key} data-state={stateID} x={x} y={y + 4}>
             {stateID}
           </text>
         );

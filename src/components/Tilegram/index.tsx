@@ -15,13 +15,12 @@ import {
   getGroupIDForStateIDAndDelegateIndex,
   getStateAllocations
 } from '../../utils';
-import { STATES_DELEGATE_HEXES, STATES_LABELS, STATES_SHAPES, HEXGRID_PROPS } from './data';
+import { STATES_DELEGATES_POINTS, STATES_LABELS, STATES_PATHS, HEXGRID_PROPS } from './data';
 import Defs, { generateKey, generatePolyKeys } from './defs';
 import styles from './styles.scss';
 
 export enum TappableLayer {
-  Delegates,
-  States
+  Delegates
 }
 
 export type TilegramProps = {
@@ -31,7 +30,6 @@ export type TilegramProps = {
   relative?: ElectionYear | null;
   tappableLayer?: TappableLayer;
   onTapGroup?: (groupID: string) => void;
-  onTapState?: (stateID: string) => void;
 };
 
 const generateComponentID = () => (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
@@ -39,7 +37,7 @@ const generateComponentID = () => (Math.random() * 0xfffff * 1000000).toString(1
 const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
-  const { allocations, focuses, year, relative, tappableLayer, onTapGroup, onTapState } = props;
+  const { allocations, focuses, year, relative, tappableLayer, onTapGroup } = props;
   const isInteractive = !!onTapGroup;
   const [isInspecting, setIsInspecting] = useState(false);
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
@@ -54,16 +52,6 @@ const Tilegram: React.FC<TilegramProps> = props => {
 
       if (groupID) {
         onTapGroup(groupID);
-      }
-    }
-  };
-
-  const onTapStateShape = (event: React.MouseEvent<SVGElement>) => {
-    if (onTapState && tappableLayer === TappableLayer.States && event.target instanceof SVGUseElement) {
-      const stateID = event.target.getAttribute('data-state');
-
-      if (stateID) {
-        onTapState(stateID);
       }
     }
   };
@@ -121,9 +109,9 @@ const Tilegram: React.FC<TilegramProps> = props => {
           <use xlinkHref={countryPathsHref} className={styles.countryOuter}></use>
           <use xlinkHref={countryPathsHref} className={styles.countryInner}></use>
           <g className={styles.delegates} onClick={onTapDelegateHex}>
-            {Object.keys(STATES_DELEGATE_HEXES).reduce<JSX.Element[]>((memo, stateID) => {
-              const hexes = STATES_DELEGATE_HEXES[stateID];
-              const xOffsets = hexes.map<number>(points => +points.split(',')[0]);
+            {Object.keys(STATES_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, stateID) => {
+              const hexes = STATES_DELEGATES_POINTS[stateID];
+              const xOffsets = hexes.map<number>(points => points[0][0]);
               const orderedUniqueXOffsets = Array.from(new Set(xOffsets)).sort((a, b) => a - b);
               const focus = focuses ? focuses[stateID] : Focus.No;
 
@@ -139,10 +127,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   const isFlipping =
                     (relativeAllocation === Allocation.GOP && allocation === Allocation.Dem) ||
                     (relativeAllocation === Allocation.Dem && allocation === Allocation.GOP);
-                  const [offsetX, offsetY] = points
-                    .split(' ')[0]
-                    .split(',')
-                    .map(x => parseInt(x, 10));
+                  const [offsetX, offsetY] = points[0];
 
                   return (
                     <g
@@ -178,8 +163,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
               );
             }, [])}
           </g>
-          <g className={styles.states} onClick={onTapStateShape}>
-            {Object.keys(STATES_SHAPES).reduce<JSX.Element[]>((memo, stateID) => {
+          <g className={styles.states}>
+            {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
               const focus = focuses ? focuses[stateID] : Focus.No;
               const stateAllocations = allocations && getStateAllocations(stateID, allocations);
               const stateMainAllocation = stateAllocations && stateAllocations[0];
@@ -190,7 +175,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                 relativeAllocations && getStateAllocations(stateID, relativeAllocations)[0];
 
               return memo.concat(
-                STATES_SHAPES[stateID].map((_points, index) => {
+                STATES_PATHS[stateID].map((_path, index) => {
                   const keys = generatePolyKeys(componentID, 'state', stateID, index);
 
                   return (
@@ -219,13 +204,13 @@ const Tilegram: React.FC<TilegramProps> = props => {
             }, [])}
           </g>
           <g className={styles.statesPartitions}>
-            {Object.keys(STATES_SHAPES).reduce<JSX.Element[]>((memo, stateID) => {
+            {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
               const focus = focuses ? focuses[stateID] : Focus.No;
               const stateRelativeMainAllocation =
                 relativeAllocations && getStateAllocations(stateID, relativeAllocations)[0];
 
               return memo.concat(
-                STATES_SHAPES[stateID].map((_points, index) => {
+                STATES_PATHS[stateID].map((_points, index) => {
                   const keys = generatePolyKeys(componentID, 'state', stateID, index);
 
                   return (

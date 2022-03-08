@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import {
   Allocation,
   Allocations,
@@ -6,12 +6,14 @@ import {
   INITIAL_ALLOCATIONS,
   Focus,
   Focuses,
-  FOCUSES,
   INITIAL_FOCUSES,
+  StateID,
+  STATE_IDS,
   MIXINS,
   PRESETS,
   ElectionYear,
-  ELECTION_YEARS
+  ELECTION_YEARS,
+  STATES
 } from '../../constants';
 import { loadData } from '../../data';
 import {
@@ -43,14 +45,14 @@ const INITIAL_GRAPHIC_PROPS = {
 };
 
 const STORY_MARKERS = [
-  { label: 'Standalone graphic', prefix: 'lhgraphic' },
-  { label: 'Fill-in-the-blanks graphic', prefix: 'lhblanks' },
+  { h3: 'Standalone graphic', prefix: 'lhgraphic' },
+  { h3: 'Fill-in-the-blanks graphic', prefix: 'lhblanks' },
   {
-    label: 'Scrollyteller opener',
+    h3: 'Scrollyteller opener',
     note: `If you're placing multiple scrollytellers in a single story, each must have a unique NAME.`,
     prefix: 'scrollytellerNAMEecblock'
   },
-  { label: 'Scrollyteller mark', prefix: 'mark' }
+  { h3: 'Scrollyteller mark', prefix: 'mark' }
 ];
 
 const SNAPSHOTS_LOCALSTORAGE_KEY = 'lheditorsnapshots';
@@ -146,17 +148,34 @@ const Editor: React.FC = () => {
     mixinGraphicProps({ allocations: allocationsToMixin });
   };
 
-  const onTapState = (stateID: string) => {
-    const focusesToMixin: Focuses = {};
+  const onChangeFocusedStates = (event: ChangeEvent<HTMLSelectElement>) => {
+    const options = event.target.options;
+    const nextFocusedStateIDs: string[] = [];
 
-    const focus = focuses[stateID];
-    const focusIndex = FOCUSES.indexOf(focus);
+    for (var i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        nextFocusedStateIDs.push(options[i].value);
+      }
+    }
 
-    // Cycle to the next Focus in the enum (or the first if we don't recognise it)
-    focusesToMixin[stateID] = FOCUSES[focusIndex === FOCUSES.length - 1 ? 0 : focusIndex + 1] as Focus;
+    setTappableLayer(nextFocusedStateIDs.length > 0 ? null : TappableLayer.Delegates);
+    mixinGraphicProps({
+      focuses: STATE_IDS.reduce((focuses, stateID) => {
+        focuses[stateID] = nextFocusedStateIDs.indexOf(stateID) > -1 ? Focus.Yes : Focus.No;
 
-    mixinGraphicProps({ focuses: focusesToMixin });
+        return focuses;
+      }, {})
+    });
   };
+
+  const onClearFocuses = () =>
+    mixinGraphicProps({
+      focuses: STATE_IDS.reduce((focuses, stateID) => {
+        focuses[stateID] = Focus.No;
+
+        return focuses;
+      }, {})
+    });
 
   const graphicProps = useMemo(
     () => ({
@@ -181,8 +200,8 @@ const Editor: React.FC = () => {
 
   const markersData = useMemo(
     () =>
-      STORY_MARKERS.map(({ label, note, prefix }) => ({
-        label,
+      STORY_MARKERS.map(({ h3, note, prefix }) => ({
+        h3,
         note,
         text: `#${prefix}${graphicPropsAsAlternatingCase}`
       })),
@@ -204,44 +223,12 @@ const Editor: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <Graphic
-          tappableLayer={TappableLayer.States}
-          onTapGroup={onTapGroup}
-          onTapState={onTapState}
-          {...graphicProps}
-        />
+        <Graphic tappableLayer={TappableLayer.Delegates} onTapGroup={onTapGroup} {...graphicProps} />
       </div>
       <div className={styles.controls}>
-        <label>Active layer</label>
-        <div className={styles.flexRow}>
-          <span>
-            <label>
-              <input
-                type="radio"
-                name="tappableLayer"
-                value={TappableLayer.Delegates}
-                checked={TappableLayer.Delegates === tappableLayer}
-                onChange={() => setTappableLayer(TappableLayer.Delegates)}
-              ></input>
-              Assigned delegates
-            </label>
-          </span>
-          <span>
-            <label>
-              <input
-                type="radio"
-                name="tappableLayer"
-                value={TappableLayer.States}
-                checked={TappableLayer.States === tappableLayer}
-                onChange={() => setTappableLayer(TappableLayer.States)}
-              ></input>
-              Focused states
-            </label>
-          </span>
-        </div>
-        <label>
+        <h3>
           Current year <small>(set candidate names &amp; sides)</small>
-        </label>
+        </h3>
         <div className={styles.flexRow}>
           {ELECTION_YEARS.map(_year => (
             <span key={_year}>
@@ -258,9 +245,9 @@ const Editor: React.FC = () => {
             </span>
           ))}
         </div>
-        <label>
+        <h3>
           Relative year <small>(show incumbent outlines &amp; flips)</small>
-        </label>
+        </h3>
         <div className={styles.flexRow}>
           <span key="none">
             <label>
@@ -293,7 +280,7 @@ const Editor: React.FC = () => {
               </span>
             ))}
         </div>
-        <label>Counting</label>
+        <h3>Counting</h3>
         <div className={styles.flexRow}>
           <span key="none">
             <label>
@@ -308,9 +295,29 @@ const Editor: React.FC = () => {
             </label>
           </span>
         </div>
-        <label>
+
+        <h3>
+          {`Focused States `}
+          <small>{`(${Object.keys(focuses).filter(key => focuses[key] === Focus.Yes).length} selected)`}</small>
+          <button
+            onClick={onClearFocuses}
+            disabled={Object.keys(focuses).filter(key => focuses[key] === Focus.Yes).length === 0}
+          >
+            <Icon name="delete" />
+          </button>
+        </h3>
+        <div className={styles.flexRow}>
+          <select multiple onChange={onChangeFocusedStates}>
+            {STATE_IDS.map(stateID => (
+              <option key={stateID} value={stateID}>
+                {`${stateID} - ${STATES.find(({ id }) => id === StateID[stateID])?.name}`}
+              </option>
+            ))}
+          </select>
+        </div>
+        <h3>
           Mix-ins <small>(added to the map)</small>
-        </label>
+        </h3>
         <div className={styles.flexRow}>
           {Object.keys(MIXINS).map(key => {
             const { name, ...graphicProps } = MIXINS[key];
@@ -322,9 +329,9 @@ const Editor: React.FC = () => {
             );
           })}
         </div>
-        <label>
+        <h3>
           Presets <small>(replace the whole map)</small>
-        </label>
+        </h3>
         <div className={styles.flexRow}>
           <button key="empty" onClick={() => replaceGraphicProps({})}>
             Empty
@@ -342,7 +349,7 @@ const Editor: React.FC = () => {
             Live results
           </button>
         </div>
-        <label>
+        <h3>
           Story markers
           <button
             onClick={() => {
@@ -357,11 +364,11 @@ const Editor: React.FC = () => {
           >
             <Icon name="edit" />
           </button>
-        </label>
-        {markersData.map(({ label, note, text }) => (
-          <details key={label}>
+        </h3>
+        {markersData.map(({ h3, note, text }) => (
+          <details key={h3}>
             <summary>
-              {label}
+              {h3}
               <button onClick={() => navigator.clipboard.writeText(text)}>
                 <Icon name="share" />
               </button>
@@ -370,7 +377,7 @@ const Editor: React.FC = () => {
             {note && <small style={{ color: 'red' }}>{`Note: ${note}`}</small>}
           </details>
         ))}
-        <label htmlFor="definitely-not-the-add-button">
+        <h3>
           Snapshots
           <button
             onClick={() => {
@@ -387,7 +394,7 @@ const Editor: React.FC = () => {
           >
             <Icon name="add" />
           </button>
-        </label>
+        </h3>
         <ul>
           {Object.keys(snapshots).map(name => (
             <li key={name}>
@@ -413,7 +420,7 @@ const Editor: React.FC = () => {
             </li>
           ))}
         </ul>
-        <label>Static image downloads</label>
+        <h3>Static image downloads</h3>
         <ul>
           {Object.keys(COMPONENTS_STYLES).map(key => (
             <li key={key}>

@@ -283,10 +283,6 @@ $focusChangeTransitionDuration: 0.5s;
   pointer-events: none;
 }
 
-.root[data-tappable='#{$TappableLayer_States}'] .states {
-  pointer-events: all;
-}
-
 .state {
   @include fadedOutTransitionable;
 }
@@ -345,10 +341,6 @@ $focusChangeTransitionDuration: 0.5s;
 .stateTarget {
   stroke: none;
   fill: none;
-}
-
-.root[data-is-interactive][data-tappable='#{$TappableLayer_States}'] .stateTarget {
-  cursor: pointer;
 }
 
 .statesPartitions {

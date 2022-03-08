@@ -61,28 +61,29 @@ body {
   }
 }
 
-.controls > label,
+.controls > h3,
 .controls summary {
   display: table;
   width: 100%;
 }
 
-.controls > label {
+.controls > h3 {
   margin: 1rem 0 0.5rem;
   border-top: 0.0625rem solid $color_AlphaGrey;
   padding: 0.75rem 0 0 0;
   font-size: 1.125rem;
+  font-weight: normal;
 }
 
 @media (min-width: 80rem) {
-  .controls > label:first-child {
+  .controls > h3:first-child {
     margin: 0 0 0.5rem;
     border: none;
     padding: 0;
   }
 }
 
-.controls label small {
+.controls h3 small {
   font-size: 0.75rem;
   text-transform: uppercase;
 }
@@ -101,7 +102,7 @@ body {
   content: 'None';
 }
 
-.controls > label button,
+.controls > h3 button,
 .controls summary button,
 .controls li button {
   float: right;
@@ -114,13 +115,13 @@ body {
   cursor: pointer;
 }
 
-.controls > label button:hover,
+.controls > h3 button:hover,
 .controls summary button:hover,
 .controls li button:hover {
   background: $color_AlphaGrey;
 }
 
-.controls > label::after,
+.controls > h3::after,
 .controls summary::after,
 .controls li::after {
   clear: both;
@@ -130,6 +131,13 @@ body {
   white-space: pre-wrap;
   word-break: break-all;
   overflow-wrap: break-word;
+}
+
+.controls select {
+  width: 100%;
+  height: 10rem;
+  font-family: monospace;
+  font-size: 1rem;
 }
 
 .flexRow {
