@@ -8,7 +8,6 @@ import { applyColourToPanels } from '../../panels';
 import { decodeAllocations, decodeFocuses, graphicPropsToAlternatingCase, urlQueryToGraphicProps } from '../../utils';
 import Block from '../Block';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from '../Graphic';
-import Live from '../Live';
 import './minimal-odyssey';
 
 const LOAD_SCROLLYTELLER_ARGS = { name: 'lhblock', markerName: 'mark' };
@@ -37,19 +36,9 @@ const preprocessCoreEl = el => {
 };
 
 const postprocessScrollytellerDefinition = scrollytellerDefinition => {
-  scrollytellerDefinition.panels.forEach(({ data, nodes }) => {
+  scrollytellerDefinition.panels.forEach(({ data }) => {
     data.allocations = decodeAllocations((data.allocations as string) || '');
     data.focuses = decodeFocuses((data.focuses as string) || '');
-
-    nodes.forEach(el => {
-      if (isMount(el, 'lhlive')) {
-        const { state, test, hide } = acto(el.id || '');
-
-        if (typeof hide !== 'boolean' || !hide) {
-          render(<Live stateCode={state.toUpperCase()} test={test} />, el);
-        }
-      }
-    });
   });
 
   applyColourToPanels(scrollytellerDefinition.panels);

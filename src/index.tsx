@@ -7,12 +7,10 @@ import React from 'react';
 import { render } from 'react-dom';
 import { applyColourToPanels } from './panels';
 import { alternatingCaseToGraphicProps, decodeAllocations, decodeFocuses } from './utils';
-import Blanks from './components/Blanks';
 import Block from './components/Block';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 import Graphic from './components/Graphic';
 import Illustration, { IllustrationName } from './components/Illustration';
-import Live from './components/Live';
 
 export type OdysseySchedulerClient = {
   hasChanged: boolean;
@@ -55,8 +53,6 @@ const whenOdysseyLoaded = new Promise(resolve =>
 
 const whenScrollytellersLoaded = new Promise((resolve, reject) =>
   whenOdysseyLoaded.then(odyssey => {
-    const liveMounts = selectMounts('lhlive');
-
     const names = selectMounts('scrollytellerNAME', { markAsUsed: false })
       .map(mountEl => (getMountValue(mountEl).match(/NAME([a-z]+)/) || [])[1])
       .filter(name => typeof name === 'string');
@@ -89,17 +85,6 @@ const whenScrollytellersLoaded = new Promise((resolve, reject) =>
 
       scrollytellerDefinitions.push(scrollytellerDefinition);
     }
-
-    // Upgrade all scrollytellers' content to show live results
-    liveMounts.forEach(mount => {
-      const { state, hide } = acto(getMountValue(mount));
-
-      if (typeof hide === 'boolean' && hide) {
-        return (((mount as unknown) as HTMLElement).style.display = 'none');
-      }
-
-      render(<Live stateCode={state.toUpperCase()} />, mount);
-    });
 
     // Return scrollyteller definitions
     resolve(scrollytellerDefinitions);
@@ -145,19 +130,6 @@ whenOdysseyLoaded.then(() => {
 
     mount.classList.add('u-pull');
     render(<Graphic {...graphicProps} />, mount);
-  });
-
-  const blanksMounts = selectMounts('lhblanks');
-
-  blanksMounts.forEach(mount => {
-    const mountValue = getMountValue(mount);
-    const blanksProps =
-      mountValue.indexOf('LIVE') > -1
-        ? { isLive: true, hasStatesResults: mountValue.indexOf('STATES') > -1 }
-        : { initialGraphicProps: alternatingCaseToGraphicProps(mountValue) as GraphicProps };
-
-    mount.classList.add('u-pull');
-    render(<Blanks {...blanksProps} />, mount);
   });
 
   // Fallback exporter

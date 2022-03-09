@@ -15,13 +15,11 @@ import {
   ELECTION_YEARS,
   STATES
 } from '../../constants';
-import { loadData } from '../../data';
 import {
   alternatingCaseToGraphicProps,
   graphicPropsToAlternatingCase,
   urlQueryToGraphicProps,
-  graphicPropsToUrlQuery,
-  liveResultsToGraphicProps
+  graphicPropsToUrlQuery
 } from '../../utils';
 import type { GraphicProps } from '../Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from '../Graphic';
@@ -46,7 +44,6 @@ const INITIAL_GRAPHIC_PROPS = {
 
 const STORY_MARKERS = [
   { h3: 'Standalone graphic', prefix: 'lhgraphic' },
-  { h3: 'Fill-in-the-blanks graphic', prefix: 'lhblanks' },
   {
     h3: 'Scrollyteller opener',
     note: `If you're placing multiple scrollytellers in a single story, each must have a unique NAME.`,
@@ -123,15 +120,6 @@ const Editor: React.FC = () => {
     replaceGraphicProps(graphicProps);
     setRelative(graphicProps.relative || DEFAULT_GRAPHIC_PROPS.relative);
     setCounting(graphicProps.counting || DEFAULT_GRAPHIC_PROPS.counting);
-  };
-
-  const loadLiveResults = () => {
-    loadData({ forceRefresh: true }).then(data => {
-      const graphicProps = liveResultsToGraphicProps(data);
-
-      replaceGraphicProps(graphicProps);
-      setRelative(graphicProps.relative || DEFAULT_GRAPHIC_PROPS.relative);
-    });
   };
 
   const onTapGroup = (groupID: string) => {
@@ -345,9 +333,6 @@ const Editor: React.FC = () => {
               </button>
             );
           })}
-          <button key="live" onClick={loadLiveResults}>
-            Live results
-          </button>
         </div>
         <h3>
           Story markers

@@ -11,11 +11,7 @@ import {
   STATE_IDS,
   Focus,
   Focuses,
-  FOCUSES,
-  INITIAL_ALLOCATIONS,
-  ELECTION_YEARS,
-  DEFAULT_ELECTION_YEAR,
-  DEFAULT_RELATIVE_ELECTION_YEAR
+  FOCUSES
 } from './constants';
 
 export const votesForGroups = (groups: Group[]) => {
@@ -230,46 +226,3 @@ export const getPartyIdForAllocation = (allocation: Allocation): PartyId =>
 
 export const getAllocationForPartyID = (partyID: PartyId): Allocation =>
   partyID === 'dem' ? Allocation.Dem : partyID === 'gop' ? Allocation.GOP : Allocation.None;
-
-export const liveResultsToGraphicProps = data =>
-  Object.keys(data.s).reduce(
-    (memo, stateID) => {
-      const result = data.s[stateID];
-      const stateWinningPartyID = result.w;
-      const stateAllocation = getAllocationForPartyID(stateWinningPartyID);
-
-      if (stateAllocation !== Allocation.None) {
-        switch (stateID) {
-          case 'ME':
-          case 'NE':
-            const allocations = new Array(result.e - 1).fill(Allocation.None);
-
-            new Array(result[stateWinningPartyID].e - 1).fill(0).forEach((_, index) => {
-              allocations[index] = stateAllocation === Allocation.Dem ? Allocation.Dem : Allocation.GOP;
-            });
-
-            new Array(result[stateWinningPartyID === 'gop' ? 'dem' : 'gop'].e).fill(0).forEach((_, index) => {
-              allocations[allocations.length - (1 + index)] =
-                stateAllocation === Allocation.Dem ? Allocation.GOP : Allocation.Dem;
-            });
-
-            allocations.forEach((allocation, index) => {
-              memo.allocations[`${stateID}_${index}`] = allocation;
-            });
-            break;
-          case 'NE':
-            break;
-          default:
-            memo.allocations[stateID] = stateAllocation;
-            break;
-        }
-      }
-
-      return memo;
-    },
-    {
-      allocations: { ...INITIAL_ALLOCATIONS },
-      year: DEFAULT_ELECTION_YEAR,
-      relative: DEFAULT_RELATIVE_ELECTION_YEAR
-    }
-  );
