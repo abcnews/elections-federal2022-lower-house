@@ -179,42 +179,42 @@
   content: ' (' attr(data-state) ')';
 }
 
-.state[data-main-allocation='#{$Allocation_Dem}'] {
-  background-color: $color_Dem;
+.state[data-main-allocation='#{$Allocation_CLN}'] {
+  background-color: $color_CLN;
 }
 
-.state[data-main-allocation='#{$Allocation_LikelyDem}'] {
-  background-color: $color_LikelyDem;
+.state[data-main-allocation='#{$Allocation_LikelyCLN}'] {
+  background-color: $color_LikelyCLN;
 }
 
 .state[data-main-allocation='#{$Allocation_Tossup}'] {
   background-color: $color_Tossup;
 }
 
-.state[data-main-allocation='#{$Allocation_LikelyGOP}'] {
-  background-color: $color_LikelyGOP;
+.state[data-main-allocation='#{$Allocation_LikelyALP}'] {
+  background-color: $color_LikelyALP;
 }
 
-.state[data-main-allocation='#{$Allocation_GOP}'] {
-  background-color: $color_GOP;
+.state[data-main-allocation='#{$Allocation_ALP}'] {
+  background-color: $color_ALP;
 }
 
-.state[data-relative-main-allocation='#{$Allocation_Dem}'] {
-  border-color: $color_Dem;
+.state[data-relative-main-allocation='#{$Allocation_CLN}'] {
+  border-color: $color_CLN;
 }
 
-.state[data-relative-main-allocation='#{$Allocation_GOP}'] {
-  border-color: $color_GOP;
+.state[data-relative-main-allocation='#{$Allocation_ALP}'] {
+  border-color: $color_ALP;
 }
 
-.state[data-main-allocation='#{$Allocation_Dem}'],
-.state[data-main-allocation='#{$Allocation_GOP}'],
+.state[data-main-allocation='#{$Allocation_CLN}'],
+.state[data-main-allocation='#{$Allocation_ALP}'],
 .state[data-main-allocation='#{$Allocation_Tossup}'] {
   color: $color_BG;
 }
 
-.state[data-main-allocation='#{$Allocation_Dem}'],
-.state[data-main-allocation='#{$Allocation_GOP}'] {
+.state[data-main-allocation='#{$Allocation_CLN}'],
+.state[data-main-allocation='#{$Allocation_ALP}'] {
   border-color: transparent;
 }
 

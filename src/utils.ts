@@ -1,4 +1,3 @@
-import type { PartyId } from 'elections-us2020-results-data';
 import * as acto from '@abcnews/alternating-case-to-object';
 import {
   Allocation,
@@ -14,11 +13,7 @@ import {
   FOCUSES
 } from './constants';
 
-export const votesForGroups = (groups: Group[]) => {
-  return groups.reduce((memo, group) => {
-    return memo + group.votes;
-  }, 0);
-};
+export const votesForGroups = (groups: Group[]) => groups.length;
 
 export const getGroupIDForStateIDAndDelegateIndex = (stateID: string, delegateIndex: number) => {
   return `${stateID}${GroupID[stateID] != null ? '' : `_${Math.max(0, delegateIndex - 1)}`}`;
@@ -33,14 +28,13 @@ export const getStateIDForGroupID = (groupID: string) => {
 };
 
 export const getVoteCountsForAllocations = (allocations: Allocations): { [key: string]: number } => {
-  return ALLOCATIONS.reduce((memo, allocation) => {
-    memo[allocation] = GROUPS.filter(({ id }) => allocations[GroupID[id]] === allocation).reduce(
-      (memo, { votes }) => memo + votes,
-      0
-    );
-
-    return memo;
-  }, {});
+  return ALLOCATIONS.reduce(
+    (memo, allocation) => ({
+      ...memo,
+      [allocation]: votesForGroups(GROUPS.filter(({ id }) => allocations[GroupID[id]] === allocation))
+    }),
+    {}
+  );
 };
 
 export const getStateAllocations = (stateID: string, allocations: Allocations) => {
@@ -52,7 +46,7 @@ export const getStateAllocations = (stateID: string, allocations: Allocations) =
 export const determineIfAllocationIsMade = (allocation: Allocation) => allocation !== Allocation.None;
 
 export const determineIfAllocationIsDefinitive = (allocation: Allocation) =>
-  allocation === Allocation.Dem || allocation === Allocation.GOP;
+  allocation === Allocation.CLN || allocation === Allocation.ALP;
 
 export const determineIfProportionOfStateAllocationsMeetCondition = (
   proportion: number,
@@ -220,9 +214,3 @@ export const graphicPropsToUrlQuery = (graphicProps, defaultGraphicProps?): stri
 
     return urlQuery;
   }, '');
-
-export const getPartyIdForAllocation = (allocation: Allocation): PartyId =>
-  allocation === Allocation.Dem ? 'dem' : allocation === Allocation.GOP ? 'gop' : 'oth';
-
-export const getAllocationForPartyID = (partyID: PartyId): Allocation =>
-  partyID === 'dem' ? Allocation.Dem : partyID === 'gop' ? Allocation.GOP : Allocation.None;

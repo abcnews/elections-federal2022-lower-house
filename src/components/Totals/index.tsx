@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { Allocations, ElectionYear } from '../../constants';
-import { Allocation, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_ALLOCATIONS_CANDIDATES } from '../../constants';
+import { Allocation, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_ALLOCATIONS_CANDIDATES, ELECTORATES } from '../../constants';
 import { getVoteCountsForAllocations } from '../../utils';
 import styles from './styles.scss';
 
-const MAX_VOTES = 538;
+const MAX_VOTES = ELECTORATES.length;
 const WIN_VOTES = Math.ceil((MAX_VOTES + 1) / 2);
 
 function usePrevious(value) {
@@ -47,37 +47,37 @@ const Totals: React.FC<TotalsProps> = props => {
       <div className={styles.track}>
         <div
           className={styles.bar}
-          title={`Likely Dem.: ${voteCounts[Allocation.LikelyDem]}`}
-          data-allocation={Allocation.LikelyDem}
+          title={`Likely CLN: ${voteCounts[Allocation.LikelyCLN]}`}
+          data-allocation={Allocation.LikelyCLN}
           style={{
             transform: `translate(${tX(
-              voteCounts[Allocation.Dem] + voteCounts[Allocation.LikelyDem],
-              Allocation.Dem
+              voteCounts[Allocation.CLN] + voteCounts[Allocation.LikelyCLN],
+              Allocation.CLN
             )}%, 0)`
           }}
         ></div>
         <div
           className={styles.bar}
-          title={`Likely GOP: ${voteCounts[Allocation.LikelyGOP]}`}
-          data-allocation={Allocation.LikelyGOP}
+          title={`Likely ALP: ${voteCounts[Allocation.LikelyALP]}`}
+          data-allocation={Allocation.LikelyALP}
           style={{
             transform: `translate(${tX(
-              voteCounts[Allocation.GOP] + voteCounts[Allocation.LikelyGOP],
-              Allocation.GOP
+              voteCounts[Allocation.ALP] + voteCounts[Allocation.LikelyALP],
+              Allocation.ALP
             )}%, 0)`
           }}
         ></div>
         <div
           className={styles.bar}
-          title={`Dem.: ${voteCounts[Allocation.Dem]}`}
-          data-allocation={Allocation.Dem}
-          style={{ transform: `translate(${tX(voteCounts[Allocation.Dem], Allocation.Dem)}%, 0)` }}
+          title={`CLN: ${voteCounts[Allocation.CLN]}`}
+          data-allocation={Allocation.CLN}
+          style={{ transform: `translate(${tX(voteCounts[Allocation.CLN], Allocation.CLN)}%, 0)` }}
         ></div>
         <div
           className={styles.bar}
-          title={`GOP: ${voteCounts[Allocation.GOP]}`}
-          data-allocation={Allocation.GOP}
-          style={{ transform: `translate(${tX(voteCounts[Allocation.GOP], Allocation.GOP)}%, 0)` }}
+          title={`ALP: ${voteCounts[Allocation.ALP]}`}
+          data-allocation={Allocation.ALP}
+          style={{ transform: `translate(${tX(voteCounts[Allocation.ALP], Allocation.ALP)}%, 0)` }}
         ></div>
         <div className={styles.midpoint}>
           <div className={styles.midpointLabel}>{`${WIN_VOTES} to win`}</div>

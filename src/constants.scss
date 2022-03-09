@@ -1,10 +1,10 @@
 // Allocation enum
 $Allocation_None: 'n';
-$Allocation_Dem: 'd';
-$Allocation_LikelyDem: 's';
-$Allocation_Tossup: 'u';
-$Allocation_LikelyGOP: 'e';
-$Allocation_GOP: 'r';
+$Allocation_CLN: 'c';
+$Allocation_LikelyCLN: 'q';
+$Allocation_Tossup: 't';
+$Allocation_LikelyALP: 'z';
+$Allocation_ALP: 'a';
 
 // Focus enum
 $Focus_No: 'n';
@@ -17,11 +17,11 @@ $color_White: #fff;
 $color_Text: $color_Black;
 $color_BG: $color_White;
 $color_None: $color_White;
-$color_Dem: #006dbd;
-$color_LikelyDem: #bdd4ef;
+$color_CLN: #006dbd;
+$color_LikelyCLN: #bdd4ef;
 $color_Tossup: $color_Grey;
-$color_LikelyGOP: #eaaeae;
-$color_GOP: #c21718;
+$color_LikelyALP: #eaaeae;
+$color_ALP: #c21718;
 $color_No: $color_White;
 $color_Yes: $color_Black;
 

@@ -34,12 +34,12 @@ $heightBigBar: 2rem;
   flex-direction: row-reverse;
 }
 
-.side[data-allocation='#{$Allocation_GOP}'] {
-  color: $color_GOP;
+.side[data-allocation='#{$Allocation_ALP}'] {
+  color: $color_ALP;
 }
 
-.side[data-allocation='#{$Allocation_Dem}'] {
-  color: $color_Dem;
+.side[data-allocation='#{$Allocation_CLN}'] {
+  color: $color_CLN;
 }
 
 .value {
@@ -87,36 +87,36 @@ $heightBigBar: 2rem;
   transition: transform $allocationTransitionDuration;
 }
 
-.bar[data-allocation='#{$Allocation_GOP}'] {
-  background-color: $color_GOP;
+.bar[data-allocation='#{$Allocation_ALP}'] {
+  background-color: $color_ALP;
 }
 
-.bar[data-allocation='#{$Allocation_Dem}'] {
-  background-color: $color_Dem;
+.bar[data-allocation='#{$Allocation_CLN}'] {
+  background-color: $color_CLN;
 }
 
-.bar[data-allocation='#{$Allocation_LikelyGOP}'] {
-  background-color: $color_LikelyGOP;
+.bar[data-allocation='#{$Allocation_LikelyALP}'] {
+  background-color: $color_LikelyALP;
 }
 
-.root[data-incumbent='#{$Allocation_Dem}'] .bar[data-allocation='#{$Allocation_LikelyGOP}'] {
-  border-left: 0.0625rem solid $color_GOP;
+.root[data-incumbent='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
+  border-left: 0.0625rem solid $color_ALP;
 }
 
-.root[data-incumbent='#{$Allocation_GOP}'] .bar[data-allocation='#{$Allocation_LikelyGOP}'] {
-  border-right: 0.0625rem solid $color_GOP;
+.root[data-incumbent='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
+  border-right: 0.0625rem solid $color_ALP;
 }
 
-.bar[data-allocation='#{$Allocation_LikelyDem}'] {
-  background-color: $color_LikelyDem;
+.bar[data-allocation='#{$Allocation_LikelyCLN}'] {
+  background-color: $color_LikelyCLN;
 }
 
-.root[data-incumbent='#{$Allocation_Dem}'] .bar[data-allocation='#{$Allocation_LikelyDem}'] {
-  border-right: 0.0625rem solid $color_Dem;
+.root[data-incumbent='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
+  border-right: 0.0625rem solid $color_CLN;
 }
 
-.root[data-incumbent='#{$Allocation_GOP}'] .bar[data-allocation='#{$Allocation_LikelyDem}'] {
-  border-left: 0.0625rem solid $color_Dem;
+.root[data-incumbent='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
+  border-left: 0.0625rem solid $color_CLN;
 }
 
 .midpoint {
