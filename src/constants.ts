@@ -337,9 +337,7 @@ export enum GroupID {
   LA,
   MA,
   MD,
-  ME_0,
-  ME_1,
-  ME_2,
+  ME,
   MI,
   MN,
   MO,
@@ -347,10 +345,7 @@ export enum GroupID {
   MT,
   NC,
   ND,
-  NE_0,
-  NE_1,
-  NE_2,
-  NE_3,
+  NE,
   NH,
   NJ,
   NM,
@@ -379,312 +374,214 @@ export const GROUP_IDS = Object.keys(GroupID).filter(key => typeof GroupID[key] 
 export type Group = {
   id: GroupID;
   name: string;
-  votes: number;
 };
 
 export const GROUPS: Group[] = [
   {
     id: GroupID.AL,
-    name: 'Alabama',
-    votes: 9
+    name: 'Alabama'
   },
   {
     id: GroupID.AK,
-    name: 'Alaska',
-    votes: 3
+    name: 'Alaska'
   },
   {
     id: GroupID.AZ,
-    name: 'Arizona',
-    votes: 11
+    name: 'Arizona'
   },
   {
     id: GroupID.AR,
-    name: 'Arkansas',
-    votes: 6
+    name: 'Arkansas'
   },
   {
     id: GroupID.CA,
-    name: 'California',
-    votes: 55
+    name: 'California'
   },
   {
     id: GroupID.CO,
-    name: 'Colorado',
-    votes: 9
+    name: 'Colorado'
   },
   {
     id: GroupID.CT,
-    name: 'Connecticut',
-    votes: 7
+    name: 'Connecticut'
   },
   {
     id: GroupID.DE,
-    name: 'Delaware',
-    votes: 3
+    name: 'Delaware'
   },
   {
     id: GroupID.DC,
-    name: 'District of Columbia',
-    votes: 3
+    name: 'District of Columbia'
   },
   {
     id: GroupID.FL,
-    name: 'Florida',
-    votes: 29
+    name: 'Florida'
   },
   {
     id: GroupID.GA,
-    name: 'Georgia',
-    votes: 16
+    name: 'Georgia'
   },
   {
     id: GroupID.HI,
-    name: 'Hawaii',
-    votes: 4
+    name: 'Hawaii'
   },
   {
     id: GroupID.ID,
-    name: 'Idaho',
-    votes: 4
+    name: 'Idaho'
   },
   {
     id: GroupID.IL,
-    name: 'Illinois',
-    votes: 20
+    name: 'Illinois'
   },
   {
     id: GroupID.IN,
-    name: 'Indiana',
-    votes: 11
+    name: 'Indiana'
   },
   {
     id: GroupID.IA,
-    name: 'Iowa',
-    votes: 6
+    name: 'Iowa'
   },
   {
     id: GroupID.KS,
-    name: 'Kansas',
-    votes: 6
+    name: 'Kansas'
   },
   {
     id: GroupID.KY,
-    name: 'Kentucky',
-    votes: 8
+    name: 'Kentucky'
   },
   {
     id: GroupID.LA,
-    name: 'Louisiana',
-    votes: 8
+    name: 'Louisiana'
   },
   {
-    id: GroupID.ME_0,
-    name: 'Maine (State)',
-    votes: 2
-  },
-  {
-    id: GroupID.ME_1,
-    name: 'Maine (District 1)',
-    votes: 1
-  },
-  {
-    id: GroupID.ME_2,
-    name: 'Maine (District 2)',
-    votes: 1
+    id: GroupID.ME,
+    name: 'Maine'
   },
   {
     id: GroupID.MD,
-    name: 'Maryland',
-    votes: 10
+    name: 'Maryland'
   },
   {
     id: GroupID.MA,
-    name: 'Massachusetts',
-    votes: 11
+    name: 'Massachusetts'
   },
   {
     id: GroupID.MI,
-    name: 'Michigan',
-    votes: 16
+    name: 'Michigan'
   },
   {
     id: GroupID.MN,
-    name: 'Minnesota',
-    votes: 10
+    name: 'Minnesota'
   },
   {
     id: GroupID.MS,
-    name: 'Mississippi',
-    votes: 6
+    name: 'Mississippi'
   },
   {
     id: GroupID.MO,
-    name: 'Missouri',
-    votes: 10
+    name: 'Missouri'
   },
   {
     id: GroupID.MT,
-    name: 'Montana',
-    votes: 3
+    name: 'Montana'
   },
   {
-    id: GroupID.NE_0,
-    name: 'Nebraska (State)',
-    votes: 2
-  },
-  {
-    id: GroupID.NE_1,
-    name: 'Nebraska (District 1)',
-    votes: 1
-  },
-  {
-    id: GroupID.NE_2,
-    name: 'Nebraska (District 2)',
-    votes: 1
-  },
-  {
-    id: GroupID.NE_3,
-    name: 'Nebraska (District 3)',
-    votes: 1
+    id: GroupID.NE,
+    name: 'Nebraska'
   },
   {
     id: GroupID.NV,
-    name: 'Nevada',
-    votes: 6
+    name: 'Nevada'
   },
   {
     id: GroupID.NH,
-    name: 'New Hampshire',
-    votes: 4
+    name: 'New Hampshire'
   },
   {
     id: GroupID.NJ,
-    name: 'New Jersey',
-    votes: 14
+    name: 'New Jersey'
   },
   {
     id: GroupID.NM,
-    name: 'New Mexico',
-    votes: 5
+    name: 'New Mexico'
   },
   {
     id: GroupID.NY,
-    name: 'New York',
-    votes: 29
+    name: 'New York'
   },
   {
     id: GroupID.NC,
-    name: 'North Carolina',
-    votes: 15
+    name: 'North Carolina'
   },
   {
     id: GroupID.ND,
-    name: 'North Dakota',
-    votes: 3
+    name: 'North Dakota'
   },
   {
     id: GroupID.OH,
-    name: 'Ohio',
-    votes: 18
+    name: 'Ohio'
   },
   {
     id: GroupID.OK,
-    name: 'Oklahoma',
-    votes: 7
+    name: 'Oklahoma'
   },
   {
     id: GroupID.OR,
-    name: 'Oregon',
-    votes: 7
+    name: 'Oregon'
   },
   {
     id: GroupID.PA,
-    name: 'Pennsylvania',
-    votes: 20
+    name: 'Pennsylvania'
   },
   {
     id: GroupID.RI,
-    name: 'Rhode Island',
-    votes: 4
+    name: 'Rhode Island'
   },
   {
     id: GroupID.SC,
-    name: 'South Carolina',
-    votes: 9
+    name: 'South Carolina'
   },
   {
     id: GroupID.SD,
-    name: 'South Dakota',
-    votes: 3
+    name: 'South Dakota'
   },
   {
     id: GroupID.TN,
-    name: 'Tennessee',
-    votes: 11
+    name: 'Tennessee'
   },
   {
     id: GroupID.TX,
-    name: 'Texas',
-    votes: 38
+    name: 'Texas'
   },
   {
     id: GroupID.UT,
-    name: 'Utah',
-    votes: 6
+    name: 'Utah'
   },
   {
     id: GroupID.VT,
-    name: 'Vermont',
-    votes: 3
+    name: 'Vermont'
   },
   {
     id: GroupID.VA,
-    name: 'Virginia',
-    votes: 13
+    name: 'Virginia'
   },
   {
     id: GroupID.WA,
-    name: 'Washington',
-    votes: 12
+    name: 'Washington'
   },
   {
     id: GroupID.WV,
-    name: 'West Virginia',
-    votes: 5
+    name: 'West Virginia'
   },
   {
     id: GroupID.WI,
-    name: 'Wisconsin',
-    votes: 10
+    name: 'Wisconsin'
   },
   {
     id: GroupID.WY,
-    name: 'Wyoming',
-    votes: 3
+    name: 'Wyoming'
   }
 ];
-
-export enum Allocation {
-  None = 'n',
-  CLN = 'c',
-  LikelyCLN = 'q',
-  Tossup = 't',
-  LikelyALP = 'z',
-  ALP = 'a'
-}
-
-export const ALLOCATIONS: string[] = Object.keys(Allocation).map(x => Allocation[x]);
-
-export type Allocations = {
-  [key: string]: Allocation;
-};
-
-export const INITIAL_ALLOCATIONS = GROUP_IDS.reduce((allocations, groupID) => {
-  allocations[groupID] = Allocation.None;
-
-  return allocations;
-}, {});
 
 export enum StateID {
   AK,
@@ -760,6 +657,27 @@ export const STATES: State[] = GROUPS.filter(({ id }) => {
   };
 });
 
+export enum Allocation {
+  None = 'n',
+  CLN = 'c',
+  LikelyCLN = 'q',
+  Tossup = 't',
+  LikelyALP = 'z',
+  ALP = 'a'
+}
+
+export const ALLOCATIONS: string[] = Object.keys(Allocation).map(x => Allocation[x]);
+
+export type Allocations = {
+  [key: string]: Allocation;
+};
+
+export const INITIAL_ALLOCATIONS = GROUP_IDS.reduce((allocations, groupID) => {
+  allocations[groupID] = Allocation.None;
+
+  return allocations;
+}, {});
+
 export enum Focus {
   No = 'n',
   Yes = 'y'
@@ -771,8 +689,8 @@ export type Focuses = {
   [key: string]: Focus;
 };
 
-export const INITIAL_FOCUSES = STATE_IDS.reduce((focuses, stateID) => {
-  focuses[stateID] = Focus.No;
+export const INITIAL_FOCUSES = GROUP_IDS.reduce((focuses, groupID) => {
+  focuses[groupID] = Focus.No;
 
   return focuses;
 }, {});
@@ -823,9 +741,7 @@ export const MIXINS: Presets = {
       LA: Allocation.ALP,
       MS: Allocation.ALP,
       MT: Allocation.ALP,
-      NE_0: Allocation.ALP,
-      NE_1: Allocation.ALP,
-      NE_3: Allocation.ALP,
+      NE: Allocation.ALP,
       ND: Allocation.ALP,
       OK: Allocation.ALP,
       SC: Allocation.ALP,
@@ -868,9 +784,7 @@ export const PRESETS: Presets = {
       LA: Allocation.ALP,
       MA: Allocation.CLN,
       MD: Allocation.CLN,
-      ME_0: Allocation.CLN,
-      ME_1: Allocation.CLN,
-      ME_2: Allocation.ALP,
+      ME: Allocation.CLN,
       MI: Allocation.ALP,
       MN: Allocation.CLN,
       MO: Allocation.ALP,
@@ -878,10 +792,7 @@ export const PRESETS: Presets = {
       MT: Allocation.ALP,
       NC: Allocation.ALP,
       ND: Allocation.ALP,
-      NE_0: Allocation.ALP,
-      NE_1: Allocation.ALP,
-      NE_2: Allocation.ALP,
-      NE_3: Allocation.ALP,
+      NE: Allocation.ALP,
       NH: Allocation.CLN,
       NJ: Allocation.CLN,
       NM: Allocation.CLN,
@@ -926,6 +837,7 @@ export const PRESETS: Presets = {
   }
 };
 
+// Important: these keys need to be ordered: government, opposition so that flips work
 export const ELECTION_YEARS_ALLOCATIONS_CANDIDATES = {
   2022: {
     [Allocation.CLN]: 'L/NP',

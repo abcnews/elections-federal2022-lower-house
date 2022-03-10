@@ -111,28 +111,28 @@ $focusChangeTransitionDuration: 0.5s;
   fill: rgba(0, 0, 0, 0.025);
 }
 
-.delegates {
+.groupsBackgrounds {
   pointer-events: none;
   shape-rendering: crispEdges;
 }
 
-.root[data-tappable='#{$TappableLayer_Delegates}'] .delegates {
+.root[data-tappable='#{$TappableLayer_Delegates}'] .groupsBackgrounds {
   pointer-events: all;
 }
 
-.delegate {
+.groupBackground {
   @include fadedOutTransitionable;
 }
 
-.root[data-has-focuses] .delegate[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .groupBackground[data-focus='#{$Focus_No}'] {
   @include fadedOut;
 }
 
-.root[data-has-focuses][data-is-inspecting] .delegate[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses][data-is-inspecting] .groupBackground[data-focus='#{$Focus_No}'] {
   @include fadedOutInspecting;
 }
 
-.delegateAllocation {
+.groupBackgroundPath {
   fill: $color_None;
   stroke: none;
   stroke-width: $swHeavy;
@@ -143,159 +143,64 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.delegateAllocation[data-allocation='#{$Allocation_Dem}'] {
-  fill: $color_Dem;
+.groupBackgroundPath[data-allocation='#{$Allocation_CLN}'] {
+  fill: $color_CLN;
 }
 
-.delegateAllocation[data-allocation='#{$Allocation_LikelyDem}'] {
-  fill: $color_LikelyDem;
+.groupBackgroundPath[data-allocation='#{$Allocation_LikelyCLN}'] {
+  fill: $color_LikelyCLN;
 }
 
-.delegateAllocation[data-allocation='#{$Allocation_Tossup}'] {
+.groupBackgroundPath[data-allocation='#{$Allocation_Tossup}'] {
   fill: $color_Tossup;
 }
 
-.delegateAllocation[data-allocation='#{$Allocation_LikelyGOP}'] {
-  fill: $color_LikelyGOP;
+.groupBackgroundPath[data-allocation='#{$Allocation_LikelyALP}'] {
+  fill: $color_LikelyALP;
 }
 
-.delegateAllocation[data-allocation='#{$Allocation_GOP}'] {
-  fill: $color_GOP;
+.groupBackgroundPath[data-allocation='#{$Allocation_ALP}'] {
+  fill: $color_ALP;
 }
 
-@include flipKeyframes(flipGOPToDem, $color_GOP, $color_Dem);
+@include flipKeyframes(flipALPToCLN, $color_ALP, $color_CLN);
 
-.delegateAllocation[data-relative-allocation='#{$Allocation_GOP}'][data-allocation='#{$Allocation_Dem}'] {
-  @include flipAnimation(flipGOPToDem);
+.groupBackgroundPath[data-relative-allocation='#{$Allocation_ALP}'][data-allocation='#{$Allocation_CLN}'] {
+  @include flipAnimation(flipALPToCLN);
 }
 
-@include flipKeyframes(flipDemToGOP, $color_Dem, $color_GOP);
+@include flipKeyframes(flipCLNToALP, $color_CLN, $color_ALP);
 
-.delegateAllocation[data-relative-allocation='#{$Allocation_Dem}'][data-allocation='#{$Allocation_GOP}'] {
-  @include flipAnimation(flipDemToGOP);
+.groupBackgroundPath[data-relative-allocation='#{$Allocation_CLN}'][data-allocation='#{$Allocation_ALP}'] {
+  @include flipAnimation(flipCLNToALP);
 }
 
-.delegate[data-flip-direction='ltr'][data-ltr-index='1'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='1'] .delegateAllocation {
-  animation-delay: 0.025s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='2'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='2'] .delegateAllocation {
-  animation-delay: 0.05s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='3'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='3'] .delegateAllocation {
-  animation-delay: 0.075s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='4'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='4'] .delegateAllocation {
-  animation-delay: 0.1s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='5'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='5'] .delegateAllocation {
-  animation-delay: 0.125s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='6'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='6'] .delegateAllocation {
-  animation-delay: 0.15s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='7'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='7'] .delegateAllocation {
-  animation-delay: 0.175s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='8'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='8'] .delegateAllocation {
-  animation-delay: 0.2s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='9'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='9'] .delegateAllocation {
-  animation-delay: 0.225s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='10'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='10'] .delegateAllocation {
-  animation-delay: 0.25s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='11'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='11'] .delegateAllocation {
-  animation-delay: 0.275s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='12'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='12'] .delegateAllocation {
-  animation-delay: 0.3s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='13'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='13'] .delegateAllocation {
-  animation-delay: 0.325s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='14'] .delegateAllocation,
-.delegate[data-flip-direction='ltr'][data-ltr-index='14'] .delegateAllocation {
-  animation-delay: 0.35s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='15'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='15'] .delegateAllocation {
-  animation-delay: 0.375s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='16'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='16'] .delegateAllocation {
-  animation-delay: 0.4s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='17'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='17'] .delegateAllocation {
-  animation-delay: 0.425s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='18'] .delegateAllocation,
-.delegate[data-flip-direction='rtl'][data-rtl-index='18'] .delegateAllocation {
-  animation-delay: 0.45s;
-}
-
-.delegate[data-flip-direction='ltr'][data-ltr-index='19'] .delegateAllocation,
-.delegate[data-flip-direction='ltr'][data-ltr-index='19'] .delegateAllocation {
-  animation-delay: 0.475s;
-}
-
-.delegateTarget {
+.groupBackgroundTarget {
   stroke: none;
   fill: none;
 }
 
-.root[data-is-interactive][data-tappable='#{$TappableLayer_Delegates}'] .delegateTarget {
+.root[data-is-interactive][data-tappable='#{$TappableLayer_Delegates}'] .groupBackgroundTarget {
   cursor: pointer;
 }
 
-.states {
+.groupsBorders {
   pointer-events: none;
 }
 
-.state {
+.groupBorder {
   @include fadedOutTransitionable;
 }
 
-.root[data-has-focuses] .state[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .groupBorder[data-focus='#{$Focus_No}'] {
   @include fadedOut;
 }
 
-.root[data-has-focuses][data-is-inspecting] .state[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses][data-is-inspecting] .groupBorder[data-focus='#{$Focus_No}'] {
   @include fadedOutInspecting;
 }
 
-.stateFocus {
+.groupBorderPath {
   fill: none;
   stroke: $color_Grey;
   stroke-width: $swLight;
@@ -305,11 +210,11 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.stateFocus[data-focus='#{$Focus_No}'][data-has-allocation] {
+.groupBorderPath[data-focus='#{$Focus_No}'][data-has-allocation] {
   stroke: $color_BG;
 }
 
-.stateFocus[data-focus='#{$Focus_Yes}'] {
+.groupBorderPath[data-focus='#{$Focus_Yes}'] {
   stroke: $color_Yes;
   stroke-width: $swHeavy;
 
@@ -318,41 +223,41 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.stateFocus[data-focus='#{$Focus_Yes}'][data-relative-main-allocation='#{$Allocation_Dem}'] {
-  stroke: $color_Dem;
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation='#{$Allocation_CLN}'] {
+  stroke: $color_CLN;
 }
 
-.stateFocus[data-focus='#{$Focus_Yes}'][data-relative-main-allocation='#{$Allocation_GOP}'] {
-  stroke: $color_GOP;
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation='#{$Allocation_ALP}'] {
+  stroke: $color_ALP;
 }
 
-.stateFocus[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
   stroke: none;
 }
 
-.stateFocus[data-focus='#{$Focus_Yes}'][data-main-allocation='#{$Allocation_Dem}'][data-relative-main-allocation='#{$Allocation_Dem}'] {
-  stroke: $color_Dem;
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-allocation='#{$Allocation_CLN}'][data-relative-allocation='#{$Allocation_CLN}'] {
+  stroke: $color_CLN;
 }
 
-.stateFocus[data-focus='#{$Focus_Yes}'][data-main-allocation='#{$Allocation_GOP}'][data-relative-main-allocation='#{$Allocation_GOP}'] {
-  stroke: $color_GOP;
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-allocation='#{$Allocation_ALP}'][data-relative-allocation='#{$Allocation_ALP}'] {
+  stroke: $color_ALP;
 }
 
-.stateTarget {
+.groupBorderTarget {
   stroke: none;
   fill: none;
 }
 
-.statesPartitions {
+.groupsPartitions {
   pointer-events: none;
   opacity: 0;
 }
 
-.root[data-has-focuses] .statesPartitions {
+.root[data-has-focuses] .groupsPartitions {
   opacity: 1;
 }
 
-.statePartition {
+.groupPartition {
   fill: none;
   stroke: none;
   stroke-width: $swLight;
@@ -362,13 +267,13 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.statePartition[data-focus='#{$Focus_Yes}'],
-.statePartition[data-focus='#{$Focus_No}'][data-relative-main-allocation='#{$Allocation_Dem}'],
-.statePartition[data-focus='#{$Focus_No}'][data-relative-main-allocation='#{$Allocation_GOP}'] {
+.groupPartition[data-focus='#{$Focus_Yes}'],
+.groupPartition[data-focus='#{$Focus_No}'][data-relative-allocation='#{$Allocation_CLN}'],
+.groupPartition[data-focus='#{$Focus_No}'][data-relative-allocation='#{$Allocation_ALP}'] {
   stroke: $color_BG;
 }
 
-.root[data-has-focuses] .statePartition[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .groupPartition[data-focus='#{$Focus_No}'] {
   stroke: none;
 }
 
@@ -405,40 +310,12 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.labelOutline {
-  fill: none;
-  stroke: $color_BG;
-  stroke-opacity: 0.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: $swHeavy_SM;
-
-  .label[data-is-partially-allocated] & {
-    @media (min-width: 668px) {
-      stroke-width: $swHeavy;
-    }
-  }
-}
-
-.label[data-main-allocation='#{$Allocation_Dem}'] > .labelOutline,
-.label[data-main-allocation='#{$Allocation_GOP}'] > .labelOutline,
-.label[data-main-allocation='#{$Allocation_Tossup}'] > .labelOutline {
-  stroke-opacity: 0.25;
-  stroke: $color_Text;
-}
-
-.label:not([data-is-partially-allocated]) .labelOutline {
-  @media (min-width: 668px) {
-    stroke: none !important;
-  }
-}
-
 .labelText {
   fill: $color_Text;
 }
 
-.label[data-main-allocation='#{$Allocation_Dem}'] > .labelText,
-.label[data-main-allocation='#{$Allocation_GOP}'] > .labelText,
-.label[data-main-allocation='#{$Allocation_Tossup}'] > .labelText {
+.label[data-allocation='#{$Allocation_CLN}'] > .labelText,
+.label[data-allocation='#{$Allocation_ALP}'] > .labelText,
+.label[data-allocation='#{$Allocation_Tossup}'] > .labelText {
   fill: $color_BG;
 }

@@ -1,13 +1,12 @@
 import type { PanelDefinition } from '@abcnews/scrollyteller';
-import { PRESETS, StateID, STATES } from './constants';
-import { getStateAllocations } from './utils';
+import { PRESETS, GroupID, GROUPS } from './constants';
 import blockStyles from './components/Block/styles.scss';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 
-const SORTED_STATES = STATES.sort((a, b) => b.name.length - a.name.length);
+const SORTED_GROUPS = GROUPS.sort((a, b) => b.name.length - a.name.length);
 
 export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraphicProps>[]) {
-  const stateIntroductionTracker: { [key: string]: boolean } = {};
+  const groupIntroductionTracker: { [key: string]: boolean } = {};
 
   panels.forEach(({ data, nodes }) => {
     const textNodes = nodes.reduce<Node[]>((memo, node) => memo.concat(textNodesUnder(node)), []);
@@ -15,7 +14,7 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
     textNodes.forEach(node => {
       let text = node.textContent || '';
 
-      SORTED_STATES.forEach(({ name }) => {
+      SORTED_GROUPS.forEach(({ name }) => {
         const index = text.indexOf(name);
         if (index > -1 && text[index - 1] !== '|' && text[index + name.length] !== '|') {
           text = text.replace(name, `|||${name}|||`);
@@ -39,34 +38,34 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
           return parentEl.insertBefore(partTextNode, node);
         }
 
-        const state = STATES.find(({ name }) => name === part);
+        const group = GROUPS.find(({ name }) => name === part);
 
-        if (!state) {
+        if (!group) {
           return parentEl.insertBefore(partTextNode, node);
         }
 
         const partWrapperNode = document.createElement('span');
-        const stateID = StateID[state.id];
+        const groupID = GroupID[group.id];
         const { allocations, relative } = data as GraphicProps;
-        const stateMainAllocation = allocations && getStateAllocations(stateID, allocations)[0];
+        const allocation = allocations && allocations[groupID];
         const relativeAllocations = relative && PRESETS[relative]?.allocations;
-        const stateRelativeMainAllocation = relativeAllocations && getStateAllocations(stateID, relativeAllocations)[0];
+        const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
 
-        if (!stateIntroductionTracker[stateID]) {
-          stateIntroductionTracker[stateID] = true;
+        if (!groupIntroductionTracker[groupID]) {
+          groupIntroductionTracker[groupID] = true;
           partWrapperNode.setAttribute('data-is-first-encounter', '');
         }
 
-        if (stateMainAllocation) {
-          partWrapperNode.setAttribute('data-main-allocation', stateMainAllocation);
+        if (allocation) {
+          partWrapperNode.setAttribute('data-allocation', allocation);
         }
 
-        if (stateRelativeMainAllocation) {
-          partWrapperNode.setAttribute('data-relative-main-allocation', stateRelativeMainAllocation);
+        if (relativeAllocation) {
+          partWrapperNode.setAttribute('data-relative-allocation', relativeAllocation);
         }
 
-        partWrapperNode.setAttribute('data-state', stateID);
-        partWrapperNode.className = blockStyles.state;
+        partWrapperNode.setAttribute('data-group', groupID);
+        partWrapperNode.className = blockStyles.group;
         partWrapperNode.appendChild(partTextNode);
         parentEl.insertBefore(partWrapperNode, node);
       });
@@ -78,7 +77,7 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
 
 function textNodesUnder(node: Node) {
   const textNodes: Node[] = [];
-  const walk = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
+  const walk = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
   let textNode: Node | null;
 
   while ((textNode = walk.nextNode())) {

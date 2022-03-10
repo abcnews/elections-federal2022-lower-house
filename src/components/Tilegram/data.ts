@@ -1,35 +1,307 @@
 import concaveman from 'concaveman';
 
-type Cell = [number, number]; //  [row, column]
-type Point = [number, number]; // [x, y]
-type Points = Point[];
+type Vector2 = [number, number]; // [x, y]
+type Vector2Record = Record<string, Vector2>;
 
-interface StatesShapesPaths {
-  [stateID: string]: string[];
-}
+type Cell = [number, number]; // [column, row]
+type CellRecord = Record<string, Cell>;
+type CellsRecord = Record<string, Cell[]>;
 
-interface StatesShapesPoints {
-  [stateID: string]: Points[];
-}
+type Polygon = Vector2[];
+type PolygonRecord = Record<string, Polygon>;
+type PolygonsRecord = Record<string, Polygon[]>;
 
-type StateLabel = [number, number, boolean?];
-
-type StatesLabels = {
-  [key: string]: StateLabel;
-};
+type Path = string;
+type PathRecord = Record<string, Path>;
+type PathsRecord = Record<string, Path[]>;
 
 export const HEX_SIZE = 17;
 export const HEX_WIDTH = Math.sqrt(3) * HEX_SIZE;
 export const HEX_HEIGHT = 2 * HEX_SIZE;
-export const HEXGRID_CELLS_WIDE = 35;
-export const HEXGRID_CELLS_HIGH = 29;
+export const HEXGRID_CELLS_WIDE = 14;
+export const HEXGRID_CELLS_HIGH = 19;
+
 export const HEXGRID_PROPS = {
   width: HEXGRID_CELLS_WIDE * HEX_WIDTH,
   height: (HEXGRID_CELLS_HIGH + 0.33) * ((HEX_HEIGHT / 4) * 3),
   margin: 2
 };
 
-const STATES_DELEGATE_CELLS = {
+const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
+  Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
+
+const transformRecordsValues = <F, T>(record: Record<string, F>, transformFn: (from: F) => T) =>
+  Object.keys(record).reduce(
+    (memo, key) => ({
+      ...memo,
+      [key]: transformFn(record[key])
+    }),
+    {} as Record<string, T>
+  );
+
+const transformNestedRecordsValues = <F, T>(record: Record<string, Record<string, F>>, transformFn: (from: F) => T) =>
+  Object.keys(record).reduce(
+    (memo, key) => ({
+      ...memo,
+      [key]: Object.keys(record[key]).reduce(
+        (memo, nestedKey) => ({
+          ...memo,
+          [nestedKey]: transformFn(record[key][nestedKey])
+        }),
+        {} as Record<string, T>
+      )
+    }),
+    {} as Record<string, Record<string, T>>
+  );
+
+const areVector2sEqual = (a: Vector2, b: Vector2) => a[0] === b[0] && a[1] === b[1];
+
+const uniqueVector2sReducer = (memo: Vector2[], vector2: Vector2) => {
+  if (memo.find(retainedVector2 => areVector2sEqual(vector2, retainedVector2))) {
+    return memo;
+  }
+
+  return [...memo, vector2];
+};
+
+const getHexTop = ([column, row]: Cell): Vector2 => [
+  HEX_WIDTH * (column + 0.5 * (row & 1)),
+  ((HEX_SIZE * 3) / 2) * row
+];
+
+const getHexPolygon = (cell: Cell): Polygon => {
+  const [x, y] = getHexTop(cell);
+
+  return [
+    [x - HEX_WIDTH / 2, y + (HEX_HEIGHT / 4) * 3].map(Math.round) as Vector2,
+    [x, y + HEX_HEIGHT].map(Math.round) as Vector2,
+    [x + HEX_WIDTH / 2, y + (HEX_HEIGHT / 4) * 3].map(Math.round) as Vector2,
+    [x + HEX_WIDTH / 2, y + HEX_HEIGHT / 4].map(Math.round) as Vector2,
+    [x, y].map(Math.round) as Vector2,
+    [x - HEX_WIDTH / 2, y + HEX_HEIGHT / 4].map(Math.round) as Vector2,
+    [x - HEX_WIDTH / 2, y + (HEX_HEIGHT / 4) * 3].map(Math.round) as Vector2
+  ];
+};
+
+const getPath = (polygon: Polygon) => `M${polygon.map(point => point.join(',')).join(' ')}`;
+
+/* TODO: State top-left cells, with relative electorate cells? */
+const STATES_ELECTORATES_CELLS: Record<string, CellRecord> = {
+  ACT: {
+    BEAN: [9, 11],
+    CANB: [10, 11],
+    FENN: [9, 10]
+  },
+  NSW: {
+    BANK: [11, 10],
+    BART: [11, 11],
+    BENN: [10, 7],
+    BERO: [8, 7],
+    BLAX: [11, 9],
+    BRFD: [12, 7],
+    CALA: [4, 7],
+    CHIF: [9, 8],
+    COOK: [9, 9],
+    COWP: [6, 6],
+    CUNN: [7, 9],
+    DOBE: [10, 6],
+    EMON: [5, 9],
+    FARR: [4, 9],
+    FOWL: [10, 8],
+    GILM: [6, 9],
+    GRAY: [12, 9],
+    GREE: [11, 8],
+    HUGH: [10, 10],
+    HUME: [6, 8],
+    HUNT: [12, 6],
+    KSMI: [12, 12],
+    LIND: [7, 6],
+    LYNE: [6, 7],
+    MACA: [8, 8],
+    MACK: [9, 7],
+    MACQ: [8, 6],
+    MCMA: [7, 7],
+    MITC: [11, 7],
+    NENG: [5, 8],
+    NEWC: [13, 7],
+    NSYD: [13, 9],
+    PAGE: [5, 7],
+    PARK: [4, 6],
+    PARR: [10, 9],
+    PATE: [13, 8],
+    REID: [12, 8],
+    RICH: [5, 6],
+    RIVE: [4, 8],
+    ROBE: [9, 6],
+    SHOR: [11, 6],
+    SYDN: [13, 10],
+    WARR: [13, 8],
+    WATS: [12, 10],
+    WENT: [12, 11],
+    WERR: [8, 9],
+    WHIT: [7, 8]
+  },
+  NT: {
+    LING: [3, 8],
+    SOLO: [2, 5]
+  },
+  QLD: {
+    BLAI: [7, 9],
+    BONN: [11, 2],
+    BOWM: [12, 4],
+    BRIS: [10, 3],
+    CAPR: [8, 2],
+    DAWS: [8, 1],
+    DICK: [8, 3],
+    FADD: [11, 9],
+    FAIR: [10, 1],
+    FISH: [10, 2],
+    FLYN: [7, 3],
+    FORD: [10, 3],
+    GRIF: [10, 4],
+    GROO: [6, 5],
+    HERB: [9, 1],
+    HINK: [6, 3],
+    KENN: [6, 4],
+    LEIC: [9, 0],
+    LILL: [11, 3],
+    LONG: [9, 2],
+    MARA: [5, 5],
+    MCPH: [12, 5],
+    MONC: [11, 5],
+    MORE: [8, 4],
+    OXLE: [9, 5],
+    PETR: [9, 3],
+    RANK: [9, 4],
+    RYAN: [8, 5],
+    WBAY: [10, 0],
+    WRIG: [7, 5]
+  },
+  SA: {
+    ADEL: [3, 10],
+    BARK: [3, 7],
+    BOOT: [2, 11],
+    GREY: [2, 7],
+    HIND: [2, 9],
+    KING: [3, 12],
+    MAKI: [3, 9],
+    MAYO: [3, 13],
+    SPEN: [3, 8],
+    STUR: [3, 11]
+  },
+  TAS: {
+    BASS: [9, 17],
+    BRAD: [7, 17],
+    CLAR: [9, 18],
+    FRAN: [8, 18],
+    LYON: [8, 17]
+  },
+  VIC: {
+    ASTO: [9, 12],
+    BALL: [5, 14],
+    BEND: [4, 11],
+    BRUC: [9, 13],
+    CALW: [6, 10],
+    CASE: [9, 13],
+    CHIS: [7, 13],
+    COOP: [8, 12],
+    CORA: [5, 15],
+    CORI: [5, 13],
+    DEAK: [18, 11],
+    DUNK: [9, 15],
+    FLIN: [10, 15],
+    FRAS: [6, 12],
+    GELL: [6, 15],
+    GIPP: [11, 12],
+    GOLD: [8, 15],
+    GORT: [5, 11],
+    HAWK: [4, 12],
+    HIGG: [8, 14],
+    HOLT: [10, 14],
+    HOTH: [8, 13],
+    INDI: [8, 10],
+    ISAA: [9, 14],
+    JAGA: [6, 11],
+    KOOY: [6, 13],
+    LTRO: [11, 14],
+    LALO: [5, 12],
+    MACN: [7, 15],
+    MALL: [4, 10],
+    MARI: [6, 14],
+    MCEW: [10, 12],
+    MELB: [7, 14],
+    MENZ: [7, 11],
+    MONA: [11, 13],
+    NICH: [5, 10],
+    SCUL: [7, 10],
+    WANN: [4, 13],
+    WILL: [7, 12]
+  },
+  WA: {
+    BRAN: [0, 11],
+    BURT: [2, 12],
+    CANN: [1, 12],
+    COWA: [1, 9],
+    CURT: [0, 9],
+    DURA: [2, 6],
+    FORR: [0, 13],
+    FREM: [0, 10],
+    HASL: [2, 8],
+    MOOR: [1, 8],
+    OCON: [1, 13],
+    PEAR: [1, 7],
+    PERT: [1, 10],
+    SWAN: [2, 12],
+    TANG: [1, 11]
+  }
+};
+
+const ELECTORATES_CELLS = flattenNestedRecords<Cell>(STATES_ELECTORATES_CELLS);
+
+const STATES_ELECTORATES_POLYGONS = transformNestedRecordsValues<Cell, Polygon>(
+  STATES_ELECTORATES_CELLS,
+  getHexPolygon
+);
+
+export const ELECTORATES_POLYGONS = flattenNestedRecords<Polygon>(STATES_ELECTORATES_POLYGONS);
+
+const STATES_ELECTORATES_PATHS = transformNestedRecordsValues<Polygon, Path>(STATES_ELECTORATES_POLYGONS, getPath);
+
+export const ELECTORATES_PATHS = flattenNestedRecords<Path>(STATES_ELECTORATES_PATHS);
+
+export const _STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
+  (memo, stateKey) => ({
+    ...memo,
+    [stateKey]: concaveman(
+      Object.keys(STATES_ELECTORATES_POLYGONS[stateKey])
+        .reduce(
+          (memo, electorateKey) => [...memo, ...STATES_ELECTORATES_POLYGONS[stateKey][electorateKey]],
+          [] as Vector2[]
+        )
+        .reduce(uniqueVector2sReducer, [] as Vector2[]),
+      0.8,
+      HEX_SIZE
+    ) as Polygon
+  }),
+  {} as Record<string, Polygon>
+);
+
+const _STATES_PATHS = transformRecordsValues<Polygon, Path>(_STATES_POLYGONS, getPath);
+
+// console.log({
+//   STATES_ELECTORATES_CELLS,
+//   ELECTORATES_CELLS,
+//   STATES_ELECTORATES_POLYGONS,
+//   ELECTORATES_POLYGONS,
+//   STATES_ELECTORATES_PATHS,
+//   ELECTORATES_PATHS,
+//   _STATES_POLYGONS,
+//   _STATES_PATHS
+// });
+
+/* OLD US ELECTION STUFF */
+
+const GROUPS_DELEGATE_CELLS = {
   AK: [
     [1, 22],
     [0, 23],
@@ -672,47 +944,26 @@ const STATES_DELEGATE_CELLS = {
   ]
 };
 
-const getCellHexTopPoint = ([col, row]: Cell): Point => [
-  HEX_WIDTH * (col + 0.5 * (row & 1)),
-  ((HEX_SIZE * 3) / 2) * row
-];
-
-const getCellHexPoints = (cell: Cell) => {
-  const [x, y] = getCellHexTopPoint(cell);
-
-  return [
-    [x - HEX_WIDTH / 2, y + (HEX_HEIGHT / 4) * 3].map(Math.round),
-    [x, y + HEX_HEIGHT].map(Math.round),
-    [x + HEX_WIDTH / 2, y + (HEX_HEIGHT / 4) * 3].map(Math.round),
-    [x + HEX_WIDTH / 2, y + HEX_HEIGHT / 4].map(Math.round),
-    [x, y].map(Math.round),
-    [x - HEX_WIDTH / 2, y + HEX_HEIGHT / 4].map(Math.round),
-    [x - HEX_WIDTH / 2, y + (HEX_HEIGHT / 4) * 3].map(Math.round)
-  ];
-};
-
-const pointsToPath = (points: Points) => `M${points.map(point => point.join(',')).join(' ')}`;
-
-export const STATES_DELEGATES_POINTS: StatesShapesPoints = Object.keys(STATES_DELEGATE_CELLS).reduce(
+export const GROUPS_DELEGATES_POINTS: PolygonsRecord = Object.keys(GROUPS_DELEGATE_CELLS).reduce(
   (memo, key) => ({
     ...memo,
-    [key]: STATES_DELEGATE_CELLS[key].map((cell: Cell) => getCellHexPoints(cell))
+    [key]: GROUPS_DELEGATE_CELLS[key].map((cell: Cell) => getHexPolygon(cell))
   }),
-  {} as StatesShapesPoints
+  {} as PolygonsRecord
 );
 
-export const STATES_DELEGATES_PATHS: StatesShapesPaths = Object.keys(STATES_DELEGATES_POINTS).reduce(
+export const GROUPS_DELEGATES_PATHS: PathsRecord = Object.keys(GROUPS_DELEGATES_POINTS).reduce(
   (memo, key) => ({
     ...memo,
-    [key]: STATES_DELEGATES_POINTS[key].map(points => pointsToPath(points))
+    [key]: GROUPS_DELEGATES_POINTS[key].map(points => getPath(points))
   }),
-  {} as StatesShapesPaths
+  {} as PathsRecord
 );
 
-export const STATES_POINTS: StatesShapesPoints = Object.keys(STATES_DELEGATES_POINTS).reduce((memo, key) => {
-  const delegatesPoints: Points[] = STATES_DELEGATES_POINTS[key];
+export const STATES_POINTS: PolygonsRecord = Object.keys(GROUPS_DELEGATES_POINTS).reduce((memo, key) => {
+  const delegatesPoints: Polygon[] = GROUPS_DELEGATES_POINTS[key];
 
-  const allPoints = delegatesPoints.reduce((memo, delegatePoints) => [...memo, ...delegatePoints], [] as Points);
+  const allPoints = delegatesPoints.reduce((memo, delegatePoints) => [...memo, ...delegatePoints], [] as Polygon);
 
   const uniquePoints = allPoints.reduce((memo, point) => {
     if (memo.find(([x, y]) => point[0] === x && point[1] === y)) {
@@ -720,40 +971,40 @@ export const STATES_POINTS: StatesShapesPoints = Object.keys(STATES_DELEGATES_PO
     }
 
     return [...memo, point];
-  }, [] as Points);
+  }, [] as Polygon);
 
   return {
     ...memo,
-    [key]: [concaveman(uniquePoints, 0.8, HEX_SIZE) as Points]
+    [key]: [concaveman(uniquePoints, 0.8, HEX_SIZE) as Polygon]
   };
-}, {} as StatesShapesPoints);
+}, {} as PolygonsRecord);
 
-export const STATES_PATHS: StatesShapesPaths = Object.keys(STATES_POINTS).reduce(
+export const STATES_PATHS: PathsRecord = Object.keys(STATES_POINTS).reduce(
   (memo, key) => ({
     ...memo,
-    [key]: STATES_POINTS[key].map(points => pointsToPath(points))
+    [key]: STATES_POINTS[key].map(points => getPath(points))
   }),
-  {} as StatesShapesPaths
+  {} as PathsRecord
 );
 
-export const COUNTRY_POINTS: Points = concaveman(
+export const COUNTRY_POINTS: Polygon = concaveman(
   Object.keys(STATES_POINTS)
     .filter(key => key !== 'AK' && key !== 'HI')
-    .reduce((memo, key) => [...memo, ...STATES_POINTS[key][0]], [] as Points)
+    .reduce((memo, key) => [...memo, ...STATES_POINTS[key][0]], [] as Polygon)
     .reduce((memo, point) => {
       if (memo.find(([x, y]) => point[0] === x && point[1] === y)) {
         return memo;
       }
 
       return [...memo, point];
-    }, [] as Points),
+    }, [] as Polygon),
   0.8,
   HEX_SIZE
-) as Points;
+) as Polygon;
 
-export const COUNTRY_PATHS = [pointsToPath(COUNTRY_POINTS)];
+export const COUNTRY_PATHS = [getPath(COUNTRY_POINTS)];
 
-export const STATES_LABELS: StatesLabels = {
+export const GROUPS_LABELS: Vector2Record = {
   AK: [30, 599],
   AL: [518, 530],
   AR: [415, 404],
@@ -761,13 +1012,13 @@ export const STATES_LABELS: StatesLabels = {
   CA: [111, 363],
   CO: [252, 276],
   CT: [918, 184],
-  DC: [829, 376, true],
-  DE: [903, 350, true],
+  DC: [829, 376],
+  DE: [903, 350],
   FL: [628, 658],
   GA: [600, 517],
-  HI: [178, 686, true],
+  HI: [178, 686],
   IA: [378, 261],
-  ID: [237, 171, true],
+  ID: [237, 171],
   IL: [474, 312],
   IN: [555, 312],
   KS: [304, 325],
@@ -775,34 +1026,34 @@ export const STATES_LABELS: StatesLabels = {
   LA: [415, 506],
   MA: [947, 135],
   MD: [873, 376],
-  ME: [962, 29, true],
+  ME: [962, 29],
   MI: [592, 188],
   MN: [378, 184],
   MO: [385, 325],
-  MS: [459, 522, true],
-  MT: [281, 148, true],
+  MS: [459, 522],
+  MT: [281, 148],
   NC: [703, 442],
-  ND: [326, 158, true],
-  NE: [296, 250, true],
+  ND: [326, 158],
+  NE: [296, 250],
   NH: [918, 88],
   NJ: [896, 286],
-  NM: [252, 453, true],
+  NM: [252, 453],
   NV: [178, 250],
   NY: [800, 173],
   OH: [637, 312],
   OK: [356, 389],
-  OR: [104, 197, true],
+  OR: [104, 197],
   PA: [755, 261],
   RI: [999, 184],
   SC: [696, 504],
-  SD: [326, 209, true],
+  SD: [326, 209],
   TN: [518, 440],
   TX: [326, 517],
-  UT: [207, 276, true],
+  UT: [207, 276],
   VA: [754, 388],
-  VT: [888, 70, true],
+  VT: [888, 70],
   WA: [118, 158],
   WI: [459, 197],
   WV: [703, 360],
-  WY: [281, 197, true]
+  WY: [281, 197]
 };

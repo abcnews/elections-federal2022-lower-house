@@ -83,7 +83,7 @@ $heightBigBar: 2rem;
   height: 100%;
 }
 
-.root[data-consistent-incumbent] .bar {
+.root[data-consistent-government] .bar {
   transition: transform $allocationTransitionDuration;
 }
 
@@ -99,11 +99,11 @@ $heightBigBar: 2rem;
   background-color: $color_LikelyALP;
 }
 
-.root[data-incumbent='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
+.root[data-government='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
   border-left: 0.0625rem solid $color_ALP;
 }
 
-.root[data-incumbent='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
+.root[data-government='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
   border-right: 0.0625rem solid $color_ALP;
 }
 
@@ -111,11 +111,11 @@ $heightBigBar: 2rem;
   background-color: $color_LikelyCLN;
 }
 
-.root[data-incumbent='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
+.root[data-government='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
   border-right: 0.0625rem solid $color_CLN;
 }
 
-.root[data-incumbent='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
+.root[data-government='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
   border-left: 0.0625rem solid $color_CLN;
 }
 

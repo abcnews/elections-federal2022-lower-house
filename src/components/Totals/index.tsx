@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { Allocations, ElectionYear } from '../../constants';
 import { Allocation, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_ALLOCATIONS_CANDIDATES, ELECTORATES } from '../../constants';
-import { getVoteCountsForAllocations } from '../../utils';
+import { getSeatCountsForAllocations } from '../../utils';
 import styles from './styles.scss';
 
 const MAX_VOTES = ELECTORATES.length;
@@ -22,19 +22,19 @@ export type TotalsProps = {
 
 const Totals: React.FC<TotalsProps> = props => {
   const { allocations, year } = props;
-  const voteCounts = useMemo(() => getVoteCountsForAllocations(allocations || {}), [allocations]);
+  const voteCounts = useMemo(() => getSeatCountsForAllocations(allocations || {}), [allocations]);
   const sides = useMemo(() => ELECTION_YEARS_ALLOCATIONS_CANDIDATES[year || DEFAULT_ELECTION_YEAR], [year]);
-  const incumbent = useMemo(() => Object.keys(sides)[0], [sides]);
-  const previousIncumbent = usePrevious(incumbent);
+  const government = useMemo(() => Object.keys(sides)[0], [sides]);
+  const previousGovernment = usePrevious(government);
 
   const tX = (votes: number, side: Allocation) =>
-    side === incumbent ? (votes / MAX_VOTES) * 100 - 100 : (votes / MAX_VOTES) * -100 + 100;
+    side === government ? (votes / MAX_VOTES) * 100 - 100 : (votes / MAX_VOTES) * -100 + 100;
 
   return (
     <div
       className={styles.root}
-      data-incumbent={incumbent}
-      data-consistent-incumbent={incumbent === previousIncumbent ? '' : undefined}
+      data-government={government}
+      data-consistent-government={government === previousGovernment ? '' : undefined}
     >
       <div className={styles.text}>
         {Object.keys(sides).map(allocation => (

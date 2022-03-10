@@ -165,7 +165,7 @@
   }
 }
 
-.state {
+.group {
   margin: 0 0.05em;
   border: 0.125rem solid $color_Yes;
   padding: 0 0.2em;
@@ -175,46 +175,46 @@
   white-space: nowrap;
 }
 
-.state[data-is-first-encounter]::after {
-  content: ' (' attr(data-state) ')';
+.group[data-is-first-encounter]::after {
+  content: ' (' attr(data-group) ')';
 }
 
-.state[data-main-allocation='#{$Allocation_CLN}'] {
+.group[data-allocation='#{$Allocation_CLN}'] {
   background-color: $color_CLN;
 }
 
-.state[data-main-allocation='#{$Allocation_LikelyCLN}'] {
+.group[data-allocation='#{$Allocation_LikelyCLN}'] {
   background-color: $color_LikelyCLN;
 }
 
-.state[data-main-allocation='#{$Allocation_Tossup}'] {
+.group[data-allocation='#{$Allocation_Tossup}'] {
   background-color: $color_Tossup;
 }
 
-.state[data-main-allocation='#{$Allocation_LikelyALP}'] {
+.group[data-allocation='#{$Allocation_LikelyALP}'] {
   background-color: $color_LikelyALP;
 }
 
-.state[data-main-allocation='#{$Allocation_ALP}'] {
+.group[data-allocation='#{$Allocation_ALP}'] {
   background-color: $color_ALP;
 }
 
-.state[data-relative-main-allocation='#{$Allocation_CLN}'] {
+.group[data-relative-allocation='#{$Allocation_CLN}'] {
   border-color: $color_CLN;
 }
 
-.state[data-relative-main-allocation='#{$Allocation_ALP}'] {
+.group[data-relative-allocation='#{$Allocation_ALP}'] {
   border-color: $color_ALP;
 }
 
-.state[data-main-allocation='#{$Allocation_CLN}'],
-.state[data-main-allocation='#{$Allocation_ALP}'],
-.state[data-main-allocation='#{$Allocation_Tossup}'] {
+.group[data-allocation='#{$Allocation_CLN}'],
+.group[data-allocation='#{$Allocation_ALP}'],
+.group[data-allocation='#{$Allocation_Tossup}'] {
   color: $color_BG;
 }
 
-.state[data-main-allocation='#{$Allocation_CLN}'],
-.state[data-main-allocation='#{$Allocation_ALP}'] {
+.group[data-allocation='#{$Allocation_CLN}'],
+.group[data-allocation='#{$Allocation_ALP}'] {
   border-color: transparent;
 }
 

@@ -7,13 +7,13 @@ import {
   Focus,
   Focuses,
   INITIAL_FOCUSES,
-  StateID,
-  STATE_IDS,
+  GroupID,
+  GROUP_IDS,
+  GROUPS,
   MIXINS,
   PRESETS,
   ElectionYear,
-  ELECTION_YEARS,
-  STATES
+  ELECTION_YEARS
 } from '../../constants';
 import {
   alternatingCaseToGraphicProps,
@@ -136,20 +136,20 @@ const Editor: React.FC = () => {
     mixinGraphicProps({ allocations: allocationsToMixin });
   };
 
-  const onChangeFocusedStates = (event: ChangeEvent<HTMLSelectElement>) => {
+  const onChangeFocusedGroups = (event: ChangeEvent<HTMLSelectElement>) => {
     const options = event.target.options;
-    const nextFocusedStateIDs: string[] = [];
+    const nextFocusedGroupIDs: string[] = [];
 
     for (var i = 0, l = options.length; i < l; i++) {
       if (options[i].selected) {
-        nextFocusedStateIDs.push(options[i].value);
+        nextFocusedGroupIDs.push(options[i].value);
       }
     }
 
-    setTappableLayer(nextFocusedStateIDs.length > 0 ? null : TappableLayer.Delegates);
+    setTappableLayer(nextFocusedGroupIDs.length > 0 ? null : TappableLayer.Delegates);
     mixinGraphicProps({
-      focuses: STATE_IDS.reduce((focuses, stateID) => {
-        focuses[stateID] = nextFocusedStateIDs.indexOf(stateID) > -1 ? Focus.Yes : Focus.No;
+      focuses: GROUP_IDS.reduce((focuses, groupID) => {
+        focuses[groupID] = nextFocusedGroupIDs.indexOf(groupID) > -1 ? Focus.Yes : Focus.No;
 
         return focuses;
       }, {})
@@ -158,8 +158,8 @@ const Editor: React.FC = () => {
 
   const onClearFocuses = () =>
     mixinGraphicProps({
-      focuses: STATE_IDS.reduce((focuses, stateID) => {
-        focuses[stateID] = Focus.No;
+      focuses: GROUP_IDS.reduce((focuses, groupID) => {
+        focuses[groupID] = Focus.No;
 
         return focuses;
       }, {})
@@ -234,7 +234,7 @@ const Editor: React.FC = () => {
           ))}
         </div>
         <h3>
-          Relative year <small>(show incumbent outlines &amp; flips)</small>
+          Relative year <small>(show government outlines &amp; flips)</small>
         </h3>
         <div className={styles.flexRow}>
           <span key="none">
@@ -285,7 +285,7 @@ const Editor: React.FC = () => {
         </div>
 
         <h3>
-          {`Focused States `}
+          {`Focused Groups `}
           <small>{`(${Object.keys(focuses).filter(key => focuses[key] === Focus.Yes).length} selected)`}</small>
           <button
             onClick={onClearFocuses}
@@ -295,10 +295,10 @@ const Editor: React.FC = () => {
           </button>
         </h3>
         <div className={styles.flexRow}>
-          <select multiple onChange={onChangeFocusedStates}>
-            {STATE_IDS.map(stateID => (
-              <option key={stateID} value={stateID}>
-                {`${stateID} - ${STATES.find(({ id }) => id === StateID[stateID])?.name}`}
+          <select multiple onChange={onChangeFocusedGroups}>
+            {GROUP_IDS.map(groupID => (
+              <option key={groupID} value={groupID}>
+                {`${groupID} - ${GROUPS.find(({ id }) => id === GroupID[groupID])?.name}`}
               </option>
             ))}
           </select>

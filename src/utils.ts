@@ -1,72 +1,20 @@
 import * as acto from '@abcnews/alternating-case-to-object';
-import {
-  Allocation,
-  Allocations,
-  ALLOCATIONS,
-  Group,
-  GroupID,
-  GROUP_IDS,
-  GROUPS,
-  STATE_IDS,
-  Focus,
-  Focuses,
-  FOCUSES
-} from './constants';
+import { Allocation, Allocations, ALLOCATIONS, GROUP_IDS, Focus, Focuses, FOCUSES } from './constants';
 
-export const votesForGroups = (groups: Group[]) => groups.length;
-
-export const getGroupIDForStateIDAndDelegateIndex = (stateID: string, delegateIndex: number) => {
-  return `${stateID}${GroupID[stateID] != null ? '' : `_${Math.max(0, delegateIndex - 1)}`}`;
-};
-
-export const getGroupIDsForStateID = (stateID: string) => {
-  return GROUP_IDS.filter(groupID => groupID.indexOf(stateID) === 0);
-};
-
-export const getStateIDForGroupID = (groupID: string) => {
-  return groupID.split('_')[0];
-};
-
-export const getVoteCountsForAllocations = (allocations: Allocations): { [key: string]: number } => {
+export const getSeatCountsForAllocations = (allocations: Allocations): { [key: string]: number } => {
   return ALLOCATIONS.reduce(
     (memo, allocation) => ({
       ...memo,
-      [allocation]: votesForGroups(GROUPS.filter(({ id }) => allocations[GroupID[id]] === allocation))
+      [allocation]: GROUP_IDS.filter(id => allocations[id] === allocation).length
     }),
     {}
   );
-};
-
-export const getStateAllocations = (stateID: string, allocations: Allocations) => {
-  const stateGroupIDs = getGroupIDsForStateID(stateID);
-
-  return stateGroupIDs.map(groupID => allocations[groupID]);
 };
 
 export const determineIfAllocationIsMade = (allocation: Allocation) => allocation !== Allocation.None;
 
 export const determineIfAllocationIsDefinitive = (allocation: Allocation) =>
   allocation === Allocation.CLN || allocation === Allocation.ALP;
-
-export const determineIfProportionOfStateAllocationsMeetCondition = (
-  proportion: number,
-  stateID: string,
-  allocations: Allocations,
-  condition: (allocation: Allocation) => boolean
-) => {
-  proportion = Math.max(0, Math.min(proportion, 1));
-
-  const stateAllocations = getStateAllocations(stateID, allocations);
-  const stateAllocationsThatMeetCondition = stateAllocations.filter(condition);
-
-  return stateAllocationsThatMeetCondition.length / stateAllocations.length > proportion;
-};
-
-export const determineIfAnyStateAllocationsAreMade = (stateID: string, allocations: Allocations) =>
-  determineIfProportionOfStateAllocationsMeetCondition(0, stateID, allocations, determineIfAllocationIsMade);
-
-export const determineIfMostStateAllocationsAreMade = (stateID: string, allocations: Allocations) =>
-  determineIfProportionOfStateAllocationsMeetCondition(0.5, stateID, allocations, determineIfAllocationIsMade);
 
 function decode<Dict>(code: string, keys: string[], possibleValues: string[], defaultValue: string): Dict {
   code = typeof code === 'string' ? code.replace(/(\w)(\d+)/g, (_, char, repeated) => char.repeat(+repeated)) : code;
@@ -105,9 +53,9 @@ export const decodeAllocations = (code: string): Allocations =>
 export const encodeAllocations = (allocations: Allocations): string =>
   encode<Allocations>(allocations, GROUP_IDS, ALLOCATIONS, Allocation.None);
 
-export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, STATE_IDS, FOCUSES, Focus.No);
+export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, GROUP_IDS, FOCUSES, Focus.No);
 
-export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focuses, STATE_IDS, FOCUSES, Focus.No);
+export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focuses, GROUP_IDS, FOCUSES, Focus.No);
 
 export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
   const graphicProps = acto(alternatingCase);

@@ -70,7 +70,7 @@ const whenScrollytellersLoaded = new Promise((resolve, reject) =>
           data.focuses = decodeFocuses((data.focuses as string) || '');
         });
 
-        // Upgrade scrollyteller' content to show coloured state names
+        // Upgrade scrollyteller' content to show coloured electorate names
         applyColourToPanels(scrollytellerDefinition.panels);
       } catch (err) {
         return reject(err);

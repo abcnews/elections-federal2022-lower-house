@@ -9,13 +9,8 @@ import {
   DEFAULT_ELECTION_YEAR,
   ElectionYear
 } from '../../constants';
-import {
-  determineIfAllocationIsDefinitive,
-  determineIfAllocationIsMade,
-  getGroupIDForStateIDAndDelegateIndex,
-  getStateAllocations
-} from '../../utils';
-import { STATES_DELEGATES_POINTS, STATES_LABELS, STATES_PATHS, HEXGRID_PROPS } from './data';
+import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../utils';
+import { GROUPS_DELEGATES_POINTS, GROUPS_LABELS, STATES_PATHS, HEXGRID_PROPS } from './data';
 import Defs, { generateKey, generatePolyKeys } from './defs';
 import styles from './styles.scss';
 
@@ -41,12 +36,13 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const isInteractive = !!onTapGroup;
   const [isInspecting, setIsInspecting] = useState(false);
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
-  const [incumbentAllocation, challengerAllocation] = Object.keys(
+  // TODO: we need a new concept for 'held' so that we can show flips
+  const [governmentAllocation, oppositionAllocation] = Object.keys(
     ELECTION_YEARS_ALLOCATIONS_CANDIDATES[year || DEFAULT_ELECTION_YEAR]
   );
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
 
-  const onTapDelegateHex = (event: React.MouseEvent<SVGElement>) => {
+  const onTapGroupBackground = (event: React.MouseEvent<SVGElement>) => {
     if (onTapGroup && tappableLayer === TappableLayer.Delegates && event.target instanceof SVGUseElement) {
       const groupID = event.target.getAttribute('data-group');
 
@@ -92,7 +88,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgWidth = HEXGRID_PROPS.width + 2 * HEXGRID_PROPS.margin;
   const svgHeight = HEXGRID_PROPS.height + 2 * HEXGRID_PROPS.margin;
   const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
-  const countryPathsHref = `#${componentID}_country`;
+  // const countryPathsHref = `#${componentID}_country`;
 
   return (
     <div
@@ -106,158 +102,121 @@ const Tilegram: React.FC<TilegramProps> = props => {
       <svg ref={svgRef} className={styles.svg} viewBox={svgViewBox}>
         <Defs componentID={componentID} />
         <g transform={`translate(${HEXGRID_PROPS.margin} ${HEXGRID_PROPS.margin})`}>
-          <use xlinkHref={countryPathsHref} className={styles.countryOuter}></use>
-          <use xlinkHref={countryPathsHref} className={styles.countryInner}></use>
-          <g className={styles.delegates} onClick={onTapDelegateHex}>
-            {Object.keys(STATES_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, stateID) => {
-              const hexes = STATES_DELEGATES_POINTS[stateID];
-              const xOffsets = hexes.map<number>(points => points[0][0]);
-              const orderedUniqueXOffsets = Array.from(new Set(xOffsets)).sort((a, b) => a - b);
-              const focus = focuses ? focuses[stateID] : Focus.No;
+          {/* <use xlinkHref={countryPathsHref} className={styles.countryOuter}></use> */}
+          {/* <use xlinkHref={countryPathsHref} className={styles.countryInner}></use> */}
+          <g className={styles.groupsBackgrounds} onClick={onTapGroupBackground}>
+            {Object.keys(GROUPS_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, groupID) => {
+              const points = GROUPS_DELEGATES_POINTS[groupID][0];
+              const focus = focuses ? focuses[groupID] : Focus.No;
+              const keys = generatePolyKeys(componentID, 'group', groupID, 0);
+              const allocation = allocations ? allocations[groupID] : Allocation.None;
+              const relativeAllocation = relativeAllocations ? relativeAllocations[groupID] : undefined;
+              const isFlipping =
+                (relativeAllocation === Allocation.ALP && allocation === Allocation.CLN) ||
+                (relativeAllocation === Allocation.CLN && allocation === Allocation.ALP);
+              const [offsetX, offsetY] = points[0];
 
-              return memo.concat(
-                hexes.map((points, index) => {
-                  const xOffset = xOffsets[index];
-                  const ltrIndex = orderedUniqueXOffsets.indexOf(xOffset);
-                  const rtlIndex = orderedUniqueXOffsets.length - 1 - ltrIndex;
-                  const groupID = getGroupIDForStateIDAndDelegateIndex(stateID, index);
-                  const keys = generatePolyKeys(componentID, 'group', groupID, index);
-                  const allocation = allocations ? allocations[groupID] : Allocation.None;
-                  const relativeAllocation = relativeAllocations ? relativeAllocations[groupID] : undefined;
-                  const isFlipping =
-                    (relativeAllocation === Allocation.GOP && allocation === Allocation.Dem) ||
-                    (relativeAllocation === Allocation.Dem && allocation === Allocation.GOP);
-                  const [offsetX, offsetY] = points[0];
-
-                  return (
-                    <g
-                      key={groupID + index}
-                      className={styles.delegate}
-                      data-ltr-index={ltrIndex}
-                      data-rtl-index={rtlIndex}
-                      data-flip-direction={
-                        incumbentAllocation === allocation
-                          ? 'rtl'
-                          : challengerAllocation === allocation
-                          ? 'ltr'
-                          : undefined
-                      }
-                      data-focus={focus}
-                      clipPath={isFlipping ? `url(#${keys['clip']})` : undefined}
-                    >
-                      <use
-                        xlinkHref={`#${keys['path']}`}
-                        className={styles.delegateAllocation}
-                        data-relative-allocation={relativeAllocation}
-                        data-allocation={allocation}
-                        style={{ transformOrigin: `${offsetX + 15}px ${offsetY}px` }}
-                      />
-                      <use
-                        xlinkHref={`#${keys['target']}`}
-                        className={styles.delegateTarget}
-                        data-group={groupID}
-                      ></use>
-                    </g>
-                  );
-                })
-              );
+              return [
+                ...memo,
+                <g
+                  key={groupID}
+                  className={styles.groupBackground}
+                  data-flip-direction={
+                    governmentAllocation === allocation
+                      ? 'rtl'
+                      : oppositionAllocation === allocation
+                      ? 'ltr'
+                      : undefined
+                  }
+                  data-focus={focus}
+                  clipPath={isFlipping ? `url(#${keys['clip']})` : undefined}
+                >
+                  <use
+                    xlinkHref={`#${keys['path']}`}
+                    className={styles.groupBackgroundPath}
+                    data-relative-allocation={relativeAllocation}
+                    data-allocation={allocation}
+                    style={{ transformOrigin: `${offsetX + 15}px ${offsetY}px` }}
+                  />
+                  <use
+                    xlinkHref={`#${keys['target']}`}
+                    className={styles.groupBackgroundTarget}
+                    data-group={groupID}
+                  ></use>
+                </g>
+              ];
             }, [])}
           </g>
-          <g className={styles.states}>
-            {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
-              const focus = focuses ? focuses[stateID] : Focus.No;
-              const stateAllocations = allocations && getStateAllocations(stateID, allocations);
-              const stateMainAllocation = stateAllocations && stateAllocations[0];
-              const hasAllocation = stateAllocations && stateAllocations.some(determineIfAllocationIsMade);
-              const hasDefinitiveAllocation =
-                stateAllocations && stateAllocations.some(determineIfAllocationIsDefinitive);
-              const stateRelativeMainAllocation =
-                relativeAllocations && getStateAllocations(stateID, relativeAllocations)[0];
+          <g className={styles.groupsBorders}>
+            {Object.keys(GROUPS_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, groupID) => {
+              const focus = focuses ? focuses[groupID] : Focus.No;
+              const allocation = allocations && allocations[groupID];
+              const hasAllocation = allocation && determineIfAllocationIsMade(allocation);
+              const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
+              const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
+              const keys = generatePolyKeys(componentID, 'group', groupID, 0);
 
-              return memo.concat(
-                STATES_PATHS[stateID].map((_path, index) => {
-                  const keys = generatePolyKeys(componentID, 'state', stateID, index);
-
-                  return (
-                    <g
-                      key={stateID + index}
-                      className={styles.state}
-                      data-focus={focus}
-                      clipPath={
-                        focus === Focus.Yes || stateRelativeMainAllocation ? `url(#${keys['clip']})` : undefined
-                      }
-                    >
-                      <use
-                        xlinkHref={`#${keys['path']}`}
-                        className={styles.stateFocus}
-                        data-focus={focus}
-                        data-has-allocation={hasAllocation ? '' : undefined}
-                        data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
-                        data-main-allocation={stateMainAllocation || undefined}
-                        data-relative-main-allocation={stateRelativeMainAllocation || undefined}
-                      ></use>
-                      <use xlinkHref={`#${keys['target']}`} className={styles.stateTarget} data-state={stateID}></use>
-                    </g>
-                  );
-                })
-              );
+              return [
+                ...memo,
+                <g
+                  key={groupID}
+                  className={styles.groupBorder}
+                  data-focus={focus}
+                  clipPath={focus === Focus.Yes || relativeAllocation ? `url(#${keys['clip']})` : undefined}
+                >
+                  <use
+                    xlinkHref={`#${keys['path']}`}
+                    className={styles.groupBorderPath}
+                    data-focus={focus}
+                    data-has-allocation={hasAllocation ? '' : undefined}
+                    data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
+                    data-allocation={allocation || undefined}
+                    data-relative-allocation={relativeAllocation || undefined}
+                  ></use>
+                  <use xlinkHref={`#${keys['target']}`} className={styles.groupBorderTarget} data-group={groupID}></use>
+                </g>
+              ];
             }, [])}
           </g>
-          <g className={styles.statesPartitions}>
-            {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
-              const focus = focuses ? focuses[stateID] : Focus.No;
-              const stateRelativeMainAllocation =
-                relativeAllocations && getStateAllocations(stateID, relativeAllocations)[0];
+          <g className={styles.groupsPartitions}>
+            {Object.keys(GROUPS_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, groupID) => {
+              const focus = focuses ? focuses[groupID] : Focus.No;
+              const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
+              const keys = generatePolyKeys(componentID, 'group', groupID, 0);
 
-              return memo.concat(
-                STATES_PATHS[stateID].map((_points, index) => {
-                  const keys = generatePolyKeys(componentID, 'state', stateID, index);
-
-                  return (
-                    <use
-                      key={stateID + index}
-                      xlinkHref={`#${keys['path']}`}
-                      className={styles.statePartition}
-                      data-focus={focus}
-                      data-relative-main-allocation={stateRelativeMainAllocation || undefined}
-                    ></use>
-                  );
-                })
-              );
+              return [
+                ...memo,
+                <use
+                  key={groupID}
+                  xlinkHref={`#${keys['path']}`}
+                  className={styles.groupPartition}
+                  data-focus={focus}
+                  data-relative-allocation={relativeAllocation || undefined}
+                ></use>
+              ];
             }, [])}
           </g>
-          <g className={styles.labels}>
-            {Object.keys(STATES_LABELS).map(stateID => {
-              const [, , isOutlineRequiredOnSmallDevices] = STATES_LABELS[stateID];
-              const key = generateKey(componentID, 'label', stateID);
-              const focus = focuses ? focuses[stateID] : Focus.No;
-              const stateAllocations = allocations && getStateAllocations(stateID, allocations);
-              const stateMainAllocation = stateAllocations && stateAllocations[0];
-              const stateRelativeMainAllocation =
-                relativeAllocations && getStateAllocations(stateID, relativeAllocations)[0];
-              const isPartiallyAllocated =
-                stateAllocations &&
-                stateMainAllocation !== Allocation.None &&
-                stateAllocations.some(allocation => allocation !== Allocation.Dem && allocation !== Allocation.GOP);
+          {/* <g className={styles.labels}>
+            {Object.keys(GROUPS_LABELS).map(groupID => {
+              const key = generateKey(componentID, 'label', groupID);
+              const focus = focuses ? focuses[groupID] : Focus.No;
+              const allocation = allocations && allocations[groupID];
+              const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
 
               return (
                 <g
-                  key={stateID}
+                  key={groupID}
                   className={styles.label}
                   data-focus={focus}
-                  data-state={stateID}
-                  data-main-allocation={stateMainAllocation || undefined}
-                  data-relative-main-allocation={stateRelativeMainAllocation || undefined}
-                  data-is-partially-allocated={isPartiallyAllocated ? '' : undefined}
+                  data-group={groupID}
+                  data-allocation={allocation || undefined}
+                  data-relative-allocation={relativeAllocation || undefined}
                 >
-                  {(isOutlineRequiredOnSmallDevices || isPartiallyAllocated) && (
-                    <use xlinkHref={`#${key}`} className={styles.labelOutline}></use>
-                  )}
                   <use xlinkHref={`#${key}`} className={styles.labelText}></use>
                 </g>
               );
             })}
-          </g>
+          </g> */}
         </g>
       </svg>
     </div>

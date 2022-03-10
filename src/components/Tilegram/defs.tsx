@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
-import { GroupID, GROUPS, StateID, STATES } from '../../constants';
-import { getGroupIDForStateIDAndDelegateIndex } from '../../utils';
-import {
-  COUNTRY_PATHS,
-  STATES_DELEGATES_PATHS,
-  STATES_DELEGATES_POINTS,
-  STATES_LABELS,
-  STATES_PATHS,
-  STATES_POINTS
-} from './data';
+import { GroupID, GROUPS } from '../../constants';
+// import {
+//   COUNTRY_PATHS,
+//   GROUPS_DELEGATES_PATHS,
+//   GROUPS_DELEGATES_POINTS,
+//   GROUPS_LABELS,
+//   STATES_PATHS,
+//   STATES_POINTS
+// } from './data';
+import { GROUPS_DELEGATES_PATHS, GROUPS_DELEGATES_POINTS } from './data';
 
 const POLY_KEY_NAMES = ['path', 'clip', 'target'];
 
@@ -27,35 +27,32 @@ export type DefsProps = {
 };
 
 const Defs: React.FC<DefsProps> = ({ componentID }) => {
-  const countryPathsKey = componentID + '_country';
+  // const countryPathsKey = componentID + '_country';
 
   return (
     <defs>
-      <g key={countryPathsKey} id={countryPathsKey}>
+      {/* <g key={countryPathsKey} id={countryPathsKey}>
         {COUNTRY_PATHS.map((d, index) => (
           <path key={index} d={d}></path>
         ))}
-      </g>
-      {Object.keys(STATES_DELEGATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
-        return memo.concat(
-          STATES_DELEGATES_PATHS[stateID].reduce<JSX.Element[]>((memo, path, index) => {
-            const groupID = getGroupIDForStateIDAndDelegateIndex(stateID, index);
-            const keys = generatePolyKeys(componentID, 'group', groupID, index);
-            const points = STATES_DELEGATES_POINTS[stateID][index];
+      </g> */}
+      {Object.keys(GROUPS_DELEGATES_PATHS).reduce<JSX.Element[]>((memo, groupID) => {
+        const keys = generatePolyKeys(componentID, 'group', groupID, 0);
+        const path = GROUPS_DELEGATES_PATHS[groupID][0];
+        const points = GROUPS_DELEGATES_POINTS[groupID][0];
 
-            return memo.concat([
-              <path key={keys['path']} id={keys['path']} d={path}></path>,
-              <clipPath key={keys['clip']} id={keys['clip']}>
-                <use xlinkHref={`#${keys['path']}`} />
-              </clipPath>,
-              <polygon key={keys['target']} id={keys['target']} points={points.join(' ')}>
-                <title>{GROUPS.find(({ id }) => id === GroupID[groupID])?.name}</title>
-              </polygon>
-            ]);
-          }, [])
-        );
+        return [
+          ...memo,
+          <path key={keys['path']} id={keys['path']} d={path}></path>,
+          <clipPath key={keys['clip']} id={keys['clip']}>
+            <use xlinkHref={`#${keys['path']}`} />
+          </clipPath>,
+          <polygon key={keys['target']} id={keys['target']} points={points.join(' ')}>
+            <title>{GROUPS.find(({ id }) => id === GroupID[groupID])?.name}</title>
+          </polygon>
+        ];
       }, [])}
-      {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
+      {/* {Object.keys(STATES_PATHS).reduce<JSX.Element[]>((memo, stateID) => {
         return memo.concat(
           STATES_PATHS[stateID].reduce<JSX.Element[]>((memo, path, index) => {
             const keys = generatePolyKeys(componentID, 'state', stateID, index);
@@ -67,22 +64,22 @@ const Defs: React.FC<DefsProps> = ({ componentID }) => {
                 <use xlinkHref={`#${keys['path']}`} />
               </clipPath>,
               <polygon key={keys['target']} id={keys['target']} points={points.join(' ')}>
-                <title>{STATES.find(({ id }) => id === StateID[stateID])?.name}</title>
+                <title>{GROUPS.find(({ id }) => id === GroupID[stateID])?.name}</title>
               </polygon>
             ]);
           }, [])
         );
-      }, [])}
-      {Object.keys(STATES_LABELS).map(stateID => {
-        const [x, y] = STATES_LABELS[stateID];
-        const key = generateKey(componentID, 'label', stateID);
+      }, [])} */}
+      {/* {Object.keys(GROUPS_LABELS).map(groupID => {
+        const [x, y] = GROUPS_LABELS[groupID];
+        const key = generateKey(componentID, 'label', groupID);
 
         return (
-          <text key={key} id={key} data-state={stateID} x={x} y={y + 4}>
-            {stateID}
+          <text key={key} id={key} data-group={groupID} x={x} y={y + 4}>
+            {groupID}
           </text>
         );
-      })}
+      })} */}
     </defs>
   );
 };
