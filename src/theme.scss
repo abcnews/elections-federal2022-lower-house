@@ -1,0 +1,101 @@
+@import './constants.scss';
+
+/* Allocation colors */
+
+[data-allocation='#{$Allocation_None}'] {
+  --color-allocation: #{$color_White};
+}
+
+[data-allocation='#{$Allocation_ALP}'] {
+  --color-allocation: #{$color_PtyRed};
+}
+
+[data-allocation='#{$Allocation_CA}'] {
+  --color-allocation: #{$color_PtyOrange};
+}
+
+[data-allocation='#{$Allocation_CLP}'],
+[data-allocation='#{$Allocation_LIB}'],
+[data-allocation='#{$Allocation_LNP}'] {
+  --color-allocation: #{$color_PtyBlue};
+}
+
+[data-allocation='#{$Allocation_GRN}'] {
+  --color-allocation: #{$color_PtyLightGreen};
+}
+
+[data-allocation='#{$Allocation_IND}'],
+[data-allocation='#{$Allocation_OTH}'] {
+  --color-allocation: #{$color_PtyBlack};
+}
+
+[data-allocation='#{$Allocation_KAP}'] {
+  --color-allocation: #{$color_PtyBrown};
+}
+
+[data-allocation='#{$Allocation_NAT}'] {
+  --color-allocation: #{$color_PtyGreen};
+}
+
+[data-allocation='#{$Allocation_ONP}'] {
+  --color-allocation: #{$color_PtyOrange};
+}
+
+[data-allocation='#{$Allocation_UAP}'] {
+  --color-allocation: #{$color_PtyGold};
+}
+
+/* Relative allocation colors (for things like flips) */
+
+[data-relative-allocation='#{$Allocation_None}'] {
+  --color-relative-allocation: #{$color_White};
+}
+
+[data-allocation='#{$Allocation_CA}'] {
+  --color-relative-allocation: #{$color_PtyOrange};
+}
+
+[data-relative-allocation='#{$Allocation_ALP}'] {
+  --color-relative-allocation: #{$color_PtyRed};
+}
+
+[data-relative-allocation='#{$Allocation_CLP}'],
+[data-relative-allocation='#{$Allocation_LIB}'],
+[data-relative-allocation='#{$Allocation_LNP}'] {
+  --color-relative-allocation: #{$color_PtyBlue};
+}
+
+[data-relative-allocation='#{$Allocation_GRN}'] {
+  --color-relative-allocation: #{$color_PtyLightGreen};
+}
+
+[data-relative-allocation='#{$Allocation_IND}'],
+[data-relative-allocation='#{$Allocation_OTH}'] {
+  --color-relative-allocation: #{$color_PtyBlack};
+}
+
+[data-relative-allocation='#{$Allocation_KAP}'] {
+  --color-relative-allocation: #{$color_PtyBrown};
+}
+
+[data-relative-allocation='#{$Allocation_NAT}'] {
+  --color-relative-allocation: #{$color_PtyGreen};
+}
+
+[data-relative-allocation='#{$Allocation_ONP}'] {
+  --color-relative-allocation: #{$color_PtyOrange};
+}
+
+[data-relative-allocation='#{$Allocation_UAP}'] {
+  --color-relative-allocation: #{$color_PtyGold};
+}
+
+/* Focus colors */
+
+[data-focus='#{$Focus_No}'] {
+  --color-focus: #{$color_White};
+}
+
+[data-focus='#{$Focus_Yes}'] {
+  --color-focus: #{$color_Black};
+}

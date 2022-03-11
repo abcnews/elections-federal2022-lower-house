@@ -1,7 +1,16 @@
 import * as acto from '@abcnews/alternating-case-to-object';
-import { Allocation, Allocations, ALLOCATIONS, GROUP_IDS, Focus, Focuses, FOCUSES } from './constants';
+import {
+  Allocation,
+  Allocations,
+  ALLOCATIONS,
+  DEFINITIVE_ALLOCATIONS,
+  GROUP_IDS,
+  Focus,
+  Focuses,
+  FOCUSES
+} from './constants';
 
-export const getSeatCountsForAllocations = (allocations: Allocations): { [key: string]: number } => {
+export const getAllocationsCounts = (allocations: Allocations): { [key: string]: number } => {
   return ALLOCATIONS.reduce(
     (memo, allocation) => ({
       ...memo,
@@ -14,7 +23,17 @@ export const getSeatCountsForAllocations = (allocations: Allocations): { [key: s
 export const determineIfAllocationIsMade = (allocation: Allocation) => allocation !== Allocation.None;
 
 export const determineIfAllocationIsDefinitive = (allocation: Allocation) =>
-  allocation === Allocation.CLN || allocation === Allocation.ALP;
+  DEFINITIVE_ALLOCATIONS.indexOf(allocation) !== -1;
+
+export const determineIfAllocationWasPreserved = (allocation: Allocation, relativeAllocation: Allocation) =>
+  allocation === relativeAllocation &&
+  determineIfAllocationIsDefinitive(allocation) &&
+  determineIfAllocationIsDefinitive(relativeAllocation);
+
+export const determineIfAllocationShouldFlip = (allocation: Allocation, relativeAllocation: Allocation) =>
+  allocation !== relativeAllocation &&
+  determineIfAllocationIsDefinitive(allocation) &&
+  determineIfAllocationIsDefinitive(relativeAllocation);
 
 function decode<Dict>(code: string, keys: string[], possibleValues: string[], defaultValue: string): Dict {
   code = typeof code === 'string' ? code.replace(/(\w)(\d+)/g, (_, char, repeated) => char.repeat(+repeated)) : code;

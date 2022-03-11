@@ -167,10 +167,10 @@
 
 .group {
   margin: 0 0.05em;
-  border: 0.125rem solid $color_Yes;
+  border: 0.125rem solid $color_Black;
   padding: 0 0.2em;
   display: inline-block;
-  background-color: $color_None;
+  background-color: $color_White;
   line-height: 1.25;
   white-space: nowrap;
 }
@@ -179,43 +179,17 @@
   content: ' (' attr(data-group) ')';
 }
 
-.group[data-allocation='#{$Allocation_CLN}'] {
-  background-color: $color_CLN;
+.group[data-allocation] {
+  background-color: var(--color-allocation);
 }
 
-.group[data-allocation='#{$Allocation_LikelyCLN}'] {
-  background-color: $color_LikelyCLN;
+.group[data-relative-allocation] {
+  border-color: var(--color-relative-allocation);
 }
 
-.group[data-allocation='#{$Allocation_Tossup}'] {
-  background-color: $color_Tossup;
-}
-
-.group[data-allocation='#{$Allocation_LikelyALP}'] {
-  background-color: $color_LikelyALP;
-}
-
-.group[data-allocation='#{$Allocation_ALP}'] {
-  background-color: $color_ALP;
-}
-
-.group[data-relative-allocation='#{$Allocation_CLN}'] {
-  border-color: $color_CLN;
-}
-
-.group[data-relative-allocation='#{$Allocation_ALP}'] {
-  border-color: $color_ALP;
-}
-
-.group[data-allocation='#{$Allocation_CLN}'],
-.group[data-allocation='#{$Allocation_ALP}'],
-.group[data-allocation='#{$Allocation_Tossup}'] {
-  color: $color_BG;
-}
-
-.group[data-allocation='#{$Allocation_CLN}'],
-.group[data-allocation='#{$Allocation_ALP}'] {
+.group[data-has-definitive-allocation] {
   border-color: transparent;
+  color: $color_BG;
 }
 
 /* Environment hacks */

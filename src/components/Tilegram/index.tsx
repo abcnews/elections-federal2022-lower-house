@@ -5,17 +5,23 @@ import {
   Focus,
   Focuses,
   PRESETS,
-  ELECTION_YEARS_ALLOCATIONS_CANDIDATES,
+  ELECTION_YEARS_PRIMARY_ALLIANCES,
   DEFAULT_ELECTION_YEAR,
-  ElectionYear
+  ElectionYear,
+  ALLIANCES
 } from '../../constants';
-import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../utils';
+import {
+  determineIfAllocationIsDefinitive,
+  determineIfAllocationIsMade,
+  determineIfAllocationShouldFlip,
+  determineIfAllocationWasPreserved
+} from '../../utils';
 import { GROUPS_DELEGATES_POINTS, GROUPS_LABELS, STATES_PATHS, HEXGRID_PROPS } from './data';
 import Defs, { generateKey, generatePolyKeys } from './defs';
 import styles from './styles.scss';
 
 export enum TappableLayer {
-  Delegates
+  Electorates
 }
 
 export type TilegramProps = {
@@ -36,14 +42,13 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const isInteractive = !!onTapGroup;
   const [isInspecting, setIsInspecting] = useState(false);
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
-  // TODO: we need a new concept for 'held' so that we can show flips
-  const [governmentAllocation, oppositionAllocation] = Object.keys(
-    ELECTION_YEARS_ALLOCATIONS_CANDIDATES[year || DEFAULT_ELECTION_YEAR]
-  );
+  const [governmantAlliance, oppositionAlliance] = ELECTION_YEARS_PRIMARY_ALLIANCES[
+    year || DEFAULT_ELECTION_YEAR
+  ].map(allianceID => ALLIANCES.find(({ id }) => id === allianceID));
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
 
   const onTapGroupBackground = (event: React.MouseEvent<SVGElement>) => {
-    if (onTapGroup && tappableLayer === TappableLayer.Delegates && event.target instanceof SVGUseElement) {
+    if (onTapGroup && tappableLayer === TappableLayer.Electorates && event.target instanceof SVGUseElement) {
       const groupID = event.target.getAttribute('data-group');
 
       if (groupID) {
@@ -108,12 +113,12 @@ const Tilegram: React.FC<TilegramProps> = props => {
             {Object.keys(GROUPS_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, groupID) => {
               const points = GROUPS_DELEGATES_POINTS[groupID][0];
               const focus = focuses ? focuses[groupID] : Focus.No;
-              const keys = generatePolyKeys(componentID, 'group', groupID, 0);
+              const keys = generatePolyKeys(componentID, 'group', groupID);
               const allocation = allocations ? allocations[groupID] : Allocation.None;
               const relativeAllocation = relativeAllocations ? relativeAllocations[groupID] : undefined;
-              const isFlipping =
-                (relativeAllocation === Allocation.ALP && allocation === Allocation.CLN) ||
-                (relativeAllocation === Allocation.CLN && allocation === Allocation.ALP);
+              const shouldFlip = relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation);
+              const wasPreserved =
+                relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation);
               const [offsetX, offsetY] = points[0];
 
               return [
@@ -122,20 +127,18 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   key={groupID}
                   className={styles.groupBackground}
                   data-flip-direction={
-                    governmentAllocation === allocation
-                      ? 'rtl'
-                      : oppositionAllocation === allocation
-                      ? 'ltr'
-                      : undefined
+                    governmantAlliance === allocation ? 'rtl' : oppositionAlliance === allocation ? 'ltr' : undefined
                   }
                   data-focus={focus}
-                  clipPath={isFlipping ? `url(#${keys['clip']})` : undefined}
+                  clipPath={shouldFlip ? `url(#${keys['clip']})` : undefined}
                 >
                   <use
                     xlinkHref={`#${keys['path']}`}
                     className={styles.groupBackgroundPath}
-                    data-relative-allocation={relativeAllocation}
                     data-allocation={allocation}
+                    data-relative-allocation={relativeAllocation}
+                    data-should-flip={shouldFlip ? '' : undefined}
+                    data-was-preserved={wasPreserved ? '' : undefined}
                     style={{ transformOrigin: `${offsetX + 15}px ${offsetY}px` }}
                   />
                   <use
@@ -154,7 +157,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
               const hasAllocation = allocation && determineIfAllocationIsMade(allocation);
               const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
               const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
-              const keys = generatePolyKeys(componentID, 'group', groupID, 0);
+              const keys = generatePolyKeys(componentID, 'group', groupID);
 
               return [
                 ...memo,
@@ -182,7 +185,9 @@ const Tilegram: React.FC<TilegramProps> = props => {
             {Object.keys(GROUPS_DELEGATES_POINTS).reduce<JSX.Element[]>((memo, groupID) => {
               const focus = focuses ? focuses[groupID] : Focus.No;
               const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
-              const keys = generatePolyKeys(componentID, 'group', groupID, 0);
+              const hasDefinitiveRelativeAllocation =
+                relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation);
+              const keys = generatePolyKeys(componentID, 'group', groupID);
 
               return [
                 ...memo,
@@ -192,6 +197,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   className={styles.groupPartition}
                   data-focus={focus}
                   data-relative-allocation={relativeAllocation || undefined}
+                  data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
                 ></use>
               ];
             }, [])}
@@ -201,6 +207,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
               const key = generateKey(componentID, 'label', groupID);
               const focus = focuses ? focuses[groupID] : Focus.No;
               const allocation = allocations && allocations[groupID];
+              const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
               const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
 
               return (
@@ -210,6 +217,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   data-focus={focus}
                   data-group={groupID}
                   data-allocation={allocation || undefined}
+                  data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
                   data-relative-allocation={relativeAllocation || undefined}
                 >
                   <use xlinkHref={`#${key}`} className={styles.labelText}></use>

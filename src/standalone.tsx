@@ -2,6 +2,7 @@ import { whenDOMReady } from '@abcnews/env-utils';
 import { getMountValue, selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';
+import './theme.scss';
 import { alternatingCaseToGraphicProps } from './utils';
 import Graphic from './components/Graphic';
 

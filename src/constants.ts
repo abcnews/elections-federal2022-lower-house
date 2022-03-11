@@ -584,57 +584,14 @@ export const GROUPS: Group[] = [
 ];
 
 export enum StateID {
-  AK,
-  AL,
-  AR,
-  AZ,
-  CA,
-  CO,
-  CT,
-  DC,
-  DE,
-  FL,
-  GA,
-  HI,
-  IA,
-  ID,
-  IL,
-  IN,
-  KS,
-  KY,
-  LA,
-  MA,
-  MD,
-  ME,
-  MI,
-  MN,
-  MO,
-  MS,
-  MT,
-  NC,
-  ND,
-  NE,
-  NH,
-  NJ,
-  NM,
-  NV,
-  NY,
-  OH,
-  OK,
-  OR,
-  PA,
-  RI,
-  SC,
-  SD,
-  TN,
-  TX,
-  UT,
-  VA,
-  VT,
-  WA,
-  WI,
-  WV,
-  WY
+  ACT,
+  NSW,
+  NT,
+  QLD,
+  SA,
+  TAS,
+  VIC,
+  WA
 }
 
 export const STATE_IDS = Object.keys(StateID).filter(key => typeof StateID[key] === 'number');
@@ -644,62 +601,128 @@ export type State = {
   name: string;
 };
 
-export const STATES: State[] = GROUPS.filter(({ id }) => {
-  const [, index] = GROUP_IDS[id].split('_');
-
-  return index == null || index === '0';
-}).map(({ id, name }) => {
-  const stateID = StateID[GROUP_IDS[id].split('_')[0]] as unknown;
-
-  return {
-    id: stateID as StateID,
-    name: name.split(' (')[0]
-  };
-});
+export const STATES: State[] = [
+  {
+    id: StateID.ACT,
+    name: 'Australian Capital Territory'
+  },
+  {
+    id: StateID.NSW,
+    name: 'New South Wales'
+  },
+  {
+    id: StateID.NT,
+    name: 'Northern Territory'
+  },
+  {
+    id: StateID.QLD,
+    name: 'Queensland'
+  },
+  {
+    id: StateID.SA,
+    name: 'South Australia'
+  },
+  {
+    id: StateID.TAS,
+    name: 'Tasmania'
+  },
+  {
+    id: StateID.VIC,
+    name: 'Victoria'
+  },
+  {
+    id: StateID.WA,
+    name: 'Western Australia'
+  }
+];
 
 export enum Allocation {
-  None = 'n',
-  CLN = 'c',
-  LikelyCLN = 'q',
-  Tossup = 't',
-  LikelyALP = 'z',
-  ALP = 'a'
+  None = 'a',
+  ALP = 'b',
+  CA = 'c',
+  CLP = 'd',
+  GRN = 'e',
+  IND = 'f',
+  KAP = 'g',
+  LIB = 'h',
+  LNP = 'i',
+  NAT = 'j',
+  ONP = 'k',
+  OTH = 'l',
+  UAP = 'm'
 }
 
-export const ALLOCATIONS: string[] = Object.keys(Allocation).map(x => Allocation[x]);
+export const ALLOCATIONS: string[] = Object.values(Allocation);
+
+export const UNCERTAIN_ALLOCATIONS = [Allocation.None];
+
+export const DEFINITIVE_ALLOCATIONS = ALLOCATIONS.filter(
+  allocation => UNCERTAIN_ALLOCATIONS.indexOf(allocation as Allocation) === -1
+);
 
 export type Allocations = {
   [key: string]: Allocation;
 };
 
-export const INITIAL_ALLOCATIONS = GROUP_IDS.reduce((allocations, groupID) => {
-  allocations[groupID] = Allocation.None;
+export const INITIAL_ELECTORATES_ALLOCATIONS = GROUP_IDS.reduce((allocations, electorateID) => {
+  allocations[electorateID] = Allocation.None;
 
   return allocations;
 }, {});
+
+export enum AllianceID {
+  ALP,
+  CLN
+}
+
+export type Alliance = {
+  id: AllianceID;
+  name: string;
+  allocations: Allocation[];
+  majorAllocation: Allocation;
+};
+
+export const ALLIANCES: Alliance[] = [
+  {
+    id: AllianceID.ALP,
+    name: 'Labor',
+    allocations: [Allocation.ALP],
+    majorAllocation: Allocation.ALP
+  },
+  {
+    id: AllianceID.CLN,
+    name: 'Coalition',
+    allocations: [Allocation.CLP, Allocation.LIB, Allocation.LNP, Allocation.NAT],
+    majorAllocation: Allocation.LIB
+  }
+];
+
+export const ALLOCATIONS_ALLIANCES = ALLOCATIONS.map(allocation =>
+  ALLIANCES.find(alliance => alliance.allocations.indexOf(allocation as Allocation) !== -1)
+);
 
 export enum Focus {
   No = 'n',
   Yes = 'y'
 }
 
-export const FOCUSES: string[] = Object.keys(Focus).map(x => Focus[x]);
+export const FOCUSES: string[] = Object.values(Focus);
 
 export type Focuses = {
   [key: string]: Focus;
 };
 
-export const INITIAL_FOCUSES = GROUP_IDS.reduce((focuses, groupID) => {
-  focuses[groupID] = Focus.No;
+export const INITIAL_ELECTORATES_FOCUSES = ELECTORATE_IDS.reduce((focuses, electorateID) => {
+  focuses[electorateID] = Focus.No;
 
   return focuses;
 }, {});
 
 export type Preset = {
   name?: string;
+  year?: ElectionYear;
   allocations: Allocations;
   focuses: Focuses;
-  year?: ElectionYear;
 };
 
 export type Presets = {
@@ -707,113 +730,320 @@ export type Presets = {
 };
 
 export const MIXINS: Presets = {
-  safecln: {
-    name: 'Safe CLN',
+  safelabor: {
+    name: 'Safe Labor',
     allocations: {
-      CA: Allocation.CLN,
-      CT: Allocation.CLN,
-      DE: Allocation.CLN,
-      DC: Allocation.CLN,
-      HI: Allocation.CLN,
-      IL: Allocation.CLN,
-      ME_1: Allocation.CLN,
-      MD: Allocation.CLN,
-      MA: Allocation.CLN,
-      NM: Allocation.CLN,
-      NJ: Allocation.CLN,
-      NY: Allocation.CLN,
-      OR: Allocation.CLN,
-      RI: Allocation.CLN,
-      VT: Allocation.CLN,
-      WA: Allocation.CLN
+      ADEL: Allocation.ALP,
+      BALL: Allocation.ALP,
+      BART: Allocation.ALP,
+      BEAN: Allocation.ALP,
+      BEND: Allocation.ALP,
+      // BLAI: Allocation.ALP,
+      BLAX: Allocation.ALP,
+      BRAN: Allocation.ALP,
+      BRIS: Allocation.LNP,
+      BRUC: Allocation.ALP,
+      // BURT: Allocation.ALP,
+      CALW: Allocation.ALP,
+      CANB: Allocation.ALP,
+      CHIF: Allocation.ALP,
+      COOP: Allocation.ALP,
+      // CORA: Allocation.ALP,
+      CORI: Allocation.ALP,
+      // COWA: Allocation.ALP,
+      CUNN: Allocation.ALP,
+      // DOBE: Allocation.ALP,
+      // DUNK: Allocation.ALP,
+      // EMON: Allocation.ALP,
+      FENN: Allocation.ALP,
+      FOWL: Allocation.ALP,
+      FRAN: Allocation.ALP,
+      FRAS: Allocation.ALP,
+      FREM: Allocation.ALP,
+      GELL: Allocation.ALP,
+      // GILM: Allocation.ALP,
+      GORT: Allocation.ALP,
+      GRAY: Allocation.ALP,
+      // GREE: Allocation.ALP,
+      // GRIF: Allocation.ALP,
+      HAWK: Allocation.ALP,
+      HIND: Allocation.ALP,
+      HOLT: Allocation.ALP,
+      HOTH: Allocation.ALP,
+      // HUNT: Allocation.ALP,
+      ISAA: Allocation.ALP,
+      JAGA: Allocation.ALP,
+      KSMI: Allocation.ALP,
+      KING: Allocation.ALP,
+      LALO: Allocation.ALP,
+      // LILL: Allocation.ALP,
+      // LING: Allocation.ALP,
+      // LYON: Allocation.ALP,
+      MACA: Allocation.ALP,
+      // MACN: Allocation.ALP,
+      // MACQ: Allocation.ALP,
+      MAKI: Allocation.ALP,
+      MARI: Allocation.ALP,
+      // MCEW: Allocation.ALP,
+      MCMA: Allocation.ALP,
+      // MORE: Allocation.ALP,
+      NEWC: Allocation.ALP,
+      OXLE: Allocation.ALP,
+      // PARR: Allocation.ALP,
+      // PATE: Allocation.ALP,
+      // PERT: Allocation.ALP,
+      RANK: Allocation.ALP,
+      // RICH: Allocation.ALP,
+      SCUL: Allocation.ALP,
+      // SHOR: Allocation.ALP,
+      // SOLO: Allocation.ALP,
+      SPEN: Allocation.ALP,
+      SYDN: Allocation.ALP,
+      WATS: Allocation.ALP,
+      // WERR: Allocation.ALP,
+      WHIT: Allocation.ALP,
+      WILL: Allocation.ALP
     },
     focuses: {}
   },
-  safealp: {
-    name: 'Safe ALP',
+  safecoalition: {
+    name: 'Safe Coalition',
     allocations: {
-      AL: Allocation.ALP,
-      AK: Allocation.ALP,
-      AR: Allocation.ALP,
-      ID: Allocation.ALP,
-      KS: Allocation.ALP,
-      KY: Allocation.ALP,
-      LA: Allocation.ALP,
-      MS: Allocation.ALP,
-      MT: Allocation.ALP,
-      NE: Allocation.ALP,
-      ND: Allocation.ALP,
-      OK: Allocation.ALP,
-      SC: Allocation.ALP,
-      SD: Allocation.ALP,
-      TN: Allocation.ALP,
-      TX: Allocation.ALP,
-      WV: Allocation.ALP,
-      WY: Allocation.ALP
+      ASTO: Allocation.LIB,
+      BANK: Allocation.LIB,
+      BARK: Allocation.LIB,
+      // BASS: Allocation.LIB,
+      BENN: Allocation.LIB,
+      BERO: Allocation.LIB,
+      BONN: Allocation.LNP,
+      // BOOT: Allocation.LIB,
+      BOWM: Allocation.LNP,
+      // BRAD: Allocation.LIB,
+      BRFD: Allocation.LIB,
+      // BRIS: Allocation.LNP,
+      CALA: Allocation.NAT,
+      CANN: Allocation.LIB,
+      CAPR: Allocation.LNP,
+      // CASE: Allocation.LIB,
+      // CHIS: Allocation.LIB,
+      COOK: Allocation.LIB,
+      COWP: Allocation.NAT,
+      CURT: Allocation.LIB,
+      DAWS: Allocation.LNP,
+      // DEAK: Allocation.LIB,
+      // DICK: Allocation.LNP,
+      DURA: Allocation.LIB,
+      FADD: Allocation.LNP,
+      FAIR: Allocation.LNP,
+      FARR: Allocation.LIB,
+      FISH: Allocation.LNP,
+      // FLIN: Allocation.LIB,
+      FLYN: Allocation.LNP,
+      FORD: Allocation.LNP,
+      FORR: Allocation.LIB,
+      GIPP: Allocation.NAT,
+      GOLD: Allocation.LIB,
+      GREY: Allocation.LIB,
+      GROO: Allocation.LNP,
+      HASL: Allocation.LIB,
+      HERB: Allocation.LNP,
+      // HIGG: Allocation.LIB,
+      HINK: Allocation.LNP,
+      HUGH: Allocation.LIB,
+      HUME: Allocation.LIB,
+      // KOOY: Allocation.LIB,
+      // LTRO: Allocation.LIB,
+      // LEIC: Allocation.LNP,
+      // LIND: Allocation.LIB,
+      // LONG: Allocation.LNP,
+      LYNE: Allocation.NAT,
+      MACK: Allocation.LIB,
+      MALL: Allocation.NAT,
+      MARA: Allocation.LNP,
+      MCPH: Allocation.LNP,
+      MENZ: Allocation.LIB,
+      MITC: Allocation.LIB,
+      MONA: Allocation.LIB,
+      MONC: Allocation.LNP,
+      MOOR: Allocation.LIB,
+      NENG: Allocation.NAT,
+      NICH: Allocation.NAT,
+      NSYD: Allocation.LIB,
+      OCON: Allocation.LIB,
+      PAGE: Allocation.NAT,
+      PARK: Allocation.NAT,
+      // PEAR: Allocation.LIB,
+      PETR: Allocation.LNP,
+      // REID: Allocation.LIB,
+      RIVE: Allocation.NAT,
+      // ROBE: Allocation.LIB,
+      RYAN: Allocation.LNP,
+      STUR: Allocation.LIB,
+      // SWAN: Allocation.LIB,
+      TANG: Allocation.LIB,
+      WANN: Allocation.LIB,
+      // WENT: Allocation.LIB,
+      WBAY: Allocation.LNP,
+      WRIG: Allocation.LNP
     },
     focuses: {}
-  },
-  nofocus: {
-    name: 'No states focused',
-    allocations: {},
-    focuses: { ...INITIAL_FOCUSES }
   }
 };
 
 export const PRESETS: Presets = {
   2019: {
     allocations: {
-      AK: Allocation.ALP,
-      AL: Allocation.ALP,
-      AR: Allocation.ALP,
-      AZ: Allocation.ALP,
-      CA: Allocation.CLN,
-      CO: Allocation.CLN,
-      CT: Allocation.CLN,
-      DC: Allocation.CLN,
-      DE: Allocation.CLN,
-      FL: Allocation.ALP,
-      GA: Allocation.ALP,
-      HI: Allocation.CLN,
-      IA: Allocation.ALP,
-      ID: Allocation.ALP,
-      IL: Allocation.CLN,
-      IN: Allocation.ALP,
-      KS: Allocation.ALP,
-      KY: Allocation.ALP,
-      LA: Allocation.ALP,
-      MA: Allocation.CLN,
-      MD: Allocation.CLN,
-      ME: Allocation.CLN,
-      MI: Allocation.ALP,
-      MN: Allocation.CLN,
-      MO: Allocation.ALP,
-      MS: Allocation.ALP,
-      MT: Allocation.ALP,
-      NC: Allocation.ALP,
-      ND: Allocation.ALP,
-      NE: Allocation.ALP,
-      NH: Allocation.CLN,
-      NJ: Allocation.CLN,
-      NM: Allocation.CLN,
-      NV: Allocation.CLN,
-      NY: Allocation.CLN,
-      OH: Allocation.ALP,
-      OK: Allocation.ALP,
-      OR: Allocation.CLN,
-      PA: Allocation.ALP,
-      RI: Allocation.CLN,
-      SC: Allocation.ALP,
-      SD: Allocation.ALP,
-      TN: Allocation.ALP,
-      TX: Allocation.ALP,
-      UT: Allocation.ALP,
-      VA: Allocation.CLN,
-      VT: Allocation.CLN,
-      WA: Allocation.CLN,
-      WI: Allocation.ALP,
-      WV: Allocation.ALP,
-      WY: Allocation.ALP
+      ADEL: Allocation.ALP,
+      ASTO: Allocation.LIB,
+      BALL: Allocation.ALP,
+      BANK: Allocation.LIB,
+      BARK: Allocation.LIB,
+      BART: Allocation.ALP,
+      BASS: Allocation.LIB,
+      BEAN: Allocation.ALP,
+      BEND: Allocation.ALP,
+      BENN: Allocation.LIB,
+      BERO: Allocation.LIB,
+      BLAI: Allocation.ALP,
+      BLAX: Allocation.ALP,
+      BONN: Allocation.LNP,
+      BOOT: Allocation.LIB,
+      BOWM: Allocation.LNP,
+      BRAD: Allocation.LIB,
+      BRFD: Allocation.LIB,
+      BRAN: Allocation.ALP,
+      BRIS: Allocation.LNP,
+      BRUC: Allocation.ALP,
+      BURT: Allocation.ALP,
+      CALA: Allocation.NAT,
+      CALW: Allocation.ALP,
+      CANB: Allocation.ALP,
+      CANN: Allocation.LIB,
+      CAPR: Allocation.LNP,
+      CASE: Allocation.LIB,
+      CHIF: Allocation.ALP,
+      CHIS: Allocation.LIB,
+      CLAR: Allocation.IND,
+      COOK: Allocation.LIB,
+      COOP: Allocation.ALP,
+      CORA: Allocation.ALP,
+      CORI: Allocation.ALP,
+      COWA: Allocation.ALP,
+      COWP: Allocation.NAT,
+      CUNN: Allocation.ALP,
+      CURT: Allocation.LIB,
+      DAWS: Allocation.LNP,
+      DEAK: Allocation.LIB,
+      DICK: Allocation.LNP,
+      DOBE: Allocation.ALP,
+      DUNK: Allocation.ALP,
+      DURA: Allocation.LIB,
+      EMON: Allocation.ALP,
+      FADD: Allocation.LNP,
+      FAIR: Allocation.LNP,
+      FARR: Allocation.LIB,
+      FENN: Allocation.ALP,
+      FISH: Allocation.LNP,
+      FLIN: Allocation.LIB,
+      FLYN: Allocation.LNP,
+      FORD: Allocation.LNP,
+      FORR: Allocation.LIB,
+      FOWL: Allocation.ALP,
+      FRAN: Allocation.ALP,
+      FRAS: Allocation.ALP,
+      FREM: Allocation.ALP,
+      GELL: Allocation.ALP,
+      GILM: Allocation.ALP,
+      GIPP: Allocation.NAT,
+      GOLD: Allocation.LIB,
+      GORT: Allocation.ALP,
+      GRAY: Allocation.ALP,
+      GREE: Allocation.ALP,
+      GREY: Allocation.LIB,
+      GRIF: Allocation.ALP,
+      GROO: Allocation.LNP,
+      HASL: Allocation.LIB,
+      HAWK: Allocation.ALP,
+      HERB: Allocation.LNP,
+      HIGG: Allocation.LIB,
+      HIND: Allocation.ALP,
+      HINK: Allocation.LNP,
+      HOLT: Allocation.ALP,
+      HOTH: Allocation.ALP,
+      HUGH: Allocation.LIB,
+      HUME: Allocation.LIB,
+      HUNT: Allocation.ALP,
+      INDI: Allocation.IND,
+      ISAA: Allocation.ALP,
+      JAGA: Allocation.ALP,
+      KENN: Allocation.KAP,
+      KSMI: Allocation.ALP,
+      KING: Allocation.ALP,
+      KOOY: Allocation.LIB,
+      LTRO: Allocation.LIB,
+      LALO: Allocation.ALP,
+      LEIC: Allocation.LNP,
+      LILL: Allocation.ALP,
+      LIND: Allocation.LIB,
+      LING: Allocation.ALP,
+      LONG: Allocation.LNP,
+      LYNE: Allocation.NAT,
+      LYON: Allocation.ALP,
+      MACA: Allocation.ALP,
+      MACK: Allocation.LIB,
+      MACN: Allocation.ALP,
+      MACQ: Allocation.ALP,
+      MAKI: Allocation.ALP,
+      MALL: Allocation.NAT,
+      MARA: Allocation.LNP,
+      MARI: Allocation.ALP,
+      MAYO: Allocation.CA,
+      MCEW: Allocation.ALP,
+      MCMA: Allocation.ALP,
+      MCPH: Allocation.LNP,
+      MELB: Allocation.GRN,
+      MENZ: Allocation.LIB,
+      MITC: Allocation.LIB,
+      MONA: Allocation.LIB,
+      MONC: Allocation.LNP,
+      MOOR: Allocation.LIB,
+      MORE: Allocation.ALP,
+      NENG: Allocation.NAT,
+      NEWC: Allocation.ALP,
+      NICH: Allocation.NAT,
+      NSYD: Allocation.LIB,
+      OCON: Allocation.LIB,
+      OXLE: Allocation.ALP,
+      PAGE: Allocation.NAT,
+      PARK: Allocation.NAT,
+      PARR: Allocation.ALP,
+      PATE: Allocation.ALP,
+      PEAR: Allocation.LIB,
+      PERT: Allocation.ALP,
+      PETR: Allocation.LNP,
+      RANK: Allocation.ALP,
+      REID: Allocation.LIB,
+      RICH: Allocation.ALP,
+      RIVE: Allocation.NAT,
+      ROBE: Allocation.LIB,
+      RYAN: Allocation.LNP,
+      SCUL: Allocation.ALP,
+      SHOR: Allocation.ALP,
+      SOLO: Allocation.ALP,
+      SPEN: Allocation.ALP,
+      STUR: Allocation.LIB,
+      SWAN: Allocation.LIB,
+      SYDN: Allocation.ALP,
+      TANG: Allocation.LIB,
+      WANN: Allocation.LIB,
+      WARR: Allocation.IND,
+      WATS: Allocation.ALP,
+      WENT: Allocation.LIB,
+      WERR: Allocation.ALP,
+      WHIT: Allocation.ALP,
+      WBAY: Allocation.LNP,
+      WILL: Allocation.ALP,
+      WRIG: Allocation.LNP
     },
     focuses: {},
     year: 2019
@@ -821,38 +1051,23 @@ export const PRESETS: Presets = {
   safe: {
     name: 'Safe',
     allocations: {
-      ...MIXINS.safecln.allocations,
-      ...MIXINS.safealp.allocations
+      ...MIXINS.safecoalition.allocations,
+      ...MIXINS.safelabor.allocations
     },
     focuses: {}
-  },
-  tossup: {
-    name: 'Tossup',
-    allocations: GROUP_IDS.reduce((allocations, groupID) => {
-      allocations[groupID] = Allocation.Tossup;
-
-      return allocations;
-    }, {}),
-    focuses: {}
   }
 };
 
-// Important: these keys need to be ordered: government, opposition so that flips work
-export const ELECTION_YEARS_ALLOCATIONS_CANDIDATES = {
-  2022: {
-    [Allocation.CLN]: 'L/NP',
-    [Allocation.ALP]: 'ALP'
-  },
-  2019: {
-    [Allocation.CLN]: 'L/NP',
-    [Allocation.ALP]: 'ALP'
-  }
-};
-
-export type ElectionYear = keyof typeof ELECTION_YEARS_ALLOCATIONS_CANDIDATES;
-
-export const ELECTION_YEARS = Object.keys(ELECTION_YEARS_ALLOCATIONS_CANDIDATES)
-  .reverse()
-  .map(x => +x as ElectionYear);
+export const ELECTION_YEARS = [2019, 2022] as const;
 
 export const [DEFAULT_ELECTION_YEAR, DEFAULT_RELATIVE_ELECTION_YEAR] = ELECTION_YEARS;
+
+export type ElectionYear = typeof ELECTION_YEARS[number];
+
+type ElectionYearsPrimaryAlliances = Record<ElectionYear, [AllianceID, AllianceID]>;
+
+// Important: Alliance IDs need to be ordered: [government, opposition], as this impacts Totals sides
+export const ELECTION_YEARS_PRIMARY_ALLIANCES: ElectionYearsPrimaryAlliances = {
+  2022: [AllianceID.CLN, AllianceID.ALP],
+  2019: [AllianceID.CLN, AllianceID.ALP]
+};

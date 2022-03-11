@@ -1,31 +1,44 @@
 // Allocation enum
-$Allocation_None: 'n';
-$Allocation_CLN: 'c';
-$Allocation_LikelyCLN: 'q';
-$Allocation_Tossup: 't';
-$Allocation_LikelyALP: 'z';
-$Allocation_ALP: 'a';
+
+$Allocation_None: 'a';
+$Allocation_ALP: 'b';
+$Allocation_CA: 'c';
+$Allocation_CLP: 'd';
+$Allocation_GRN: 'e';
+$Allocation_IND: 'f';
+$Allocation_KAP: 'g';
+$Allocation_LIB: 'h';
+$Allocation_LNP: 'i';
+$Allocation_NAT: 'j';
+$Allocation_ONP: 'k';
+$Allocation_OTH: 'l';
+$Allocation_UAP: 'm';
 
 // Focus enum
+
 $Focus_No: 'n';
 $Focus_Yes: 'y';
 
 // Theming
+
 $color_Black: #000;
 $color_Grey: #989494;
 $color_White: #fff;
+
+$color_PtyBlack: #757575;
+$color_PtyBlue: #1467cc;
+$color_PtyBrown: #804a40;
+$color_PtyGold: #ffc200;
+$color_PtyGreen: #007056;
+$color_PtyLightGreen: #51a802;
+$color_PtyOrange: #e5660b;
+$color_PtyRed: #d61515;
+
 $color_Text: $color_Black;
 $color_BG: $color_White;
-$color_None: $color_White;
-$color_CLN: #006dbd;
-$color_LikelyCLN: #bdd4ef;
-$color_Tossup: $color_Grey;
-$color_LikelyALP: #eaaeae;
-$color_ALP: #c21718;
-$color_No: $color_White;
-$color_Yes: $color_Black;
 
 // Stroke widths
+
 $swNone: 0;
 $swLight: 1;
 $swLight_SM: 2;
@@ -33,4 +46,5 @@ $swHeavy: 5;
 $swHeavy_SM: 8;
 
 // Transitioning
+
 $allocationTransitionDuration: 0.75s;

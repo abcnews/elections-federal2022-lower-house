@@ -37,7 +37,7 @@ const Defs: React.FC<DefsProps> = ({ componentID }) => {
         ))}
       </g> */}
       {Object.keys(GROUPS_DELEGATES_PATHS).reduce<JSX.Element[]>((memo, groupID) => {
-        const keys = generatePolyKeys(componentID, 'group', groupID, 0);
+        const keys = generatePolyKeys(componentID, 'group', groupID);
         const path = GROUPS_DELEGATES_PATHS[groupID][0];
         const points = GROUPS_DELEGATES_POINTS[groupID][0];
 

@@ -2,8 +2,7 @@
 
 // TappableLayer enum
 
-$TappableLayer_Delegates: 0;
-$TappableLayer_States: 1;
+$TappableLayer_Electorates: 0;
 
 // Focus management
 
@@ -22,37 +21,6 @@ $focusChangeTransitionDuration: 0.5s;
 @mixin fadedOutInspecting {
   opacity: $opacityUnfocusedInspecting;
   transition: opacity 0s;
-}
-
-// Flip animations
-
-@mixin flipKeyframes($animationName, $colorFrom, $colorTo) {
-  @keyframes #{$animationName} {
-    0% {
-      fill: $color_White;
-      stroke: $colorFrom;
-      transform: none;
-    }
-    49.99% {
-      fill: $color_White;
-      stroke: $colorFrom;
-      transform: rotateY(90deg);
-    }
-    50% {
-      fill: $colorTo;
-      stroke: none;
-      transform: rotateY(-90deg);
-    }
-    100% {
-      fill: $colorTo;
-      stroke: none;
-      transform: none;
-    }
-  }
-}
-
-@mixin flipAnimation($animationName) {
-  animation: $animationName $allocationTransitionDuration linear 1 both;
 }
 
 // Styles
@@ -116,7 +84,7 @@ $focusChangeTransitionDuration: 0.5s;
   shape-rendering: crispEdges;
 }
 
-.root[data-tappable='#{$TappableLayer_Delegates}'] .groupsBackgrounds {
+.root[data-tappable='#{$TappableLayer_Electorates}'] .groupsBackgrounds {
   pointer-events: all;
 }
 
@@ -133,7 +101,7 @@ $focusChangeTransitionDuration: 0.5s;
 }
 
 .groupBackgroundPath {
-  fill: $color_None;
+  fill: $color_White;
   stroke: none;
   stroke-width: $swHeavy;
   transition: fill $allocationTransitionDuration;
@@ -143,36 +111,35 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBackgroundPath[data-allocation='#{$Allocation_CLN}'] {
-  fill: $color_CLN;
+.groupBackgroundPath[data-allocation] {
+  fill: var(--color-allocation);
 }
 
-.groupBackgroundPath[data-allocation='#{$Allocation_LikelyCLN}'] {
-  fill: $color_LikelyCLN;
+@keyframes flipAllocations {
+  0% {
+    fill: $color_White;
+    stroke: var(--color-relative-allocation);
+    transform: none;
+  }
+  49.99% {
+    fill: $color_White;
+    stroke: var(--color-relative-allocation);
+    transform: rotateY(90deg);
+  }
+  50% {
+    fill: var(--color-allocation);
+    stroke: none;
+    transform: rotateY(-90deg);
+  }
+  100% {
+    fill: var(--color-allocation);
+    stroke: none;
+    transform: none;
+  }
 }
 
-.groupBackgroundPath[data-allocation='#{$Allocation_Tossup}'] {
-  fill: $color_Tossup;
-}
-
-.groupBackgroundPath[data-allocation='#{$Allocation_LikelyALP}'] {
-  fill: $color_LikelyALP;
-}
-
-.groupBackgroundPath[data-allocation='#{$Allocation_ALP}'] {
-  fill: $color_ALP;
-}
-
-@include flipKeyframes(flipALPToCLN, $color_ALP, $color_CLN);
-
-.groupBackgroundPath[data-relative-allocation='#{$Allocation_ALP}'][data-allocation='#{$Allocation_CLN}'] {
-  @include flipAnimation(flipALPToCLN);
-}
-
-@include flipKeyframes(flipCLNToALP, $color_CLN, $color_ALP);
-
-.groupBackgroundPath[data-relative-allocation='#{$Allocation_CLN}'][data-allocation='#{$Allocation_ALP}'] {
-  @include flipAnimation(flipCLNToALP);
+.groupBackgroundPath[data-should-flip] {
+  animation: flipAllocations $allocationTransitionDuration linear 1 both;
 }
 
 .groupBackgroundTarget {
@@ -180,7 +147,7 @@ $focusChangeTransitionDuration: 0.5s;
   fill: none;
 }
 
-.root[data-is-interactive][data-tappable='#{$TappableLayer_Delegates}'] .groupBackgroundTarget {
+.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .groupBackgroundTarget {
   cursor: pointer;
 }
 
@@ -210,12 +177,12 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBorderPath[data-focus='#{$Focus_No}'][data-has-allocation] {
-  stroke: $color_BG;
+.groupBorderPath[data-focus='#{$Focus_No}'][data-has-allocation],
+.groupBorderPath[data-focus='#{$Focus_Yes}'] {
+  stroke: var(--color-focus);
 }
 
 .groupBorderPath[data-focus='#{$Focus_Yes}'] {
-  stroke: $color_Yes;
   stroke-width: $swHeavy;
 
   @media (max-width: 667px) {
@@ -223,24 +190,16 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation='#{$Allocation_CLN}'] {
-  stroke: $color_CLN;
-}
-
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation='#{$Allocation_ALP}'] {
-  stroke: $color_ALP;
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation] {
+  stroke: var(--color-relative-allocation);
 }
 
 .groupBorderPath[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
   stroke: none;
 }
 
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-allocation='#{$Allocation_CLN}'][data-relative-allocation='#{$Allocation_CLN}'] {
-  stroke: $color_CLN;
-}
-
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-allocation='#{$Allocation_ALP}'][data-relative-allocation='#{$Allocation_ALP}'] {
-  stroke: $color_ALP;
+.groupBorderPath[data-focus='#{$Focus_Yes}'][data-was-preserved] {
+  stroke: var(--color-allocation);
 }
 
 .groupBorderTarget {
@@ -268,8 +227,7 @@ $focusChangeTransitionDuration: 0.5s;
 }
 
 .groupPartition[data-focus='#{$Focus_Yes}'],
-.groupPartition[data-focus='#{$Focus_No}'][data-relative-allocation='#{$Allocation_CLN}'],
-.groupPartition[data-focus='#{$Focus_No}'][data-relative-allocation='#{$Allocation_ALP}'] {
+.groupPartition[data-focus='#{$Focus_No}'][data-has-definitive-allocation] {
   stroke: $color_BG;
 }
 
@@ -314,8 +272,6 @@ $focusChangeTransitionDuration: 0.5s;
   fill: $color_Text;
 }
 
-.label[data-allocation='#{$Allocation_CLN}'] > .labelText,
-.label[data-allocation='#{$Allocation_ALP}'] > .labelText,
-.label[data-allocation='#{$Allocation_Tossup}'] > .labelText {
+.label[data-has-definitive-allocation] > .labelText {
   fill: $color_BG;
 }

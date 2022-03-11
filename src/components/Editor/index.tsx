@@ -3,10 +3,10 @@ import {
   Allocation,
   Allocations,
   ALLOCATIONS,
-  INITIAL_ALLOCATIONS,
+  INITIAL_ELECTORATES_ALLOCATIONS,
   Focus,
   Focuses,
-  INITIAL_FOCUSES,
+  INITIAL_ELECTORATES_FOCUSES,
   GroupID,
   GROUP_IDS,
   GROUPS,
@@ -37,9 +37,9 @@ const COMPONENTS_STYLES = {
 };
 
 const INITIAL_GRAPHIC_PROPS = {
-  allocations: { ...INITIAL_ALLOCATIONS },
-  focuses: { ...INITIAL_FOCUSES },
-  tappableLayer: TappableLayer.Delegates
+  allocations: { ...INITIAL_ELECTORATES_ALLOCATIONS },
+  focuses: { ...INITIAL_ELECTORATES_FOCUSES },
+  tappableLayer: TappableLayer.Electorates
 };
 
 const STORY_MARKERS = [
@@ -104,11 +104,11 @@ const Editor: React.FC = () => {
 
   const replaceGraphicProps = (replacement: GraphicProps) => {
     setAllocations({
-      ...INITIAL_ALLOCATIONS,
+      ...INITIAL_ELECTORATES_ALLOCATIONS,
       ...replacement.allocations
     });
     setFocuses({
-      ...INITIAL_FOCUSES,
+      ...INITIAL_ELECTORATES_FOCUSES,
       ...replacement.focuses
     });
     setYear(replacement.year || DEFAULT_GRAPHIC_PROPS.year);
@@ -146,7 +146,7 @@ const Editor: React.FC = () => {
       }
     }
 
-    setTappableLayer(nextFocusedGroupIDs.length > 0 ? null : TappableLayer.Delegates);
+    setTappableLayer(nextFocusedGroupIDs.length > 0 ? null : TappableLayer.Electorates);
     mixinGraphicProps({
       focuses: GROUP_IDS.reduce((focuses, groupID) => {
         focuses[groupID] = nextFocusedGroupIDs.indexOf(groupID) > -1 ? Focus.Yes : Focus.No;
@@ -211,11 +211,11 @@ const Editor: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <Graphic tappableLayer={TappableLayer.Delegates} onTapGroup={onTapGroup} {...graphicProps} />
+        <Graphic tappableLayer={TappableLayer.Electorates} onTapGroup={onTapGroup} {...graphicProps} />
       </div>
       <div className={styles.controls}>
         <h3>
-          Current year <small>(set candidate names &amp; sides)</small>
+          Current year <small>(set sides)</small>
         </h3>
         <div className={styles.flexRow}>
           {ELECTION_YEARS.map(_year => (

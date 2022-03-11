@@ -1,5 +1,6 @@
 import type { PanelDefinition } from '@abcnews/scrollyteller';
 import { PRESETS, GroupID, GROUPS } from './constants';
+import { determineIfAllocationIsDefinitive } from './utils';
 import blockStyles from './components/Block/styles.scss';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 
@@ -48,6 +49,7 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
         const groupID = GroupID[group.id];
         const { allocations, relative } = data as GraphicProps;
         const allocation = allocations && allocations[groupID];
+        const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
         const relativeAllocations = relative && PRESETS[relative]?.allocations;
         const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
 
@@ -58,6 +60,10 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
 
         if (allocation) {
           partWrapperNode.setAttribute('data-allocation', allocation);
+        }
+
+        if (hasDefinitiveAllocation) {
+          partWrapperNode.setAttribute('data-has-definitive-allocation', '');
         }
 
         if (relativeAllocation) {

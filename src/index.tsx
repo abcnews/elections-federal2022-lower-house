@@ -5,6 +5,7 @@ import type { ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import { loadScrollyteller } from '@abcnews/scrollyteller';
 import React from 'react';
 import { render } from 'react-dom';
+import './theme.scss';
 import { applyColourToPanels } from './panels';
 import { alternatingCaseToGraphicProps, decodeAllocations, decodeFocuses } from './utils';
 import Block from './components/Block';

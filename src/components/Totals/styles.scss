@@ -34,12 +34,8 @@ $heightBigBar: 2rem;
   flex-direction: row-reverse;
 }
 
-.side[data-allocation='#{$Allocation_ALP}'] {
-  color: $color_ALP;
-}
-
-.side[data-allocation='#{$Allocation_CLN}'] {
-  color: $color_CLN;
+.side[data-allocation] {
+  color: var(--color-allocation);
 }
 
 .value {
@@ -83,40 +79,12 @@ $heightBigBar: 2rem;
   height: 100%;
 }
 
-.root[data-consistent-government] .bar {
+.root[data-consistent-incumbent] .bar {
   transition: transform $allocationTransitionDuration;
 }
 
-.bar[data-allocation='#{$Allocation_ALP}'] {
-  background-color: $color_ALP;
-}
-
-.bar[data-allocation='#{$Allocation_CLN}'] {
-  background-color: $color_CLN;
-}
-
-.bar[data-allocation='#{$Allocation_LikelyALP}'] {
-  background-color: $color_LikelyALP;
-}
-
-.root[data-government='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
-  border-left: 0.0625rem solid $color_ALP;
-}
-
-.root[data-government='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyALP}'] {
-  border-right: 0.0625rem solid $color_ALP;
-}
-
-.bar[data-allocation='#{$Allocation_LikelyCLN}'] {
-  background-color: $color_LikelyCLN;
-}
-
-.root[data-government='#{$Allocation_CLN}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
-  border-right: 0.0625rem solid $color_CLN;
-}
-
-.root[data-government='#{$Allocation_ALP}'] .bar[data-allocation='#{$Allocation_LikelyCLN}'] {
-  border-left: 0.0625rem solid $color_CLN;
+.bar[data-allocation] {
+  background-color: var(--color-allocation);
 }
 
 .midpoint {
