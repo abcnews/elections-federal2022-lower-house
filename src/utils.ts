@@ -1,4 +1,5 @@
-import * as acto from '@abcnews/alternating-case-to-object';
+import acto from '@abcnews/alternating-case-to-object';
+import { GraphicProps } from './components/Graphic';
 import {
   ELECTORATE_IDS,
   Allocation,
@@ -77,14 +78,18 @@ export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, EL
 export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focuses, ELECTORATE_IDS, FOCUSES, Focus.No);
 
 export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
-  const graphicProps = acto(alternatingCase);
+  const { allocations, focuses, ...otherGraphicProps } = acto(alternatingCase);
 
-  graphicProps.allocations = decodeAllocations(graphicProps.allocations);
-  graphicProps.focuses = decodeFocuses(graphicProps.focuses);
+  const graphicProps = {
+    ...otherGraphicProps
+  } as Partial<GraphicProps>;
 
-  // Support deprecated marker prop values
-  if (graphicProps.relative === 'null') {
-    graphicProps.relative = null;
+  if (typeof allocations === 'string') {
+    graphicProps.allocations = decodeAllocations(allocations);
+  }
+
+  if (typeof focuses === 'string') {
+    graphicProps.focuses = decodeFocuses(focuses);
   }
 
   return graphicProps;

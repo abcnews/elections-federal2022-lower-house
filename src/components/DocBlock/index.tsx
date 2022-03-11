@@ -1,9 +1,6 @@
-import * as acto from '@abcnews/alternating-case-to-object';
 import GoogleDocScrollyteller from '@abcnews/google-doc-scrollyteller';
-import { isMount } from '@abcnews/mount-utils';
 import type { PanelDefinition } from '@abcnews/scrollyteller';
 import React from 'react';
-import { render } from 'react-dom';
 import { applyColourToPanels } from '../../panels';
 import { decodeAllocations, decodeFocuses, graphicPropsToAlternatingCase, urlQueryToGraphicProps } from '../../utils';
 import Block from '../Block';

@@ -1,4 +1,4 @@
-import * as acto from '@abcnews/alternating-case-to-object';
+import acto from '@abcnews/alternating-case-to-object';
 import { getGeneration, GENERATIONS, getTier, TIERS } from '@abcnews/env-utils';
 import { getMountValue, isMount, selectMounts } from '@abcnews/mount-utils';
 import type { ScrollytellerDefinition } from '@abcnews/scrollyteller';
@@ -108,7 +108,7 @@ whenOdysseyLoaded.then(() => {
       return;
     }
 
-    const { name } = acto(getMountValue(mount));
+    const { name } = acto(getMountValue(mount)) as { name: IllustrationName };
 
     if (name && !Object.values(IllustrationName).includes(name)) {
       return;
