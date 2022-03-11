@@ -79,28 +79,28 @@ $focusChangeTransitionDuration: 0.5s;
   fill: rgba(0, 0, 0, 0.025);
 }
 
-.groupsBackgrounds {
+.electoratesBackgrounds {
   pointer-events: none;
   shape-rendering: crispEdges;
 }
 
-.root[data-tappable='#{$TappableLayer_Electorates}'] .groupsBackgrounds {
+.root[data-tappable='#{$TappableLayer_Electorates}'] .electoratesBackgrounds {
   pointer-events: all;
 }
 
-.groupBackground {
+.electorateBackground {
   @include fadedOutTransitionable;
 }
 
-.root[data-has-focuses] .groupBackground[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .electorateBackground[data-focus='#{$Focus_No}'] {
   @include fadedOut;
 }
 
-.root[data-has-focuses][data-is-inspecting] .groupBackground[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses][data-is-inspecting] .electorateBackground[data-focus='#{$Focus_No}'] {
   @include fadedOutInspecting;
 }
 
-.groupBackgroundPath {
+.electorateBackgroundPath {
   fill: $color_White;
   stroke: none;
   stroke-width: $swHeavy;
@@ -111,7 +111,7 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBackgroundPath[data-allocation] {
+.electorateBackgroundPath[data-allocation] {
   fill: var(--color-allocation);
 }
 
@@ -138,36 +138,36 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBackgroundPath[data-should-flip] {
+.electorateBackgroundPath[data-should-flip] {
   animation: flipAllocations $allocationTransitionDuration linear 1 both;
 }
 
-.groupBackgroundTarget {
+.electorateBackgroundTarget {
   stroke: none;
   fill: none;
 }
 
-.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .groupBackgroundTarget {
+.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .electorateBackgroundTarget {
   cursor: pointer;
 }
 
-.groupsBorders {
+.electoratesBorders {
   pointer-events: none;
 }
 
-.groupBorder {
+.electorateBorder {
   @include fadedOutTransitionable;
 }
 
-.root[data-has-focuses] .groupBorder[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .electorateBorder[data-focus='#{$Focus_No}'] {
   @include fadedOut;
 }
 
-.root[data-has-focuses][data-is-inspecting] .groupBorder[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses][data-is-inspecting] .electorateBorder[data-focus='#{$Focus_No}'] {
   @include fadedOutInspecting;
 }
 
-.groupBorderPath {
+.electorateBorderPath {
   fill: none;
   stroke: $color_Grey;
   stroke-width: $swLight;
@@ -177,12 +177,12 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBorderPath[data-focus='#{$Focus_No}'][data-has-allocation],
-.groupBorderPath[data-focus='#{$Focus_Yes}'] {
+.electorateBorderPath[data-focus='#{$Focus_No}'][data-has-allocation],
+.electorateBorderPath[data-focus='#{$Focus_Yes}'] {
   stroke: var(--color-focus);
 }
 
-.groupBorderPath[data-focus='#{$Focus_Yes}'] {
+.electorateBorderPath[data-focus='#{$Focus_Yes}'] {
   stroke-width: $swHeavy;
 
   @media (max-width: 667px) {
@@ -190,33 +190,33 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation] {
+.electorateBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation] {
   stroke: var(--color-relative-allocation);
 }
 
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
+.electorateBorderPath[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
   stroke: none;
 }
 
-.groupBorderPath[data-focus='#{$Focus_Yes}'][data-was-preserved] {
+.electorateBorderPath[data-focus='#{$Focus_Yes}'][data-was-preserved] {
   stroke: var(--color-allocation);
 }
 
-.groupBorderTarget {
+.electorateBorderTarget {
   stroke: none;
   fill: none;
 }
 
-.groupsPartitions {
+.electoratesPartitions {
   pointer-events: none;
   opacity: 0;
 }
 
-.root[data-has-focuses] .groupsPartitions {
+.root[data-has-focuses] .electoratesPartitions {
   opacity: 1;
 }
 
-.groupPartition {
+.electoratePartition {
   fill: none;
   stroke: none;
   stroke-width: $swLight;
@@ -226,12 +226,12 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.groupPartition[data-focus='#{$Focus_Yes}'],
-.groupPartition[data-focus='#{$Focus_No}'][data-has-definitive-allocation] {
+.electoratePartition[data-focus='#{$Focus_Yes}'],
+.electoratePartition[data-focus='#{$Focus_No}'][data-has-definitive-allocation] {
   stroke: $color_BG;
 }
 
-.root[data-has-focuses] .groupPartition[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .electoratePartition[data-focus='#{$Focus_No}'] {
   stroke: none;
 }
 

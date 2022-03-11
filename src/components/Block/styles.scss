@@ -165,7 +165,7 @@
   }
 }
 
-.group {
+.electorate {
   margin: 0 0.05em;
   border: 0.125rem solid $color_Black;
   padding: 0 0.2em;
@@ -175,19 +175,19 @@
   white-space: nowrap;
 }
 
-.group[data-is-first-encounter]::after {
-  content: ' (' attr(data-group) ')';
+.electorate[data-is-first-encounter]::after {
+  content: ' (' attr(data-electorate) ')';
 }
 
-.group[data-allocation] {
+.electorate[data-allocation] {
   background-color: var(--color-allocation);
 }
 
-.group[data-relative-allocation] {
+.electorate[data-relative-allocation] {
   border-color: var(--color-relative-allocation);
 }
 
-.group[data-has-definitive-allocation] {
+.electorate[data-has-definitive-allocation] {
   border-color: transparent;
   color: $color_BG;
 }

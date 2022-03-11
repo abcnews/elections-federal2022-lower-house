@@ -1,5 +1,8 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import {
+  ElectorateID,
+  ELECTORATE_IDS,
+  ELECTORATES,
   Allocation,
   Allocations,
   ALLOCATIONS,
@@ -7,13 +10,10 @@ import {
   Focus,
   Focuses,
   INITIAL_ELECTORATES_FOCUSES,
-  GroupID,
-  GROUP_IDS,
-  GROUPS,
-  MIXINS,
-  PRESETS,
   ElectionYear,
-  ELECTION_YEARS
+  ELECTION_YEARS,
+  MIXINS,
+  PRESETS
 } from '../../constants';
 import {
   alternatingCaseToGraphicProps,
@@ -122,47 +122,51 @@ const Editor: React.FC = () => {
     setCounting(graphicProps.counting || DEFAULT_GRAPHIC_PROPS.counting);
   };
 
-  const onTapGroup = (groupID: string) => {
+  const onTapElectorate = (electorateID: string) => {
     const allocationsToMixin: Allocations = {};
 
-    const allocation = allocations[groupID];
+    const allocation = allocations[electorateID];
     const allocationIndex = ALLOCATIONS.indexOf(allocation);
 
     // Cycle to the next Allocation in the enum (or the first if we don't recognise it)
-    allocationsToMixin[groupID] = ALLOCATIONS[
+    allocationsToMixin[electorateID] = ALLOCATIONS[
       allocationIndex === ALLOCATIONS.length - 1 ? 0 : allocationIndex + 1
     ] as Allocation;
 
     mixinGraphicProps({ allocations: allocationsToMixin });
   };
 
-  const onChangeFocusedGroups = (event: ChangeEvent<HTMLSelectElement>) => {
+  const onChangeFocusedElectorates = (event: ChangeEvent<HTMLSelectElement>) => {
     const options = event.target.options;
-    const nextFocusedGroupIDs: string[] = [];
+    const nextFocusedElectorateIDs: string[] = [];
 
     for (var i = 0, l = options.length; i < l; i++) {
       if (options[i].selected) {
-        nextFocusedGroupIDs.push(options[i].value);
+        nextFocusedElectorateIDs.push(options[i].value);
       }
     }
 
-    setTappableLayer(nextFocusedGroupIDs.length > 0 ? null : TappableLayer.Electorates);
+    setTappableLayer(nextFocusedElectorateIDs.length > 0 ? null : TappableLayer.Electorates);
     mixinGraphicProps({
-      focuses: GROUP_IDS.reduce((focuses, groupID) => {
-        focuses[groupID] = nextFocusedGroupIDs.indexOf(groupID) > -1 ? Focus.Yes : Focus.No;
-
-        return focuses;
-      }, {})
+      focuses: ELECTORATE_IDS.reduce<Focuses>(
+        (focuses, electorateID) => ({
+          ...focuses,
+          [electorateID]: nextFocusedElectorateIDs.indexOf(electorateID) > -1 ? Focus.Yes : Focus.No
+        }),
+        {}
+      )
     });
   };
 
   const onClearFocuses = () =>
     mixinGraphicProps({
-      focuses: GROUP_IDS.reduce((focuses, groupID) => {
-        focuses[groupID] = Focus.No;
-
-        return focuses;
-      }, {})
+      focuses: ELECTORATE_IDS.reduce<Focuses>(
+        (focuses, electorateID) => ({
+          ...focuses,
+          [electorateID]: Focus.No
+        }),
+        {}
+      )
     });
 
   const graphicProps = useMemo(
@@ -211,7 +215,7 @@ const Editor: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <Graphic tappableLayer={TappableLayer.Electorates} onTapGroup={onTapGroup} {...graphicProps} />
+        <Graphic tappableLayer={TappableLayer.Electorates} onTapElectorate={onTapElectorate} {...graphicProps} />
       </div>
       <div className={styles.controls}>
         <h3>
@@ -234,7 +238,7 @@ const Editor: React.FC = () => {
           ))}
         </div>
         <h3>
-          Relative year <small>(show government outlines &amp; flips)</small>
+          Relative year <small>(show holder outlines and flips)</small>
         </h3>
         <div className={styles.flexRow}>
           <span key="none">
@@ -285,7 +289,7 @@ const Editor: React.FC = () => {
         </div>
 
         <h3>
-          {`Focused Groups `}
+          {`Focused Electorates `}
           <small>{`(${Object.keys(focuses).filter(key => focuses[key] === Focus.Yes).length} selected)`}</small>
           <button
             onClick={onClearFocuses}
@@ -295,10 +299,10 @@ const Editor: React.FC = () => {
           </button>
         </h3>
         <div className={styles.flexRow}>
-          <select multiple onChange={onChangeFocusedGroups}>
-            {GROUP_IDS.map(groupID => (
-              <option key={groupID} value={groupID}>
-                {`${groupID} - ${GROUPS.find(({ id }) => id === GroupID[groupID])?.name}`}
+          <select multiple onChange={onChangeFocusedElectorates}>
+            {ELECTORATE_IDS.map(electorateID => (
+              <option key={electorateID} value={electorateID}>
+                {`${electorateID} - ${ELECTORATES.find(({ id }) => id === ElectorateID[electorateID])?.name}`}
               </option>
             ))}
           </select>

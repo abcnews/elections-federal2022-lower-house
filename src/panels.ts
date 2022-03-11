@@ -1,13 +1,13 @@
 import type { PanelDefinition } from '@abcnews/scrollyteller';
-import { PRESETS, GroupID, GROUPS } from './constants';
+import { ElectorateID, ELECTORATES, PRESETS } from './constants';
 import { determineIfAllocationIsDefinitive } from './utils';
 import blockStyles from './components/Block/styles.scss';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 
-const SORTED_GROUPS = GROUPS.sort((a, b) => b.name.length - a.name.length);
+const SORTED_ELECTORATES = ELECTORATES.sort((a, b) => b.name.length - a.name.length);
 
 export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraphicProps>[]) {
-  const groupIntroductionTracker: { [key: string]: boolean } = {};
+  const electorateIntroductionTracker: { [key: string]: boolean } = {};
 
   panels.forEach(({ data, nodes }) => {
     const textNodes = nodes.reduce<Node[]>((memo, node) => memo.concat(textNodesUnder(node)), []);
@@ -15,7 +15,7 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
     textNodes.forEach(node => {
       let text = node.textContent || '';
 
-      SORTED_GROUPS.forEach(({ name }) => {
+      SORTED_ELECTORATES.forEach(({ name }) => {
         const index = text.indexOf(name);
         if (index > -1 && text[index - 1] !== '|' && text[index + name.length] !== '|') {
           text = text.replace(name, `|||${name}|||`);
@@ -39,22 +39,22 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
           return parentEl.insertBefore(partTextNode, node);
         }
 
-        const group = GROUPS.find(({ name }) => name === part);
+        const electorate = ELECTORATES.find(({ name }) => name === part);
 
-        if (!group) {
+        if (!electorate) {
           return parentEl.insertBefore(partTextNode, node);
         }
 
         const partWrapperNode = document.createElement('span');
-        const groupID = GroupID[group.id];
+        const electorateID = ElectorateID[electorate.id];
         const { allocations, relative } = data as GraphicProps;
-        const allocation = allocations && allocations[groupID];
+        const allocation = allocations && allocations[electorateID];
         const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
         const relativeAllocations = relative && PRESETS[relative]?.allocations;
-        const relativeAllocation = relativeAllocations && relativeAllocations[groupID];
+        const relativeAllocation = relativeAllocations && relativeAllocations[electorateID];
 
-        if (!groupIntroductionTracker[groupID]) {
-          groupIntroductionTracker[groupID] = true;
+        if (!electorateIntroductionTracker[electorateID]) {
+          electorateIntroductionTracker[electorateID] = true;
           partWrapperNode.setAttribute('data-is-first-encounter', '');
         }
 
@@ -70,8 +70,8 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
           partWrapperNode.setAttribute('data-relative-allocation', relativeAllocation);
         }
 
-        partWrapperNode.setAttribute('data-group', groupID);
-        partWrapperNode.className = blockStyles.group;
+        partWrapperNode.setAttribute('data-electorate', electorateID);
+        partWrapperNode.className = blockStyles.electorate;
         partWrapperNode.appendChild(partTextNode);
         parentEl.insertBefore(partWrapperNode, node);
       });

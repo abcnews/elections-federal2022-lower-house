@@ -1,10 +1,10 @@
 import * as acto from '@abcnews/alternating-case-to-object';
 import {
+  ELECTORATE_IDS,
   Allocation,
   Allocations,
   ALLOCATIONS,
   DEFINITIVE_ALLOCATIONS,
-  GROUP_IDS,
   Focus,
   Focuses,
   FOCUSES
@@ -14,7 +14,7 @@ export const getAllocationsCounts = (allocations: Allocations): { [key: string]:
   return ALLOCATIONS.reduce(
     (memo, allocation) => ({
       ...memo,
-      [allocation]: GROUP_IDS.filter(id => allocations[id] === allocation).length
+      [allocation]: ELECTORATE_IDS.filter(id => allocations[id] === allocation).length
     }),
     {}
   );
@@ -67,14 +67,14 @@ function encode<Dict>(dict: Dict, keys: string[], possibleValues: string[], defa
 }
 
 export const decodeAllocations = (code: string): Allocations =>
-  decode<Allocations>(code, GROUP_IDS, ALLOCATIONS, Allocation.None);
+  decode<Allocations>(code, ELECTORATE_IDS, ALLOCATIONS, Allocation.None);
 
 export const encodeAllocations = (allocations: Allocations): string =>
-  encode<Allocations>(allocations, GROUP_IDS, ALLOCATIONS, Allocation.None);
+  encode<Allocations>(allocations, ELECTORATE_IDS, ALLOCATIONS, Allocation.None);
 
-export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, GROUP_IDS, FOCUSES, Focus.No);
+export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, ELECTORATE_IDS, FOCUSES, Focus.No);
 
-export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focuses, GROUP_IDS, FOCUSES, Focus.No);
+export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focuses, ELECTORATE_IDS, FOCUSES, Focus.No);
 
 export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
   const graphicProps = acto(alternatingCase);
