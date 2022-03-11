@@ -53,28 +53,31 @@ $focusChangeTransitionDuration: 0.5s;
   width: 100%;
   left: 0;
   top: 0;
+  stroke-linecap: round;
 }
 
-.countryOuter {
+.baseOuter {
   stroke: $color_Grey;
   stroke-width: $swLight;
+  // stroke-width: $swMedium;
   fill: none;
   @include fadedOutTransitionable;
 
   @media (max-width: 667px) {
     stroke-width: $swLight_SM;
+    // stroke-width: $swMedium_SM;
   }
 }
 
-.root[data-has-focuses] .countryOuter {
+.root[data-has-focuses] .baseOuter {
   @include fadedOut;
 }
 
-.root[data-has-focuses][data-is-inspecting] .countryOuter {
+.root[data-has-focuses][data-is-inspecting] .baseOuter {
   @include fadedOutInspecting;
 }
 
-.countryInner {
+.baseInner {
   stroke: none;
   fill: rgba(0, 0, 0, 0.025);
 }
@@ -104,6 +107,8 @@ $focusChangeTransitionDuration: 0.5s;
   fill: $color_White;
   stroke: none;
   stroke-width: $swHeavy;
+  stroke-linejoin: round;
+  stroke-linecap: round;
   transition: fill $allocationTransitionDuration;
 
   @media (max-width: 667px) {
@@ -124,12 +129,14 @@ $focusChangeTransitionDuration: 0.5s;
   49.99% {
     fill: $color_White;
     stroke: var(--color-relative-allocation);
-    transform: rotateX(90deg);
+    // transform: rotateX(90deg);
+    transform: rotateY(90deg);
   }
   50% {
     fill: var(--color-allocation);
     stroke: none;
-    transform: rotateX(-90deg);
+    // transform: rotateX(-90deg);
+    transform: rotateY(-90deg);
   }
   100% {
     fill: var(--color-allocation);

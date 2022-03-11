@@ -1,35 +1,25 @@
 import concaveman from 'concaveman';
 
 type Vector2 = [number, number]; // [x, y]
-type Vector2Record = Record<string, Vector2>;
 
 type Cell = [number, number]; // [column, row]
 type CellRecord = Record<string, Cell>;
-type CellsRecord = Record<string, Cell[]>;
+type NestedCellRecord = Record<string, CellRecord>;
 
 type Polygon = Vector2[];
 type PolygonRecord = Record<string, Polygon>;
-type PolygonsRecord = Record<string, Polygon[]>;
+type NestedPolygonRecord = Record<string, PolygonRecord>;
 
 type Path = string;
 type PathRecord = Record<string, Path>;
-type PathsRecord = Record<string, Path[]>;
+type NestedPathRecord = Record<string, PathRecord>;
 
 export const HEX_SIZE = 17;
 export const HEX_WIDTH = Math.sqrt(3) * HEX_SIZE;
 export const HEX_HEIGHT = 2 * HEX_SIZE;
 
-// export const HEX_WIDTH = 40;
-// export const HEX_HEIGHT = 30;
-
-export const HEXGRID_CELLS_WIDE = 14;
-export const HEXGRID_CELLS_HIGH = 19;
-
-export const HEXGRID_PROPS = {
-  width: (HEXGRID_CELLS_WIDE + 0.5) * HEX_WIDTH,
-  height: (HEXGRID_CELLS_HIGH + 0.33) * ((HEX_HEIGHT / 4) * 3),
-  margin: 2
-};
+// export const HEX_WIDTH = 30;
+// export const HEX_HEIGHT = 20;
 
 const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
   Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
@@ -73,27 +63,29 @@ const getHexVector2 = ([column, row]: Cell): Vector2 => [
   ((HEX_HEIGHT * 3) / 4) * row
 ];
 
+const snappedVector2 = (x: number, y: number): Vector2 => [Math.round(x), Math.round(y)];
+
 const getHexPolygon = (cell: Cell): Polygon => {
   const [x, y] = getHexVector2(cell);
 
   return [
-    [x, y + (HEX_HEIGHT / 4) * 3].map(Math.round) as Vector2,
-    [x + HEX_WIDTH / 2, y + HEX_HEIGHT].map(Math.round) as Vector2,
-    [x + HEX_WIDTH, y + (HEX_HEIGHT / 4) * 3].map(Math.round) as Vector2,
-    [x + HEX_WIDTH, y + HEX_HEIGHT / 4].map(Math.round) as Vector2,
-    [x + HEX_WIDTH / 2, y].map(Math.round) as Vector2,
-    [x, y + HEX_HEIGHT / 4].map(Math.round) as Vector2,
-    [x, y + (HEX_HEIGHT / 4) * 3].map(Math.round) as Vector2
+    snappedVector2(x, y + (HEX_HEIGHT / 4) * 3),
+    snappedVector2(x + HEX_WIDTH / 2, y + HEX_HEIGHT),
+    snappedVector2(x + HEX_WIDTH, y + (HEX_HEIGHT / 4) * 3),
+    snappedVector2(x + HEX_WIDTH, y + HEX_HEIGHT / 4),
+    snappedVector2(x + HEX_WIDTH / 2, y),
+    snappedVector2(x, y + HEX_HEIGHT / 4),
+    snappedVector2(x, y + (HEX_HEIGHT / 4) * 3)
   ];
 };
 
-const getPath = (polygon: Polygon) => `M${polygon.map(point => point.join(',')).join(' ')}`;
+const getPath = (polygon: Polygon): Path => `M${polygon.map(vector2 => vector2.join(',')).join(' ')}`;
 
 const getConcavePolygon = (vector2s: Vector2[]) =>
   concaveman(vector2s, 0.8, Math.min(HEX_WIDTH, HEX_HEIGHT) / 2) as Polygon;
 
 /* TODO: State top-left cells, with relative electorate cells? */
-const STATES_ELECTORATES_CELLS: Record<string, CellRecord> = {
+const STATES_ELECTORATES_CELLS: NestedCellRecord = {
   ACT: {
     BEAN: [9, 11],
     CANB: [10, 11],
@@ -263,18 +255,39 @@ const STATES_ELECTORATES_CELLS: Record<string, CellRecord> = {
   }
 };
 
-// const ELECTORATES_CELLS = flattenNestedRecords<Cell>(STATES_ELECTORATES_CELLS);
+const ELECTORATES_CELLS: CellRecord = flattenNestedRecords<Cell>(STATES_ELECTORATES_CELLS);
 
-const STATES_ELECTORATES_POLYGONS = transformNestedRecordsValues<Cell, Polygon>(
+export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = Object.values(ELECTORATES_CELLS).reduce(
+  ([cellsWide, cellsHigh], [column, row]) => [Math.max(cellsWide, column + 1), Math.max(cellsHigh, row + 1)],
+  [0, 0]
+);
+
+const HEXGRID_MARGIN = {
+  // horizontal: HEX_WIDTH / 2,
+  // vertical: HEX_HEIGHT / 2
+  horizontal: 2,
+  vertical: 2
+};
+
+export const HEXGRID_PROPS = {
+  width: (HEXGRID_CELLS_WIDE + 0.5) * HEX_WIDTH,
+  height: (HEXGRID_CELLS_HIGH + 0.33) * ((HEX_HEIGHT / 4) * 3),
+  margin: HEXGRID_MARGIN
+};
+
+const STATES_ELECTORATES_POLYGONS: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
   STATES_ELECTORATES_CELLS,
   getHexPolygon
 );
 
-export const ELECTORATES_POLYGONS = flattenNestedRecords<Polygon>(STATES_ELECTORATES_POLYGONS);
+export const ELECTORATES_POLYGONS: PolygonRecord = flattenNestedRecords<Polygon>(STATES_ELECTORATES_POLYGONS);
 
-const STATES_ELECTORATES_PATHS = transformNestedRecordsValues<Polygon, Path>(STATES_ELECTORATES_POLYGONS, getPath);
+const STATES_ELECTORATES_PATHS: NestedPathRecord = transformNestedRecordsValues<Polygon, Path>(
+  STATES_ELECTORATES_POLYGONS,
+  getPath
+);
 
-export const ELECTORATES_PATHS = flattenNestedRecords<Path>(STATES_ELECTORATES_PATHS);
+export const ELECTORATES_PATHS: PathRecord = flattenNestedRecords<Path>(STATES_ELECTORATES_PATHS);
 
 export const STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
   (memo, stateKey) => ({
@@ -288,10 +301,10 @@ export const STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
         .reduce(uniqueVector2sReducer, [] as Vector2[])
     )
   }),
-  {} as Record<string, Polygon>
+  {} as PolygonRecord
 );
 
-export const STATES_PATHS = transformRecordsValues<Polygon, Path>(STATES_POLYGONS, getPath);
+export const STATES_PATHS: PathRecord = transformRecordsValues<Polygon, Path>(STATES_POLYGONS, getPath);
 
 export const COUNTRY_POLYGON = getConcavePolygon(
   Object.keys(STATES_POLYGONS)
