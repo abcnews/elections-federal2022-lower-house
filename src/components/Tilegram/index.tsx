@@ -139,7 +139,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     data-relative-allocation={relativeAllocation}
                     data-should-flip={shouldFlip ? '' : undefined}
                     data-was-preserved={wasPreserved ? '' : undefined}
-                    style={{ transformOrigin: `${offsetX + 15}px ${offsetY}px` }}
+                    style={{ transformOrigin: `${offsetX + HEX_WIDTH / 2}px ${offsetY - HEX_HEIGHT / 4}px` }}
                   />
                   <use
                     xlinkHref={`#${keys['target']}`}
