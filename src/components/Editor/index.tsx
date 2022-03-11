@@ -146,7 +146,8 @@ const Editor: React.FC = () => {
       }
     }
 
-    setTappableLayer(nextFocusedElectorateIDs.length > 0 ? null : TappableLayer.Electorates);
+    // TODO add state layer, so we can toggle entire groups of electorates all at once
+    // setTappableLayer(nextFocusedElectorateIDs.length > 0 ? null : TappableLayer.Electorates);
     mixinGraphicProps({
       focuses: ELECTORATE_IDS.reduce<Focuses>(
         (focuses, electorateID) => ({
