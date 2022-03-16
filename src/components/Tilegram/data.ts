@@ -14,12 +14,9 @@ type Path = string;
 type PathRecord = Record<string, Path>;
 type NestedPathRecord = Record<string, PathRecord>;
 
-export const HEX_SIZE = 17;
-export const HEX_WIDTH = Math.sqrt(3) * HEX_SIZE;
-export const HEX_HEIGHT = 2 * HEX_SIZE;
-
-// export const HEX_WIDTH = 30;
-// export const HEX_HEIGHT = 20;
+export const HEX_SIDE_LENGTH = 17;
+export const HEX_WIDTH = Math.sqrt(3) * HEX_SIDE_LENGTH;
+export const HEX_HEIGHT = 2 * HEX_SIDE_LENGTH;
 
 const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
   Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
