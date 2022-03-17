@@ -138,7 +138,7 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
     WHIT: [7, 8]
   },
   NT: {
-    LING: [3, 6],
+    LING: [3, 5],
     SOLO: [2, 5]
   },
   QLD: {
@@ -174,16 +174,16 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
     WRIG: [7, 5]
   },
   SA: {
-    ADEL: [3, 10],
-    BARK: [3, 7],
-    BOOT: [2, 11],
-    GREY: [2, 7],
-    HIND: [2, 9],
-    KING: [3, 12],
-    MAKI: [3, 9],
-    MAYO: [3, 13],
-    SPEN: [3, 8],
-    STUR: [3, 11]
+    ADEL: [3, 9],
+    BARK: [2, 7],
+    BOOT: [3, 10],
+    GREY: [3, 6],
+    HIND: [3, 8],
+    KING: [3, 11],
+    MAKI: [2, 9],
+    MAYO: [3, 12],
+    SPEN: [3, 7],
+    STUR: [2, 11]
   },
   TAS: {
     BASS: [9, 17],
