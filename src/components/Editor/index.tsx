@@ -227,7 +227,7 @@ const Editor: React.FC = () => {
         <div className={styles.flexRow}>
           {Object.keys(LAYOUT_LABELS).map(key => {
             return (
-              <button key={key} onClick={() => setLayout(key as Layout)}>
+              <button key={key} disabled={key === layout} onClick={() => setLayout(key as Layout)}>
                 {LAYOUT_LABELS[key]}
               </button>
             );

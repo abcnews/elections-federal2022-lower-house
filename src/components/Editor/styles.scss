@@ -167,6 +167,10 @@ body {
   cursor: pointer;
 }
 
-.flexRow button:hover {
+.flexRow button:not([disabled]):hover {
   background-color: $color_AlphaGrey;
+}
+
+.flexRow button[disabled] {
+  cursor: not-allowed;
 }
