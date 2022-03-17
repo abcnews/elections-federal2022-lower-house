@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { ElectorateID, ELECTORATES } from '../../constants';
-import { COUNTRY_PATH, ELECTORATES_PATHS, ELECTORATES_POLYGONS, STATES_PATHS } from './data';
+import { ELECTORATES_PATHS, ELECTORATES_POLYGONS, STATES_PATHS } from './data';
 
 const POLY_KEY_NAMES = ['path', 'clip', 'target'];
 
@@ -21,7 +21,6 @@ export type DefsProps = {
 const Defs: React.FC<DefsProps> = ({ componentID }) => {
   return (
     <defs>
-      <path id={`${componentID}_country`} d={COUNTRY_PATH}></path>
       <g id={`${componentID}_states`}>
         {Object.keys(STATES_PATHS).map(stateID => (
           <path key={stateID} d={STATES_PATHS[stateID]}></path>

@@ -83,7 +83,6 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgWidth = HEXGRID_PROPS.width + 2 * HEXGRID_PROPS.margin.horizontal;
   const svgHeight = HEXGRID_PROPS.height + 2 * HEXGRID_PROPS.margin.vertical;
   const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
-  // const countryPathHref = `#${componentID}_country`;
   const statesPathsHref = `#${componentID}_states`;
 
   return (
@@ -98,8 +97,6 @@ const Tilegram: React.FC<TilegramProps> = props => {
       <svg ref={svgRef} className={styles.svg} viewBox={svgViewBox}>
         <Defs componentID={componentID} />
         <g transform={`translate(${HEXGRID_PROPS.margin.horizontal} ${HEXGRID_PROPS.margin.vertical})`}>
-          {/* <use xlinkHref={countryPathHref} className={styles.baseOuter}></use> */}
-          {/* <use xlinkHref={countryPathHref} className={styles.baseInner}></use> */}
           <use xlinkHref={statesPathsHref} className={styles.baseOuter}></use>
           <use xlinkHref={statesPathsHref} className={styles.baseInner}></use>
           <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>

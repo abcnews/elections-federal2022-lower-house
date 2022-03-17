@@ -416,11 +416,3 @@ export const STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
 );
 
 export const STATES_PATHS: PathRecord = transformRecordsValues<Polygon, Path>(STATES_POLYGONS, getPath);
-
-export const COUNTRY_POLYGON = getConcavePolygon(
-  Object.keys(STATES_POLYGONS)
-    .reduce<Vector2[]>((memo, key) => [...memo, ...STATES_POLYGONS[key]], [])
-    .reduce(uniqueVector2sReducer, [])
-);
-
-export const COUNTRY_PATH = getPath(COUNTRY_POLYGON);
