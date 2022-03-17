@@ -144,6 +144,8 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
 .flexRow > div {
@@ -158,15 +160,11 @@ body {
   align-self: stretch;
   margin: 0;
   border: 0.0625rem solid currentColor;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.75rem;
   background: transparent;
   font-family: inherit;
   font-size: 0.875rem;
   cursor: pointer;
-}
-
-.flexRow button + button {
-  margin-left: 0.25rem;
 }
 
 .flexRow button:hover {

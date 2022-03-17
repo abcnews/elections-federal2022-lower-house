@@ -466,7 +466,7 @@ export enum Layout {
 
 export const LAYOUTS: string[] = Object.values(Layout);
 
-export const LAYOUT_LABELS: Record<string, string> = {
+export const LAYOUT_LABELS: Record<Layout, string> = {
   [Layout.COUNTRY]: 'Country',
   [Layout.EXPLODED]: 'Exploded',
   [Layout.GRID]: 'Grid',

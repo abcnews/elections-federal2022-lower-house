@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import {
+  Layout,
   ElectorateID,
   ELECTORATE_IDS,
   ELECTORATES,
@@ -13,7 +14,8 @@ import {
   ElectionYear,
   ELECTION_YEARS,
   MIXINS,
-  PRESETS
+  PRESETS,
+  LAYOUT_LABELS
 } from '../../constants';
 import {
   alternatingCaseToGraphicProps,
@@ -63,6 +65,7 @@ const Editor: React.FC = () => {
     }),
     []
   );
+  const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
   const [year, setYear] = useState<ElectionYear>(initialUrlParamProps.year);
@@ -173,6 +176,7 @@ const Editor: React.FC = () => {
   const graphicProps = useMemo(
     () => ({
       ...initialUrlParamProps,
+      layout,
       allocations,
       focuses,
       year,
@@ -180,7 +184,7 @@ const Editor: React.FC = () => {
       counting,
       tappableLayer
     }),
-    [allocations, focuses, year, relative, counting, tappableLayer]
+    [layout, allocations, focuses, year, relative, counting, tappableLayer]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -219,6 +223,16 @@ const Editor: React.FC = () => {
         <Graphic tappableLayer={TappableLayer.Electorates} onTapElectorate={onTapElectorate} {...graphicProps} />
       </div>
       <div className={styles.controls}>
+        <h3>Layout</h3>
+        <div className={styles.flexRow}>
+          {Object.keys(LAYOUT_LABELS).map(key => {
+            return (
+              <button key={key} onClick={() => setLayout(key as Layout)}>
+                {LAYOUT_LABELS[key]}
+              </button>
+            );
+          })}
+        </div>
         <h3>
           Current year <small>(set sides)</small>
         </h3>
