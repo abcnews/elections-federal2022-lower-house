@@ -300,7 +300,11 @@ const Editor: React.FC = () => {
           </button>
         </h3>
         <div className={styles.flexRow}>
-          <select multiple onChange={onChangeFocusedElectorates}>
+          <select
+            multiple
+            value={Object.keys(focuses).filter(key => focuses[key] === Focus.Yes)}
+            onChange={onChangeFocusedElectorates}
+          >
             {ELECTORATE_IDS.map(electorateID => (
               <option key={electorateID} value={electorateID}>
                 {`${electorateID} - ${ELECTORATES.find(({ id }) => id === ElectorateID[electorateID])?.name}`}
