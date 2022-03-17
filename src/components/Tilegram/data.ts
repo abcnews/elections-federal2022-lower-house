@@ -435,6 +435,10 @@ const COMMON_LAYOUT_CONFIG = {
 
 const COMMON_STATE_LAYOUT_CONFIG = {
   ...COMMON_LAYOUT_CONFIG,
+  margin: {
+    horizontal: 52,
+    vertical: 2
+  },
   ...getLayoutDimensions(10, 12)
 };
 
