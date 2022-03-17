@@ -450,6 +450,36 @@ export const INITIAL_ELECTORATES_FOCUSES = ELECTORATE_IDS.reduce((focuses, elect
   return focuses;
 }, {});
 
+export enum Layout {
+  COUNTRY = 'a',
+  EXPLODED = 'b',
+  GRID = 'c',
+  ACT = 'd',
+  NSW = 'e',
+  NT = 'f',
+  QLD = 'g',
+  SA = 'h',
+  TAS = 'i',
+  VIC = 'j',
+  WA = 'k'
+}
+
+export const LAYOUTS: string[] = Object.values(Layout);
+
+export const LAYOUT_LABELS: Record<string, string> = {
+  [Layout.COUNTRY]: 'Country',
+  [Layout.EXPLODED]: 'Exploded',
+  [Layout.GRID]: 'Grid',
+  [Layout.ACT]: 'ACT',
+  [Layout.NSW]: 'NSW',
+  [Layout.NT]: 'NT',
+  [Layout.QLD]: 'Qld.',
+  [Layout.SA]: 'SA',
+  [Layout.TAS]: 'Tas.',
+  [Layout.VIC]: 'Vic.',
+  [Layout.WA]: 'WA'
+};
+
 export type Preset = {
   name?: string;
   year?: ElectionYear;
