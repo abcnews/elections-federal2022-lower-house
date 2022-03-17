@@ -480,6 +480,8 @@ export const LAYOUT_LABELS: Record<string, string> = {
   [Layout.WA]: 'WA'
 };
 
+export const DEFAULT_LAYOUT = Layout.EXPLODED;
+
 export type Preset = {
   name?: string;
   year?: ElectionYear;

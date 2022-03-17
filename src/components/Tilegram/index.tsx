@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Allocations, Focuses, ElectionYear, Layout } from '../../constants';
-import { Allocation, ElectorateID, Focus, ELECTORATES, PRESETS } from '../../constants';
+import { Allocation, ElectorateID, Focus, DEFAULT_LAYOUT, ELECTORATES, PRESETS } from '../../constants';
 import {
   determineIfAllocationIsDefinitive,
   determineIfAllocationIsMade,
@@ -39,7 +39,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
   const { electoratesPolygons, statesPolygons, hexWidth, hexHeight, width, height, margin } = LAYOUTS_CONFIGS[
-    layout || Layout.COUNTRY
+    layout || DEFAULT_LAYOUT
   ];
   const svgWidth = width + 2 * margin.horizontal;
   const svgHeight = height + 2 * margin.vertical;

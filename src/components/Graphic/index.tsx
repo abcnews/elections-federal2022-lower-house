@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_ELECTION_YEAR } from '../../constants';
+import { DEFAULT_ELECTION_YEAR, DEFAULT_LAYOUT } from '../../constants';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram from '../Tilegram';
 import type { TotalsProps } from '../Totals';
@@ -20,6 +20,7 @@ export type PossiblyEncodedGraphicProps =
   | GraphicProps;
 
 export const DEFAULT_PROPS = {
+  layout: DEFAULT_LAYOUT,
   year: DEFAULT_ELECTION_YEAR,
   relative: null,
   counting: true

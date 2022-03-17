@@ -105,7 +105,8 @@ const getHexVector2 = ([column, row]: Cell, shouldNegateEvenRowOffset = false): 
 
 const getHexPolygon = (cell: Cell, shouldNegateEvenRowOffset = false): Polygon => {
   const [x, y] = getHexVector2(cell, shouldNegateEvenRowOffset);
-  const polygon: Polygon = [
+
+  return [
     [x, y + (HEX_HEIGHT / 4) * 3],
     [x + HEX_WIDTH / 2, y + HEX_HEIGHT],
     [x + HEX_WIDTH, y + (HEX_HEIGHT / 4) * 3],
@@ -114,8 +115,6 @@ const getHexPolygon = (cell: Cell, shouldNegateEvenRowOffset = false): Polygon =
     [x, y + HEX_HEIGHT / 4],
     [x, y + (HEX_HEIGHT / 4) * 3]
   ];
-
-  return polygon;
 };
 
 const getConcavePolygon = (vector2s: Vector2[]) =>
