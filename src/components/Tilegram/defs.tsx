@@ -1,47 +1,32 @@
 import React, { memo } from 'react';
-import { ElectorateID, ELECTORATES } from '../../constants';
-import { ELECTORATES_PATHS, ELECTORATES_POLYGONS, STATES_PATHS } from './data';
-
-const POLY_KEY_NAMES = ['path', 'clip', 'target'];
-
-export const generateKey = (componentID: string, ...rest: Array<string | number>) =>
-  ([componentID] as Array<string | number>).concat(rest).join('_');
-
-export const generatePolyKeys = (componentID: string, ...rest: Array<string | number>) =>
-  POLY_KEY_NAMES.reduce((memo, key) => {
-    memo[key] = generateKey(componentID, ...rest.concat([key]));
-
-    return memo;
-  }, {});
+import type { ElectoratesRenderProps, PolygonRecord } from './data';
 
 export type DefsProps = {
   componentID: string;
+  electoratesRenderProps: ElectoratesRenderProps;
+  statesPolygons: PolygonRecord;
 };
 
-const Defs: React.FC<DefsProps> = ({ componentID }) => {
+const Defs: React.FC<DefsProps> = ({ componentID, electoratesRenderProps: electoratesProps, statesPolygons }) => {
   return (
     <defs>
       <g id={`${componentID}_states`}>
-        {Object.keys(STATES_PATHS).map(stateID => (
-          <path key={stateID} d={STATES_PATHS[stateID]}></path>
+        {Object.keys(statesPolygons).map(stateID => (
+          <polygon key={stateID} points={statesPolygons[stateID].join(' ')} />
         ))}
       </g>
-      {Object.keys(ELECTORATES_POLYGONS).reduce<JSX.Element[]>((memo, electorateID) => {
-        const keys = generatePolyKeys(componentID, 'electorate', electorateID);
-        const path = ELECTORATES_PATHS[electorateID];
-        const polygon = ELECTORATES_POLYGONS[electorateID];
-
-        return [
+      {Object.values(electoratesProps).reduce<JSX.Element[]>(
+        (memo, { elementIDRecord, name, polygon }) => [
           ...memo,
-          <path key={keys['path']} id={keys['path']} d={path}></path>,
-          <clipPath key={keys['clip']} id={keys['clip']}>
-            <use xlinkHref={`#${keys['path']}`} />
-          </clipPath>,
-          <polygon key={keys['target']} id={keys['target']} points={polygon.join(' ')}>
-            <title>{ELECTORATES.find(({ id }) => id === ElectorateID[electorateID])?.name}</title>
-          </polygon>
-        ];
-      }, [])}
+          <polygon key={elementIDRecord.polygon} id={elementIDRecord.polygon} points={polygon.join(' ')}>
+            <title>{name}</title>
+          </polygon>,
+          <clipPath key={elementIDRecord.clipPath} id={elementIDRecord.clipPath}>
+            <use xlinkHref={`#${elementIDRecord.polygon}`} />
+          </clipPath>
+        ],
+        []
+      )}
     </defs>
   );
 };

@@ -1,14 +1,23 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Allocations, Focuses, ElectionYear } from '../../constants';
-import { Allocation, Focus, PRESETS } from '../../constants';
+import type { Allocations, Focuses, ElectionYear, Layout } from '../../constants';
+import { Allocation, ElectorateID, Focus, ELECTORATES, PRESETS } from '../../constants';
 import {
   determineIfAllocationIsDefinitive,
   determineIfAllocationIsMade,
   determineIfAllocationShouldFlip,
   determineIfAllocationWasPreserved
 } from '../../utils';
-import { ELECTORATES_POLYGONS, HEX_HEIGHT, HEX_WIDTH, HEXGRID_PROPS } from './data';
-import Defs, { generatePolyKeys } from './defs';
+import type { ElectoratesRenderProps } from './data';
+import {
+  ELECTORATES_POLYGONS,
+  ELEMENT_NAMES,
+  HEX_HEIGHT,
+  HEX_WIDTH,
+  HEXGRID_PROPS,
+  STATES_POLYGONS,
+  generateElementIDRecord
+} from './data';
+import Defs from './defs';
 import styles from './styles.scss';
 
 export enum TappableLayer {
@@ -16,6 +25,7 @@ export enum TappableLayer {
 }
 
 export type TilegramProps = {
+  layout?: Layout;
   allocations?: Allocations;
   focuses?: Focuses;
   year?: ElectionYear;
@@ -32,10 +42,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const { allocations, focuses, year, relative, tappableLayer, onTapElectorate } = props;
   // TODO: Use year with candidate lists (once we get them) to provide chenge options
   // (or maybe just pass year and electorate ID to onTapElectorate for it to be handled outside)
+  const relativeAllocations = relative && PRESETS[relative]?.allocations;
+  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
   const [isInspecting, setIsInspecting] = useState(false);
-  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
-  const relativeAllocations = relative && PRESETS[relative]?.allocations;
 
   const onTapElectorateBackground = (event: React.MouseEvent<SVGElement>) => {
     if (onTapElectorate && tappableLayer === TappableLayer.Electorates && event.target instanceof SVGUseElement) {
@@ -80,117 +90,127 @@ const Tilegram: React.FC<TilegramProps> = props => {
     };
   }, [isInteractive]);
 
-  const svgWidth = HEXGRID_PROPS.width + 2 * HEXGRID_PROPS.margin.horizontal;
-  const svgHeight = HEXGRID_PROPS.height + 2 * HEXGRID_PROPS.margin.vertical;
+  // TODO: Make these dynamic based on upcoming layout prop
+  const statesPolygons = STATES_POLYGONS;
+  const electoratesPolygons = ELECTORATES_POLYGONS;
+  const hexgridProps = HEXGRID_PROPS;
+
+  const svgWidth = hexgridProps.width + 2 * hexgridProps.margin.horizontal;
+  const svgHeight = hexgridProps.height + 2 * hexgridProps.margin.vertical;
   const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
-  const statesPathsHref = `#${componentID}_states`;
+  const statesPolygonsHref = `#${componentID}_states`;
+  const electoratesRenderProps = Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
+    const id = ElectorateID[electorate.id];
+    const allocation = allocations ? allocations[id] : Allocation.None;
+    const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
+    const polygon = electoratesPolygons[id];
+
+    return {
+      ...memo,
+      [electorate.id]: {
+        id,
+        name: electorate.name,
+        elementIDRecord: generateElementIDRecord(ELEMENT_NAMES, componentID, 'electorate', id),
+        allocation,
+        hasAllocation: allocation && determineIfAllocationIsMade(allocation),
+        hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
+        relativeAllocation,
+        hasDefinitiveRelativeAllocation: relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation),
+        shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
+        wasPreserved: relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
+        focus: focuses ? focuses[id] : Focus.No,
+        polygon
+      }
+    };
+  }, {});
 
   return (
     <div
       className={styles.root}
+      style={{ paddingBottom: `${(svgHeight / svgWidth) * 100}%` }}
       data-has-focuses={hasFocuses ? '' : undefined}
       data-is-interactive={isInteractive ? '' : undefined}
       data-is-inspecting={isInspecting ? '' : undefined}
       data-tappable={tappableLayer}
-      style={{ paddingBottom: `${(svgHeight / svgWidth) * 100}%` }}
     >
       <svg ref={svgRef} className={styles.svg} viewBox={svgViewBox}>
-        <Defs componentID={componentID} />
-        <g transform={`translate(${HEXGRID_PROPS.margin.horizontal} ${HEXGRID_PROPS.margin.vertical})`}>
-          <use xlinkHref={statesPathsHref} className={styles.baseOuter}></use>
-          <use xlinkHref={statesPathsHref} className={styles.baseInner}></use>
+        <Defs
+          componentID={componentID}
+          electoratesRenderProps={electoratesRenderProps}
+          statesPolygons={statesPolygons}
+        />
+        <g transform={`translate(${hexgridProps.margin.horizontal} ${hexgridProps.margin.vertical})`}>
+          <use xlinkHref={statesPolygonsHref} className={styles.baseOuter}></use>
+          <use xlinkHref={statesPolygonsHref} className={styles.baseInner}></use>
           <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>
-            {Object.keys(ELECTORATES_POLYGONS).reduce<JSX.Element[]>((memo, electorateID) => {
-              const keys = generatePolyKeys(componentID, 'electorate', electorateID);
-              const allocation = allocations ? allocations[electorateID] : Allocation.None;
-              const relativeAllocation = relativeAllocations ? relativeAllocations[electorateID] : undefined;
-              const shouldFlip = relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation);
-              const wasPreserved =
-                relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation);
-              const focus = focuses ? focuses[electorateID] : Focus.No;
-              const [offsetX, offsetY] = ELECTORATES_POLYGONS[electorateID][0];
-
-              return [
-                ...memo,
+            {Object.values(electoratesRenderProps).map(
+              ({ id, elementIDRecord, allocation, relativeAllocation, shouldFlip, wasPreserved, focus, polygon }) => (
                 <g
-                  key={electorateID}
+                  key={id}
                   className={styles.electorateBackground}
+                  clipPath={shouldFlip ? `url(#${elementIDRecord.clipPath})` : undefined}
                   data-focus={focus}
-                  clipPath={shouldFlip ? `url(#${keys['clip']})` : undefined}
                 >
                   <use
-                    xlinkHref={`#${keys['path']}`}
-                    className={styles.electorateBackgroundPath}
+                    xlinkHref={`#${elementIDRecord.polygon}`}
+                    className={styles.electorateBackgroundPolygon}
+                    style={{
+                      transformOrigin: `${polygon[0][0] + HEX_WIDTH / 2}px ${polygon[0][1] - HEX_HEIGHT / 4}px`
+                    }}
+                    data-electorate={id}
                     data-allocation={allocation}
-                    data-relative-allocation={relativeAllocation}
+                    data-relative-allocation={relativeAllocation || undefined}
                     data-should-flip={shouldFlip ? '' : undefined}
                     data-was-preserved={wasPreserved ? '' : undefined}
-                    style={{ transformOrigin: `${offsetX + HEX_WIDTH / 2}px ${offsetY - HEX_HEIGHT / 4}px` }}
                   />
-                  <use
-                    xlinkHref={`#${keys['target']}`}
-                    className={styles.electorateBackgroundTarget}
-                    data-electorate={electorateID}
-                  ></use>
                 </g>
-              ];
-            }, [])}
+              )
+            )}
           </g>
           <g className={styles.electoratesBorders}>
-            {Object.keys(ELECTORATES_POLYGONS).reduce<JSX.Element[]>((memo, electorateID) => {
-              const keys = generatePolyKeys(componentID, 'electorate', electorateID);
-              const focus = focuses ? focuses[electorateID] : Focus.No;
-              const allocation = allocations && allocations[electorateID];
-              const hasAllocation = allocation && determineIfAllocationIsMade(allocation);
-              const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
-              const relativeAllocation = relativeAllocations && relativeAllocations[electorateID];
-
-              return [
-                ...memo,
+            {Object.values(electoratesRenderProps).map(
+              ({
+                id,
+                elementIDRecord,
+                allocation,
+                hasAllocation,
+                hasDefinitiveAllocation,
+                relativeAllocation,
+                focus
+              }) => (
                 <g
-                  key={electorateID}
+                  key={id}
                   className={styles.electorateBorder}
+                  clipPath={focus === Focus.Yes || relativeAllocation ? `url(#${elementIDRecord.clipPath})` : undefined}
                   data-focus={focus}
-                  clipPath={focus === Focus.Yes || relativeAllocation ? `url(#${keys['clip']})` : undefined}
                 >
                   <use
-                    xlinkHref={`#${keys['path']}`}
-                    className={styles.electorateBorderPath}
-                    data-focus={focus}
+                    xlinkHref={`#${elementIDRecord.polygon}`}
+                    className={styles.electorateBorderPolygon}
+                    data-electorate={id}
+                    data-allocation={allocation || undefined}
                     data-has-allocation={hasAllocation ? '' : undefined}
                     data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
-                    data-allocation={allocation || undefined}
                     data-relative-allocation={relativeAllocation || undefined}
-                  ></use>
-                  <use
-                    xlinkHref={`#${keys['target']}`}
-                    className={styles.electorateBorderTarget}
-                    data-electorate={electorateID}
+                    data-focus={focus}
                   ></use>
                 </g>
-              ];
-            }, [])}
+              )
+            )}
           </g>
           <g className={styles.electoratesPartitions}>
-            {Object.keys(ELECTORATES_POLYGONS).reduce<JSX.Element[]>((memo, electorateID) => {
-              const keys = generatePolyKeys(componentID, 'electorate', electorateID);
-              const focus = focuses ? focuses[electorateID] : Focus.No;
-              const relativeAllocation = relativeAllocations && relativeAllocations[electorateID];
-              const hasDefinitiveRelativeAllocation =
-                relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation);
-
-              return [
-                ...memo,
+            {Object.values(electoratesRenderProps).map(
+              ({ id, elementIDRecord, relativeAllocation, hasDefinitiveRelativeAllocation, focus }) => (
                 <use
-                  key={electorateID}
-                  xlinkHref={`#${keys['path']}`}
+                  key={id}
+                  xlinkHref={`#${elementIDRecord.polygon}`}
                   className={styles.electoratePartition}
-                  data-focus={focus}
                   data-relative-allocation={relativeAllocation || undefined}
                   data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
+                  data-focus={focus}
                 ></use>
-              ];
-            }, [])}
+              )
+            )}
           </g>
         </g>
       </svg>

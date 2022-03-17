@@ -87,7 +87,7 @@ $focusChangeTransitionDuration: 0.5s;
   shape-rendering: crispEdges;
 }
 
-.root[data-tappable='#{$TappableLayer_Electorates}'] .electoratesBackgrounds {
+.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .electoratesBackgrounds {
   pointer-events: all;
 }
 
@@ -103,7 +103,7 @@ $focusChangeTransitionDuration: 0.5s;
   @include fadedOutInspecting;
 }
 
-.electorateBackgroundPath {
+.electorateBackgroundPolygon {
   fill: $color_White;
   stroke: none;
   stroke-width: $swHeavy;
@@ -116,7 +116,7 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.electorateBackgroundPath[data-allocation] {
+.electorateBackgroundPolygon[data-allocation] {
   fill: var(--color-allocation);
 }
 
@@ -145,16 +145,11 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.electorateBackgroundPath[data-should-flip] {
+.electorateBackgroundPolygon[data-should-flip] {
   animation: flipAllocations $allocationTransitionDuration linear 1 both;
 }
 
-.electorateBackgroundTarget {
-  stroke: none;
-  fill: none;
-}
-
-.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .electorateBackgroundTarget {
+.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .electorateBackgroundPolygon {
   cursor: pointer;
 }
 
@@ -174,7 +169,8 @@ $focusChangeTransitionDuration: 0.5s;
   @include fadedOutInspecting;
 }
 
-.electorateBorderPath {
+.electorateBorderPolygon {
+  pointer-events: none;
   fill: none;
   stroke: $color_Grey;
   stroke-width: $swLight;
@@ -184,12 +180,12 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.electorateBorderPath[data-focus='#{$Focus_No}'][data-has-allocation],
-.electorateBorderPath[data-focus='#{$Focus_Yes}'] {
+.electorateBorderPolygon[data-focus='#{$Focus_No}'][data-has-allocation],
+.electorateBorderPolygon[data-focus='#{$Focus_Yes}'] {
   stroke: var(--color-focus);
 }
 
-.electorateBorderPath[data-focus='#{$Focus_Yes}'] {
+.electorateBorderPolygon[data-focus='#{$Focus_Yes}'] {
   stroke-width: $swHeavy;
 
   @media (max-width: 667px) {
@@ -197,21 +193,16 @@ $focusChangeTransitionDuration: 0.5s;
   }
 }
 
-.electorateBorderPath[data-focus='#{$Focus_Yes}'][data-relative-allocation] {
+.electorateBorderPolygon[data-focus='#{$Focus_Yes}'][data-relative-allocation] {
   stroke: var(--color-relative-allocation);
 }
 
-.electorateBorderPath[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
+.electorateBorderPolygon[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
   stroke: none;
 }
 
-.electorateBorderPath[data-focus='#{$Focus_Yes}'][data-was-preserved] {
+.electorateBorderPolygon[data-focus='#{$Focus_Yes}'][data-was-preserved] {
   stroke: var(--color-allocation);
-}
-
-.electorateBorderTarget {
-  stroke: none;
-  fill: none;
 }
 
 .electoratesPartitions {

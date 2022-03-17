@@ -1,5 +1,22 @@
 import concaveman from 'concaveman';
-import { Layout } from '../../constants';
+import { Allocation, ElectorateID, Focus, Layout } from '../../constants';
+
+export type ElectorateRenderProps = {
+  id: ElectorateID;
+  name: string;
+  elementIDRecord: Record<string, string>;
+  allocation: Allocation;
+  hasAllocation: boolean;
+  hasDefinitiveAllocation: boolean;
+  relativeAllocation: Allocation | undefined;
+  hasDefinitiveRelativeAllocation: boolean;
+  shouldFlip: boolean;
+  wasPreserved: boolean;
+  focus: Focus;
+  polygon: Polygon;
+};
+
+export type ElectoratesRenderProps = Record<string, ElectorateRenderProps>;
 
 type Vector2 = [number, number]; // [x, y]
 
@@ -7,29 +24,30 @@ type Cell = [number, number]; // [column, row]
 type CellRecord = Record<string, Cell>;
 type NestedCellRecord = Record<string, CellRecord>;
 
-type Polygon = Vector2[];
-type PolygonRecord = Record<string, Polygon>;
+export type Polygon = Vector2[];
+export type PolygonRecord = Record<string, Polygon>;
 type NestedPolygonRecord = Record<string, PolygonRecord>;
 
-type Path = string;
-type PathRecord = Record<string, Path>;
-type NestedPathRecord = Record<string, PathRecord>;
+export const ELEMENT_NAMES = ['polygon', 'clipPath'];
 
 export const HEX_SIDE_LENGTH = 17;
 export const HEX_WIDTH = Math.sqrt(3) * HEX_SIDE_LENGTH;
 export const HEX_HEIGHT = 2 * HEX_SIDE_LENGTH;
 
-const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
-  Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
+export const generateElementID = (componentID: string, ...rest: Array<string | number>) =>
+  ([componentID] as Array<string | number>).concat(rest).join('_');
 
-const transformRecordsValues = <F, T>(record: Record<string, F>, transformFn: (from: F, key: string) => T) =>
-  Object.keys(record).reduce(
+export const generateElementIDRecord = (keys: string[], componentID: string, ...rest: Array<string | number>) =>
+  keys.reduce(
     (memo, key) => ({
       ...memo,
-      [key]: transformFn(record[key], key)
+      [key]: generateElementID(componentID, key, ...rest)
     }),
-    {} as Record<string, T>
+    {} as Record<string, string>
   );
+
+const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
+  Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
 
 const transformNestedRecordsValues = <F, T>(
   record: Record<string, Record<string, F>>,
@@ -66,8 +84,6 @@ const getHexVector2 = ([column, row]: Cell, shouldNegateEvenRowOffset = false): 
   ((HEX_HEIGHT * 3) / 4) * row
 ];
 
-const snappedVector2 = (x: number, y: number): Vector2 => [Math.round(x), Math.round(y)];
-
 const getHexPolygon = (cell: Cell, shouldNegateEvenRowOffset = false): Polygon => {
   const [x, y] = getHexVector2(cell, shouldNegateEvenRowOffset);
   const polygon: Polygon = [
@@ -80,11 +96,8 @@ const getHexPolygon = (cell: Cell, shouldNegateEvenRowOffset = false): Polygon =
     [x, y + (HEX_HEIGHT / 4) * 3]
   ];
 
-  // return polygon.map(vector2 => snappedVector2(...vector2));
   return polygon;
 };
-
-const getPath = (polygon: Polygon): Path => `M${polygon.map(vector2 => vector2.join(',')).join(' ')}`;
 
 const getConcavePolygon = (vector2s: Vector2[]) =>
   concaveman(vector2s, 0.8, Math.min(HEX_WIDTH, HEX_HEIGHT) / 2) as Polygon;
@@ -366,7 +379,7 @@ const ACTIVE_LAYOUT = Layout.COUNTRY;
 //   [0, 0]
 // );
 
-export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [14, 18.667]; // COUNTRY
+export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [14, 19]; // COUNTRY
 // export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [16.75, 20.5]; // EXPLODED
 // export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [20, 23]; // GRID
 // export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [10, 12]; // <STATE>
@@ -393,13 +406,6 @@ const STATES_ELECTORATES_POLYGONS: NestedPolygonRecord = transformNestedRecordsV
 
 export const ELECTORATES_POLYGONS: PolygonRecord = flattenNestedRecords<Polygon>(STATES_ELECTORATES_POLYGONS);
 
-const STATES_ELECTORATES_PATHS: NestedPathRecord = transformNestedRecordsValues<Polygon, Path>(
-  STATES_ELECTORATES_POLYGONS,
-  getPath
-);
-
-export const ELECTORATES_PATHS: PathRecord = flattenNestedRecords<Path>(STATES_ELECTORATES_PATHS);
-
 export const STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
   (memo, stateKey) => ({
     ...memo,
@@ -414,5 +420,3 @@ export const STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
   }),
   {} as PolygonRecord
 );
-
-export const STATES_PATHS: PathRecord = transformRecordsValues<Polygon, Path>(STATES_POLYGONS, getPath);
