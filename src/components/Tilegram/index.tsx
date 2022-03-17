@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Allocations, Focuses, ElectionYear, Layout } from '../../constants';
+import { Allocations, Focuses, ElectionYear, Layout } from '../../constants';
 import { Allocation, ElectorateID, Focus, ELECTORATES, PRESETS } from '../../constants';
 import {
   determineIfAllocationIsDefinitive,
@@ -8,15 +8,7 @@ import {
   determineIfAllocationWasPreserved
 } from '../../utils';
 import type { ElectoratesRenderProps } from './data';
-import {
-  ELECTORATES_POLYGONS,
-  ELEMENT_NAMES,
-  HEX_HEIGHT,
-  HEX_WIDTH,
-  HEXGRID_PROPS,
-  STATES_POLYGONS,
-  generateElementIDRecord
-} from './data';
+import { ELEMENT_NAMES, LAYOUTS_CONFIGS, generateElementIDRecord } from './data';
 import Defs from './defs';
 import styles from './styles.scss';
 
@@ -37,15 +29,46 @@ export type TilegramProps = {
 const generateComponentID = () => (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
 
 const Tilegram: React.FC<TilegramProps> = props => {
+  const [isInspecting, setIsInspecting] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
-  const { allocations, focuses, year, relative, tappableLayer, onTapElectorate } = props;
+  const { allocations, focuses, layout, year, relative, tappableLayer, onTapElectorate } = props;
   // TODO: Use year with candidate lists (once we get them) to provide chenge options
   // (or maybe just pass year and electorate ID to onTapElectorate for it to be handled outside)
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
-  const [isInspecting, setIsInspecting] = useState(false);
+  const { electoratesPolygons, statesPolygons, hexWidth, hexHeight, width, height, margin } = LAYOUTS_CONFIGS[
+    layout || Layout.COUNTRY
+  ];
+  const svgWidth = width + 2 * margin.horizontal;
+  const svgHeight = height + 2 * margin.vertical;
+  const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
+  const statesPolygonsHref = `#${componentID}_states`;
+  const electoratesRenderProps = Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
+    const id = ElectorateID[electorate.id];
+    const allocation = allocations ? allocations[id] : Allocation.None;
+    const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
+    const polygon = electoratesPolygons[id];
+
+    return {
+      ...memo,
+      [electorate.id]: {
+        id,
+        name: electorate.name,
+        elementIDRecord: generateElementIDRecord(ELEMENT_NAMES, componentID, 'electorate', id),
+        allocation,
+        hasAllocation: allocation && determineIfAllocationIsMade(allocation),
+        hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
+        relativeAllocation,
+        hasDefinitiveRelativeAllocation: relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation),
+        shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
+        wasPreserved: relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
+        focus: focuses ? focuses[id] : Focus.No,
+        polygon
+      }
+    };
+  }, {});
 
   const onTapElectorateBackground = (event: React.MouseEvent<SVGElement>) => {
     if (onTapElectorate && tappableLayer === TappableLayer.Electorates && event.target instanceof SVGUseElement) {
@@ -90,40 +113,6 @@ const Tilegram: React.FC<TilegramProps> = props => {
     };
   }, [isInteractive]);
 
-  // TODO: Make these dynamic based on upcoming layout prop
-  const statesPolygons = STATES_POLYGONS;
-  const electoratesPolygons = ELECTORATES_POLYGONS;
-  const hexgridProps = HEXGRID_PROPS;
-
-  const svgWidth = hexgridProps.width + 2 * hexgridProps.margin.horizontal;
-  const svgHeight = hexgridProps.height + 2 * hexgridProps.margin.vertical;
-  const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
-  const statesPolygonsHref = `#${componentID}_states`;
-  const electoratesRenderProps = Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
-    const id = ElectorateID[electorate.id];
-    const allocation = allocations ? allocations[id] : Allocation.None;
-    const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
-    const polygon = electoratesPolygons[id];
-
-    return {
-      ...memo,
-      [electorate.id]: {
-        id,
-        name: electorate.name,
-        elementIDRecord: generateElementIDRecord(ELEMENT_NAMES, componentID, 'electorate', id),
-        allocation,
-        hasAllocation: allocation && determineIfAllocationIsMade(allocation),
-        hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
-        relativeAllocation,
-        hasDefinitiveRelativeAllocation: relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation),
-        shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
-        wasPreserved: relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
-        focus: focuses ? focuses[id] : Focus.No,
-        polygon
-      }
-    };
-  }, {});
-
   return (
     <div
       className={styles.root}
@@ -139,7 +128,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
           electoratesRenderProps={electoratesRenderProps}
           statesPolygons={statesPolygons}
         />
-        <g transform={`translate(${hexgridProps.margin.horizontal} ${hexgridProps.margin.vertical})`}>
+        <g transform={`translate(${margin.horizontal} ${margin.vertical})`}>
           <use xlinkHref={statesPolygonsHref} className={styles.baseOuter}></use>
           <use xlinkHref={statesPolygonsHref} className={styles.baseInner}></use>
           <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>
@@ -155,7 +144,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     xlinkHref={`#${elementIDRecord.polygon}`}
                     className={styles.electorateBackgroundPolygon}
                     style={{
-                      transformOrigin: `${polygon[0][0] + HEX_WIDTH / 2}px ${polygon[0][1] - HEX_HEIGHT / 4}px`
+                      transformOrigin: `${polygon[0][0] + hexWidth / 2}px ${polygon[0][1] - hexHeight / 4}px`
                     }}
                     data-electorate={id}
                     data-allocation={allocation}

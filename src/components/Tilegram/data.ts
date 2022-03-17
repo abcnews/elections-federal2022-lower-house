@@ -28,6 +28,25 @@ export type Polygon = Vector2[];
 export type PolygonRecord = Record<string, Polygon>;
 type NestedPolygonRecord = Record<string, PolygonRecord>;
 
+type LayoutsStatesCells = Record<Layout, Record<string, [number, number, boolean?]>>;
+
+type LayoutMargin = {
+  horizontal: number;
+  vertical: number;
+};
+
+type LayoutConfig = {
+  width: number;
+  height: number;
+  margin: LayoutMargin;
+  hexWidth: number;
+  hexHeight: number;
+  electoratesPolygons: PolygonRecord;
+  statesPolygons: PolygonRecord;
+};
+
+type LayoutsConfigs = Record<Layout, LayoutConfig>;
+
 export const ELEMENT_NAMES = ['polygon', 'clipPath'];
 
 export const HEX_SIDE_LENGTH = 17;
@@ -101,6 +120,44 @@ const getHexPolygon = (cell: Cell, shouldNegateEvenRowOffset = false): Polygon =
 
 const getConcavePolygon = (vector2s: Vector2[]) =>
   concaveman(vector2s, 0.8, Math.min(HEX_WIDTH, HEX_HEIGHT) / 2) as Polygon;
+
+const getLayoutDimensions = (cellsWide: number, cellsHigh: number) => ({
+  width: (cellsWide + 0.5) * HEX_WIDTH,
+  height: (cellsHigh + 0.33) * ((HEX_HEIGHT / 4) * 3)
+});
+
+const getLayoutPolygons = (layout: Layout) => {
+  const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
+    STATES_ELECTORATES_CELLS,
+    (electorateCell, stateKey) => {
+      const [offsetX, offsetY, shouldNegateEvenRowOffset] = LAYOUTS_STATES_CELLS[layout][stateKey];
+
+      return getHexPolygon(addVector2s(electorateCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset);
+    }
+  );
+
+  const electoratesPolygons: PolygonRecord = flattenNestedRecords<Polygon>(statesElectoratesPolygons);
+
+  const statesPolygons = Object.keys(statesElectoratesPolygons).reduce(
+    (memo, stateKey) => ({
+      ...memo,
+      [stateKey]: getConcavePolygon(
+        Object.keys(statesElectoratesPolygons[stateKey])
+          .reduce(
+            (memo, electorateKey) => [...memo, ...statesElectoratesPolygons[stateKey][electorateKey]],
+            [] as Vector2[]
+          )
+          .reduce(uniqueVector2sReducer, [] as Vector2[])
+      )
+    }),
+    {} as PolygonRecord
+  );
+
+  return {
+    electoratesPolygons,
+    statesPolygons
+  };
+};
 
 const STATES_ELECTORATES_CELLS: NestedCellRecord = {
   ACT: {
@@ -272,8 +329,6 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
   }
 };
 
-type LayoutsStatesCells = Record<Layout, Record<string, [number, number, boolean?]>>;
-
 const LAYOUT_OFFSCREEN: CellRecord = {
   ACT: [100, 100],
   NSW: [100, 100],
@@ -370,53 +425,66 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
   }
 };
 
-const ACTIVE_LAYOUT = Layout.COUNTRY;
-
-// const ELECTORATES_CELLS: CellRecord = flattenNestedRecords<Cell>(STATES_ELECTORATES_CELLS);
-
-// export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = Object.values(ELECTORATES_CELLS).reduce(
-//   ([cellsWide, cellsHigh], [column, row]) => [Math.max(cellsWide, column + 1), Math.max(cellsHigh, row + 1)],
-//   [0, 0]
-// );
-
-export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [14, 19]; // COUNTRY
-// export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [16.75, 20.5]; // EXPLODED
-// export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [20, 23]; // GRID
-// export const [HEXGRID_CELLS_WIDE, HEXGRID_CELLS_HIGH] = [10, 12]; // <STATE>
-
-const HEXGRID_MARGIN = {
-  horizontal: 2,
-  vertical: 2
-};
-
-export const HEXGRID_PROPS = {
-  width: (HEXGRID_CELLS_WIDE + 0.5) * HEX_WIDTH,
-  height: (HEXGRID_CELLS_HIGH + 0.33) * ((HEX_HEIGHT / 4) * 3),
-  margin: HEXGRID_MARGIN
-};
-
-const STATES_ELECTORATES_POLYGONS: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
-  STATES_ELECTORATES_CELLS,
-  (electorateCell, stateKey) => {
-    const [offsetX, offsetY, shouldNegateEvenRowOffset] = LAYOUTS_STATES_CELLS[ACTIVE_LAYOUT][stateKey];
-
-    return getHexPolygon(addVector2s(electorateCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset);
+const COMMON_LAYOUT_CONFIG = {
+  hexWidth: HEX_WIDTH,
+  hexHeight: HEX_HEIGHT,
+  margin: {
+    horizontal: 2,
+    vertical: 2
   }
-);
+};
 
-export const ELECTORATES_POLYGONS: PolygonRecord = flattenNestedRecords<Polygon>(STATES_ELECTORATES_POLYGONS);
+const COMMON_STATE_LAYOUT_CONFIG = {
+  ...COMMON_LAYOUT_CONFIG,
+  ...getLayoutDimensions(10, 12)
+};
 
-export const STATES_POLYGONS = Object.keys(STATES_ELECTORATES_POLYGONS).reduce(
-  (memo, stateKey) => ({
-    ...memo,
-    [stateKey]: getConcavePolygon(
-      Object.keys(STATES_ELECTORATES_POLYGONS[stateKey])
-        .reduce(
-          (memo, electorateKey) => [...memo, ...STATES_ELECTORATES_POLYGONS[stateKey][electorateKey]],
-          [] as Vector2[]
-        )
-        .reduce(uniqueVector2sReducer, [] as Vector2[])
-    )
-  }),
-  {} as PolygonRecord
-);
+export const LAYOUTS_CONFIGS: LayoutsConfigs = {
+  [Layout.COUNTRY]: {
+    ...COMMON_LAYOUT_CONFIG,
+    ...getLayoutDimensions(14, 19),
+    ...getLayoutPolygons(Layout.COUNTRY)
+  },
+  [Layout.EXPLODED]: {
+    ...COMMON_LAYOUT_CONFIG,
+    ...getLayoutDimensions(16.75, 20.5),
+    ...getLayoutPolygons(Layout.EXPLODED)
+  },
+  [Layout.GRID]: {
+    ...COMMON_LAYOUT_CONFIG,
+    ...getLayoutDimensions(20, 23),
+    ...getLayoutPolygons(Layout.GRID)
+  },
+  [Layout.ACT]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.ACT)
+  },
+  [Layout.NSW]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.NSW)
+  },
+  [Layout.NT]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.NT)
+  },
+  [Layout.QLD]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.QLD)
+  },
+  [Layout.SA]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.SA)
+  },
+  [Layout.TAS]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.TAS)
+  },
+  [Layout.VIC]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.VIC)
+  },
+  [Layout.WA]: {
+    ...COMMON_STATE_LAYOUT_CONFIG,
+    ...getLayoutPolygons(Layout.WA)
+  }
+};
