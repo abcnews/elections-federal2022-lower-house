@@ -129,87 +129,80 @@ const Tilegram: React.FC<TilegramProps> = props => {
           statesPolygons={statesPolygons}
         />
         <g transform={`translate(${margin.horizontal} ${margin.vertical})`}>
-          <g className={styles.baseLayer}>
-            <use xlinkHref={statesPolygonsHref} className={styles.baseOuter}></use>
-            <use xlinkHref={statesPolygonsHref} className={styles.baseInner}></use>
-          </g>
-          <g className={styles.electoratesLayer}>
-            <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>
-              {Object.values(electoratesRenderProps).map(
-                ({ id, elementIDRecord, allocation, relativeAllocation, shouldFlip, wasPreserved, focus, polygon }) => (
-                  <g
-                    key={id}
-                    className={styles.electorateBackground}
-                    clipPath={shouldFlip ? `url(#${elementIDRecord.clipPath})` : undefined}
-                    data-focus={focus}
-                  >
-                    <use
-                      xlinkHref={`#${elementIDRecord.polygon}`}
-                      className={styles.electorateBackgroundPolygon}
-                      style={{
-                        transformOrigin: `${polygon[0][0] + hexWidth / 2}px ${polygon[0][1] - hexHeight / 4}px`
-                      }}
-                      data-electorate={id}
-                      data-allocation={allocation}
-                      data-relative-allocation={relativeAllocation || undefined}
-                      data-should-flip={shouldFlip ? '' : undefined}
-                      data-was-preserved={wasPreserved ? '' : undefined}
-                    />
-                  </g>
-                )
-              )}
-            </g>
-            <g className={styles.electoratesBorders}>
-              {Object.values(electoratesRenderProps).map(
-                ({
-                  id,
-                  elementIDRecord,
-                  allocation,
-                  hasAllocation,
-                  hasDefinitiveAllocation,
-                  relativeAllocation,
-                  focus
-                }) => (
-                  <g
-                    key={id}
-                    className={styles.electorateBorder}
-                    clipPath={
-                      focus === Focus.Yes || relativeAllocation ? `url(#${elementIDRecord.clipPath})` : undefined
-                    }
-                    data-focus={focus}
-                  >
-                    <use
-                      xlinkHref={`#${elementIDRecord.polygon}`}
-                      className={styles.electorateBorderPolygon}
-                      data-electorate={id}
-                      data-allocation={allocation || undefined}
-                      data-has-allocation={hasAllocation ? '' : undefined}
-                      data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
-                      data-relative-allocation={relativeAllocation || undefined}
-                      data-focus={focus}
-                    ></use>
-                  </g>
-                )
-              )}
-            </g>
-            <g className={styles.electoratesPartitions}>
-              {Object.values(electoratesRenderProps).map(
-                ({ id, elementIDRecord, relativeAllocation, hasDefinitiveRelativeAllocation, focus }) => (
+          <use xlinkHref={statesPolygonsHref} className={styles.baseOuter}></use>
+          <use xlinkHref={statesPolygonsHref} className={styles.baseInner}></use>
+          <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>
+            {Object.values(electoratesRenderProps).map(
+              ({ id, elementIDRecord, allocation, relativeAllocation, shouldFlip, wasPreserved, focus, polygon }) => (
+                <g
+                  key={id}
+                  className={styles.electorateBackground}
+                  clipPath={shouldFlip ? `url(#${elementIDRecord.clipPath})` : undefined}
+                  data-focus={focus}
+                >
                   <use
-                    key={id}
                     xlinkHref={`#${elementIDRecord.polygon}`}
-                    className={styles.electoratePartition}
+                    className={styles.electorateBackgroundPolygon}
+                    style={{
+                      transformOrigin: `${polygon[0][0] + hexWidth / 2}px ${polygon[0][1] - hexHeight / 4}px`
+                    }}
+                    data-electorate={id}
+                    data-allocation={allocation}
                     data-relative-allocation={relativeAllocation || undefined}
-                    data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
+                    data-should-flip={shouldFlip ? '' : undefined}
+                    data-was-preserved={wasPreserved ? '' : undefined}
+                  />
+                </g>
+              )
+            )}
+          </g>
+          <g className={styles.electoratesBorders}>
+            {Object.values(electoratesRenderProps).map(
+              ({
+                id,
+                elementIDRecord,
+                allocation,
+                hasAllocation,
+                hasDefinitiveAllocation,
+                relativeAllocation,
+                focus
+              }) => (
+                <g
+                  key={id}
+                  className={styles.electorateBorder}
+                  clipPath={focus === Focus.Yes || relativeAllocation ? `url(#${elementIDRecord.clipPath})` : undefined}
+                  data-focus={focus}
+                >
+                  <use
+                    xlinkHref={`#${elementIDRecord.polygon}`}
+                    className={styles.electorateBorderPolygon}
+                    data-electorate={id}
+                    data-allocation={allocation || undefined}
+                    data-has-allocation={hasAllocation ? '' : undefined}
+                    data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
+                    data-relative-allocation={relativeAllocation || undefined}
                     data-focus={focus}
                   ></use>
-                )
-              )}
-            </g>
+                </g>
+              )
+            )}
           </g>
-          <g className={styles.statesLayer}>
-            <use xlinkHref={statesPolygonsHref} className={styles.states} />
+          <g className={styles.electoratesPartitions}>
+            {Object.values(electoratesRenderProps).map(
+              ({ id, elementIDRecord, relativeAllocation, hasDefinitiveRelativeAllocation, focus }) => (
+                <use
+                  key={id}
+                  xlinkHref={`#${elementIDRecord.polygon}`}
+                  className={styles.electoratePartition}
+                  data-relative-allocation={relativeAllocation || undefined}
+                  data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
+                  data-focus={focus}
+                ></use>
+              )
+            )}
           </g>
+          <use xlinkHref={statesPolygonsHref} className={styles.statesBackgrounds} />
+          <use xlinkHref={statesPolygonsHref} className={styles.statesBorders} />
         </g>
       </svg>
     </div>

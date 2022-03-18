@@ -1,7 +1,5 @@
 @import '../../constants.scss';
 
-// Focus management
-
 $opacityUnfocused: 0.05;
 $opacityUnfocusedInspecting: 0.5;
 $focusChangeTransitionDuration: 0.5s;
@@ -19,7 +17,7 @@ $focusChangeTransitionDuration: 0.5s;
   transition: opacity 0s;
 }
 
-// Styles
+// Root
 
 .root {
   position: relative;
@@ -52,26 +50,18 @@ $focusChangeTransitionDuration: 0.5s;
   stroke-linecap: round;
 }
 
-.electoratesLayer,
-.statesLayer {
-  display: none;
-}
-
-.root[data-layer='#{$Layer_ELECTORATES}'] .electoratesLayer,
-.root[data-layer='#{$Layer_STATES}'] .statesLayer {
-  display: initial;
-}
+// Base (Outer)
 
 .baseOuter {
   stroke: $color_Grey;
-  stroke-width: $swLight;
-  // stroke-width: $swMedium;
+  // stroke-width: $swLight;
+  stroke-width: $swMedium;
   fill: none;
   @include fadedOutTransitionable;
 
   @media (max-width: 667px) {
-    stroke-width: $swLight_SM;
-    // stroke-width: $swMedium_SM;
+    // stroke-width: $swLight_SM;
+    stroke-width: $swMedium_SM;
   }
 }
 
@@ -83,14 +73,27 @@ $focusChangeTransitionDuration: 0.5s;
   @include fadedOutInspecting;
 }
 
+// Base (Inner)
+
 .baseInner {
-  stroke: none;
+  stroke: $color_White;
+  stroke-width: $swLight;
   fill: rgba(0, 0, 0, 0.025);
+
+  @media (max-width: 667px) {
+    stroke-width: $swLight_SM;
+  }
 }
+
+// Electorates (Backgrounds)
 
 .electoratesBackgrounds {
   pointer-events: none;
   shape-rendering: crispEdges;
+}
+
+.root:not([data-layer='#{$Layer_ELECTORATES}']) .electoratesBackgrounds {
+  display: none;
 }
 
 .root[data-is-interactive] .electoratesBackgrounds {
@@ -159,8 +162,14 @@ $focusChangeTransitionDuration: 0.5s;
   cursor: pointer;
 }
 
+// Electorates (Borders)
+
 .electoratesBorders {
   pointer-events: none;
+}
+
+.root:not([data-layer='#{$Layer_ELECTORATES}']) .electoratesBorders {
+  display: none;
 }
 
 .electorateBorder {
@@ -178,7 +187,7 @@ $focusChangeTransitionDuration: 0.5s;
 .electorateBorderPolygon {
   pointer-events: none;
   fill: none;
-  stroke: $color_Grey;
+  stroke: $color_LightGrey;
   stroke-width: $swLight;
 
   @media (max-width: 667px) {
@@ -211,9 +220,15 @@ $focusChangeTransitionDuration: 0.5s;
   stroke: var(--color-allocation);
 }
 
+// Electorates (Partitions)
+
 .electoratesPartitions {
   pointer-events: none;
   opacity: 0;
+}
+
+.root:not([data-layer='#{$Layer_ELECTORATES}']) .electoratesPartitions {
+  display: none;
 }
 
 .root[data-has-focuses] .electoratesPartitions {
@@ -239,9 +254,23 @@ $focusChangeTransitionDuration: 0.5s;
   stroke: none;
 }
 
-.states {
+// States (Backgrounds)
+
+.statesBackgrounds {
   pointer-events: none;
   fill: $color_White;
+  stroke: none;
+}
+
+.root:not([data-layer='#{$Layer_STATES}']) .statesBackgrounds {
+  display: none;
+}
+
+// States (Borders)
+
+.statesBorders {
+  pointer-events: none;
+  fill: none;
   stroke: $color_Black;
   stroke-width: $swLight;
 
@@ -249,6 +278,12 @@ $focusChangeTransitionDuration: 0.5s;
     stroke-width: $swLight_SM;
   }
 }
+
+.root:not([data-layer='#{$Layer_STATES}']) .statesBorders {
+  display: none;
+}
+
+// Labels (not used yet)
 
 .labels {
   pointer-events: none;
