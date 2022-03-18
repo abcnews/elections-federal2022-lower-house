@@ -41,7 +41,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const isInteractive = !!onTapElectorate;
   const { electoratesPolygons, statesPolygons, hexWidth, hexHeight, width, height, margin } = LAYOUTS_CONFIGS[layout];
   const svgWidth = width + 2 * margin.horizontal;
-  const svgHeight = height + 2 * margin.vertical;
+  // const svgHeight = height + 2 * margin.vertical;
+  const svgHeight = svgWidth; // hack: keep square to stop variable graphic height when switching layout
   const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
   const statesPolygonsHref = `#${componentID}_states`;
   const electoratesRenderProps = Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {

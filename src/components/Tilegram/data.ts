@@ -329,14 +329,14 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
 };
 
 const LAYOUT_OFFSCREEN: CellRecord = {
-  ACT: [100, 100],
-  NSW: [100, 100],
-  NT: [100, 100],
-  QLD: [100, 100],
-  SA: [100, 100],
-  TAS: [100, 100],
-  VIC: [100, 100],
-  WA: [100, 100]
+  ACT: [0, 25],
+  NSW: [0, 25],
+  NT: [0, 25],
+  QLD: [0, 25],
+  SA: [0, 25],
+  TAS: [0, 25],
+  VIC: [0, 25],
+  WA: [0, 25]
 };
 
 const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
@@ -371,14 +371,14 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
   //   WA: [0, 5.75]
   // },
   [Layout.GRID]: {
-    ACT: [10, 21, true],
-    NSW: [0, 2],
-    NT: [15, 21],
-    QLD: [0, 12],
-    SA: [17, 11, true],
-    TAS: [2, 21],
-    VIC: [12, 2],
-    WA: [11, 10, true]
+    ACT: [10, 19, true],
+    NSW: [0, 0],
+    NT: [15, 19],
+    QLD: [0, 10],
+    SA: [17, 9, true],
+    TAS: [2, 19],
+    VIC: [12, 0],
+    WA: [11, 8, true]
   },
   // [Layout.GRID]: {
   //   ACT: [10, 21, true],
@@ -392,35 +392,35 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
   // },
   [Layout.ACT]: {
     ...LAYOUT_OFFSCREEN,
-    ACT: [4.5, 3.5, true]
+    ACT: [4.5, 1.5, true]
   },
   [Layout.NSW]: {
     ...LAYOUT_OFFSCREEN,
-    NSW: [0, 2]
+    NSW: [0, 0]
   },
   [Layout.NT]: {
     ...LAYOUT_OFFSCREEN,
-    NT: [4.24, 4]
+    NT: [4.24, 2]
   },
   [Layout.QLD]: {
     ...LAYOUT_OFFSCREEN,
-    QLD: [0.75, 2]
+    QLD: [0.75, 0]
   },
   [Layout.SA]: {
     ...LAYOUT_OFFSCREEN,
-    SA: [3.75, 2]
+    SA: [3.75, 0]
   },
   [Layout.TAS]: {
     ...LAYOUT_OFFSCREEN,
-    TAS: [3.25, 3.5]
+    TAS: [3.25, 1.5]
   },
   [Layout.VIC]: {
     ...LAYOUT_OFFSCREEN,
-    VIC: [1, 2]
+    VIC: [1, 0]
   },
   [Layout.WA]: {
     ...LAYOUT_OFFSCREEN,
-    WA: [3.5, 1]
+    WA: [3.5, -1]
   }
 };
 
@@ -436,28 +436,39 @@ const COMMON_LAYOUT_CONFIG = {
 const COMMON_STATE_LAYOUT_CONFIG = {
   ...COMMON_LAYOUT_CONFIG,
   margin: {
-    // horizontal: 52,
     horizontal: 2,
-    vertical: 2
+    vertical: 102
   },
-  ...getLayoutDimensions(10, 12)
+  ...getLayoutDimensions(10, 8)
 };
 
 export const LAYOUTS_CONFIGS: LayoutsConfigs = {
   [Layout.COUNTRY]: {
     ...COMMON_LAYOUT_CONFIG,
+    margin: {
+      horizontal: 47,
+      vertical: 2
+    },
     ...getLayoutDimensions(14, 19),
     ...getLayoutPolygons(Layout.COUNTRY)
   },
   [Layout.EXPLODED]: {
     ...COMMON_LAYOUT_CONFIG,
+    margin: {
+      horizontal: 20,
+      vertical: 2
+    },
     ...getLayoutDimensions(16.75, 20.5),
     ...getLayoutPolygons(Layout.EXPLODED)
   },
   [Layout.GRID]: {
     ...COMMON_LAYOUT_CONFIG,
     ...getLayoutDimensions(20, 23),
-    ...getLayoutPolygons(Layout.GRID)
+    ...getLayoutPolygons(Layout.GRID),
+    margin: {
+      horizontal: 2,
+      vertical: 77
+    }
   },
   [Layout.ACT]: {
     ...COMMON_STATE_LAYOUT_CONFIG,

@@ -23,39 +23,31 @@ body {
   min-height: 100vh;
 }
 
-@media (min-width: 80rem) {
+@media (min-width: 70rem) {
   .root {
     flex-direction: row;
   }
 }
 
-.graphic {
-  flex: 0 0 auto;
-  margin: 0 auto;
-  padding: 0.5rem;
-  width: 100%;
-  max-width: 57.5rem;
-}
-
-@media (min-width: 90rem) {
-  .graphic {
-    padding-right: 0;
-  }
-}
-
-.controls {
-  flex: 1 1 100%;
+.root > * {
+  flex: 1 1 auto;
   margin: 0 auto;
   padding: 0 0.5rem;
   width: 100%;
-  max-width: 57.5rem;
+  max-width: 41rem;
+}
+
+.graphic {
+}
+
+.controls {
   font-family: ABCSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-@media (min-width: 80rem) {
+@media (min-width: 70rem) {
   .controls {
-    margin: 0 auto 0 0;
-    max-width: 28.75rem;
+    margin: 0;
+    max-width: 24rem;
     max-height: 100vh;
     overflow-y: auto;
   }
