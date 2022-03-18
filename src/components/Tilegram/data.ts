@@ -350,18 +350,8 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
     VIC: [4, 10],
     WA: [0, 5]
   },
-  // [Layout.EXPLODED]: {
-  //   ACT: [12, 11.25, true],
-  //   NSW: [6.75, 6.75],
-  //   NT: [3, 5],
-  //   QLD: [5.75, 0],
-  //   SA: [3, 6.75],
-  //   TAS: [9.26, 18.5, true],
-  //   VIC: [6.75, 11.75, true],
-  //   WA: [0, 5.75]
-  // },
   [Layout.EXPLODED]: {
-    ACT: [11.75, 10.75],
+    ACT: [12, 11.25, true],
     NSW: [6.75, 6.75],
     NT: [3, 5],
     QLD: [5.75, 0],
@@ -370,26 +360,36 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
     VIC: [6.75, 11.75, true],
     WA: [0, 5.75]
   },
-  // [Layout.GRID]: {
-  //   ACT: [10, 21, true],
-  //   NSW: [0, 2],
-  //   NT: [15, 21],
-  //   QLD: [0, 12],
-  //   SA: [17, 11, true],
-  //   TAS: [2, 21],
-  //   VIC: [12, 2],
-  //   WA: [11, 10, true]
-  // }
+  // [Layout.EXPLODED]: {
+  //   ACT: [11.75, 10.75],
+  //   NSW: [6.75, 6.75],
+  //   NT: [3, 5],
+  //   QLD: [5.75, 0],
+  //   SA: [3, 6.75],
+  //   TAS: [9.26, 18.5, true],
+  //   VIC: [6.75, 11.75, true],
+  //   WA: [0, 5.75]
+  // },
   [Layout.GRID]: {
     ACT: [10, 21, true],
     NSW: [0, 2],
     NT: [15, 21],
-    QLD: [6, 12],
+    QLD: [0, 12],
     SA: [17, 11, true],
     TAS: [2, 21],
     VIC: [12, 2],
-    WA: [1, 9]
+    WA: [11, 10, true]
   },
+  // [Layout.GRID]: {
+  //   ACT: [10, 21, true],
+  //   NSW: [0, 2],
+  //   NT: [15, 21],
+  //   QLD: [6, 12],
+  //   SA: [17, 11, true],
+  //   TAS: [2, 21],
+  //   VIC: [12, 2],
+  //   WA: [1, 9]
+  // },
   [Layout.ACT]: {
     ...LAYOUT_OFFSCREEN,
     ACT: [4.5, 3.5, true]
@@ -436,7 +436,8 @@ const COMMON_LAYOUT_CONFIG = {
 const COMMON_STATE_LAYOUT_CONFIG = {
   ...COMMON_LAYOUT_CONFIG,
   margin: {
-    horizontal: 52,
+    // horizontal: 52,
+    horizontal: 2,
     vertical: 2
   },
   ...getLayoutDimensions(10, 12)
