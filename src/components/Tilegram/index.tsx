@@ -12,17 +12,12 @@ import { ELEMENT_NAMES, LAYOUTS_CONFIGS, generateElementIDRecord } from './data'
 import Defs from './defs';
 import styles from './styles.scss';
 
-export enum TappableLayer {
-  Electorates
-}
-
 export type TilegramProps = {
   layout?: Layout;
   allocations?: Allocations;
   focuses?: Focuses;
   year?: ElectionYear;
   relative?: ElectionYear | null;
-  tappableLayer?: TappableLayer;
   onTapElectorate?: (elecctorateID: string) => void;
 };
 
@@ -32,7 +27,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const [isInspecting, setIsInspecting] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
-  const { allocations, focuses, layout, year, relative, tappableLayer, onTapElectorate } = props;
+  const { allocations, focuses, layout, year, relative, onTapElectorate } = props;
   // TODO: Use year with candidate lists (once we get them) to provide chenge options
   // (or maybe just pass year and electorate ID to onTapElectorate for it to be handled outside)
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
@@ -71,7 +66,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   }, {});
 
   const onTapElectorateBackground = (event: React.MouseEvent<SVGElement>) => {
-    if (onTapElectorate && tappableLayer === TappableLayer.Electorates && event.target instanceof SVGUseElement) {
+    if (onTapElectorate && event.target instanceof SVGUseElement) {
       const electorateID = event.target.getAttribute('data-electorate');
 
       if (electorateID) {
@@ -120,7 +115,6 @@ const Tilegram: React.FC<TilegramProps> = props => {
       data-has-focuses={hasFocuses ? '' : undefined}
       data-is-interactive={isInteractive ? '' : undefined}
       data-is-inspecting={isInspecting ? '' : undefined}
-      data-tappable={tappableLayer}
     >
       <svg ref={svgRef} className={styles.svg} viewBox={svgViewBox}>
         <Defs

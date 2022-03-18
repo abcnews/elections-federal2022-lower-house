@@ -27,7 +27,6 @@ import type { GraphicProps } from '../Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from '../Graphic';
 import graphicStyles from '../Graphic/styles.scss';
 import Icon from '../Icon';
-import { TappableLayer } from '../Tilegram';
 import tilegramStyles from '../Tilegram/styles.scss';
 import totalsStyles from '../Totals/styles.scss';
 import styles from './styles.scss';
@@ -40,8 +39,7 @@ const COMPONENTS_STYLES = {
 
 const INITIAL_GRAPHIC_PROPS = {
   allocations: { ...INITIAL_ELECTORATES_ALLOCATIONS },
-  focuses: { ...INITIAL_ELECTORATES_FOCUSES },
-  tappableLayer: TappableLayer.Electorates
+  focuses: { ...INITIAL_ELECTORATES_FOCUSES }
 };
 
 const STORY_MARKERS = [
@@ -71,7 +69,6 @@ const Editor: React.FC = () => {
   const [year, setYear] = useState<ElectionYear>(initialUrlParamProps.year);
   const [relative, setRelative] = useState<number | null>(initialUrlParamProps.relative);
   const [counting, setCounting] = useState(initialUrlParamProps.counting);
-  const [tappableLayer, setTappableLayer] = useState(initialUrlParamProps.tappableLayer);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
 
   const createSnapshot = (name: string, urlQuery: string) => {
@@ -149,8 +146,6 @@ const Editor: React.FC = () => {
       }
     }
 
-    // TODO add state layer, so we can toggle entire groups of electorates all at once
-    // setTappableLayer(nextFocusedElectorateIDs.length > 0 ? null : TappableLayer.Electorates);
     mixinGraphicProps({
       focuses: ELECTORATE_IDS.reduce<Focuses>(
         (focuses, electorateID) => ({
@@ -181,10 +176,9 @@ const Editor: React.FC = () => {
       focuses,
       year,
       relative,
-      counting,
-      tappableLayer
+      counting
     }),
-    [layout, allocations, focuses, year, relative, counting, tappableLayer]
+    [layout, allocations, focuses, year, relative, counting]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -220,7 +214,7 @@ const Editor: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <Graphic tappableLayer={TappableLayer.Electorates} onTapElectorate={onTapElectorate} {...graphicProps} />
+        <Graphic onTapElectorate={onTapElectorate} {...graphicProps} />
       </div>
       <div className={styles.controls}>
         <h3>Layout</h3>

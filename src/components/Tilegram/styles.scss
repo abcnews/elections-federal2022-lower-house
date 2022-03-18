@@ -1,9 +1,5 @@
 @import '../../constants.scss';
 
-// TappableLayer enum
-
-$TappableLayer_Electorates: 0;
-
 // Focus management
 
 $opacityUnfocused: 0.05;
@@ -87,7 +83,7 @@ $focusChangeTransitionDuration: 0.5s;
   shape-rendering: crispEdges;
 }
 
-.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .electoratesBackgrounds {
+.root[data-is-interactive] .electoratesBackgrounds {
   pointer-events: all;
 }
 
@@ -149,7 +145,7 @@ $focusChangeTransitionDuration: 0.5s;
   animation: flipAllocations $allocationTransitionDuration linear 1 both;
 }
 
-.root[data-is-interactive][data-tappable='#{$TappableLayer_Electorates}'] .electorateBackgroundPolygon {
+.root[data-is-interactive] .electorateBackgroundPolygon {
   cursor: pointer;
 }
 

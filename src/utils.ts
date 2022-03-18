@@ -97,11 +97,6 @@ export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
 
 export const graphicPropsToAlternatingCase = (graphicProps, defaultGraphicProps?): string =>
   Object.keys(graphicProps).reduce((alternatingCase, key) => {
-    // We never export tappableLayer
-    if (key === 'tappableLayer') {
-      return alternatingCase;
-    }
-
     const value = graphicProps[key];
 
     // We never export defaults
@@ -151,20 +146,11 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
     graphicProps.counting = graphicProps.counting === 'true';
   }
 
-  if (typeof graphicProps.tappableLayer === 'string') {
-    graphicProps.tappableLayer = +graphicProps.tappableLayer;
-  }
-
   return graphicProps;
 };
 
 export const graphicPropsToUrlQuery = (graphicProps, defaultGraphicProps?): string =>
   Object.keys(graphicProps).reduce((urlQuery, key) => {
-    // We never export tappableLayer
-    if (key === 'tappableLayer') {
-      return urlQuery;
-    }
-
     const value = graphicProps[key];
 
     // We never export defaults
