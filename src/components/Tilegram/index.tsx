@@ -58,37 +58,41 @@ const Tilegram: React.FC<TilegramProps> = props => {
     width,
     height,
     margin
-  } = LAYOUTS_CONFIGS[layout];
+  } = useMemo(() => LAYOUTS_CONFIGS[layout], [layout]);
   const svgWidth = width + 2 * margin.horizontal;
   // const svgHeight = height + 2 * margin.vertical;
   const svgHeight = svgWidth; // hack: keep square to stop variable graphic height when switching layout
   const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
   const statesPolygonsHref = `#${componentID}_states`;
-  const statesLabelsHref = `#${componentID}_states_labels`;
-  const electoratesRenderProps = Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
-    const id = ElectorateID[electorate.id];
-    const allocation = allocations ? allocations[id] : Allocation.None;
-    const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
-    const polygon = electoratesPolygons[id];
+  const electoratesRenderProps = useMemo(
+    () =>
+      Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
+        const id = ElectorateID[electorate.id];
+        const allocation = allocations ? allocations[id] : Allocation.None;
+        const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
+        const polygon = electoratesPolygons[id];
 
-    return {
-      ...memo,
-      [electorate.id]: {
-        id,
-        name: electorate.name,
-        elementIDRecord: generateElementIDRecord(ELEMENT_NAMES, componentID, 'electorate', id),
-        allocation,
-        hasAllocation: allocation && determineIfAllocationIsMade(allocation),
-        hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
-        relativeAllocation,
-        hasDefinitiveRelativeAllocation: relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation),
-        shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
-        wasPreserved: relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
-        focus: focuses ? focuses[id] : Focus.No,
-        polygon
-      }
-    };
-  }, {});
+        return {
+          ...memo,
+          [electorate.id]: {
+            id,
+            name: electorate.name,
+            elementIDRecord: generateElementIDRecord(ELEMENT_NAMES, componentID, 'electorate', id),
+            allocation,
+            hasAllocation: allocation && determineIfAllocationIsMade(allocation),
+            hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
+            relativeAllocation,
+            hasDefinitiveRelativeAllocation:
+              relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation),
+            shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
+            wasPreserved: relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
+            focus: focuses ? focuses[id] : Focus.No,
+            polygon
+          }
+        };
+      }, {}),
+    [allocations, relativeAllocations, electoratesPolygons, componentID, focuses]
+  );
 
   const onTapElectorateBackground = (event: React.MouseEvent<SVGElement>) => {
     if (onTapElectorate && event.target instanceof SVGUseElement) {
@@ -114,6 +118,30 @@ const Tilegram: React.FC<TilegramProps> = props => {
       writable: false
     });
   }, []);
+
+  useLayoutEffect(() => {
+    const svgEl = svgRef.current;
+
+    if (!relativeAllocations || !svgEl) {
+      return;
+    }
+
+    Object.values(electoratesRenderProps).forEach(({ id, allocation, shouldFlip }) => {
+      const electorateBackgroundPolygon =
+        shouldFlip && svgEl.querySelector(`.${styles.electorateBackgroundPolygon}[data-electorate=${id}]`);
+
+      if (!electorateBackgroundPolygon) {
+        return;
+      }
+
+      const previousAllocation = electorateBackgroundPolygon.getAttribute('data-last-flipped-allocation');
+
+      if (!previousAllocation || previousAllocation !== allocation) {
+        electorateBackgroundPolygon.setAttribute('data-last-flipped-allocation', allocation);
+        electorateBackgroundPolygon.setAttribute('data-should-flip', '');
+      }
+    });
+  }, [svgRef.current, allocations, relativeAllocations]);
 
   useEffect(() => {
     if (!isInteractive) {
@@ -170,8 +198,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     data-electorate={id}
                     data-allocation={allocation}
                     data-relative-allocation={relativeAllocation || undefined}
-                    data-should-flip={shouldFlip ? '' : undefined}
                     data-was-preserved={wasPreserved ? '' : undefined}
+                    onAnimationEnd={e => e.currentTarget.removeAttribute('data-should-flip')}
                   />
                 </g>
               )
