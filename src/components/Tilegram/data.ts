@@ -49,7 +49,7 @@ type LayoutsConfigs = Record<Layout, LayoutConfig>;
 
 export const ELEMENT_NAMES = ['polygon', 'clipPath'];
 
-export const HEX_SIDE_LENGTH = 17;
+export const HEX_SIDE_LENGTH = 25;
 export const HEX_WIDTH = Math.sqrt(3) * HEX_SIDE_LENGTH;
 export const HEX_HEIGHT = 2 * HEX_SIDE_LENGTH;
 
