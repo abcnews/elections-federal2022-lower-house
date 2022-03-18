@@ -19,6 +19,7 @@ export type ElectorateRenderProps = {
 export type ElectoratesRenderProps = Record<string, ElectorateRenderProps>;
 
 type Vector2 = [number, number]; // [x, y]
+export type Vector2Record = Record<string, Vector2>;
 
 type Cell = [number, number]; // [column, row]
 type CellRecord = Record<string, Cell>;
@@ -43,6 +44,7 @@ type LayoutConfig = {
   hexHeight: number;
   electoratesPolygons: PolygonRecord;
   statesPolygons: PolygonRecord;
+  statesLabelsPositions: Vector2Record;
 };
 
 type LayoutsConfigs = Record<Layout, LayoutConfig>;
@@ -155,6 +157,33 @@ const getLayoutPolygons = (layout: Layout) => {
   return {
     electoratesPolygons,
     statesPolygons
+  };
+};
+
+const getLayoutLabelsPositions = (layout: Layout) => {
+  const statesCells = LAYOUTS_STATES_CELLS[layout];
+
+  const statesLabelsPositions = Object.keys(statesCells).reduce((memo, stateKey) => {
+    const [offsetX, offsetY, shouldNegateEvenRowOffset] = statesCells[stateKey];
+    const stateLabelCell =
+      STATES_LABELS_CELLS[stateKey][
+        layout === Layout.COUNTRY
+          ? 'COUNTRY'
+          : layout === Layout.EXPLODED
+          ? 'EXPLODED'
+          : layout === Layout.GRID
+          ? 'GRID'
+          : 'SINGLE'
+      ];
+
+    return {
+      ...memo,
+      [stateKey]: getHexVector2(addVector2s(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset)
+    };
+  }, {} as Vector2Record);
+
+  return {
+    statesLabelsPositions
   };
 };
 
@@ -328,6 +357,57 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
   }
 };
 
+const STATES_LABELS_CELLS: NestedCellRecord = {
+  ACT: {
+    COUNTRY: [0.5, 1.5],
+    EXPLODED: [0.5, 1.5],
+    GRID: [0.75, -1],
+    SINGLE: [0.75, -1]
+  },
+  NSW: {
+    COUNTRY: [5, 2],
+    EXPLODED: [5, 2],
+    GRID: [4.5, -1],
+    SINGLE: [4.75, -1]
+  },
+  NT: {
+    COUNTRY: [1, 0.5],
+    EXPLODED: [1, 0.5],
+    GRID: [1.5, -1],
+    SINGLE: [1.5, -1]
+  },
+  QLD: {
+    COUNTRY: [4.5, 3.5],
+    EXPLODED: [4.5, 3.5],
+    GRID: [4, -1],
+    SINGLE: [4, -1]
+  },
+  SA: {
+    COUNTRY: [1, 3.5],
+    EXPLODED: [1.5, 3.5],
+    GRID: [1, -1],
+    SINGLE: [1, -1]
+  },
+  TAS: {
+    COUNTRY: [2, 1],
+    EXPLODED: [2, 1],
+    GRID: [2, -1],
+    SINGLE: [2, -1]
+  },
+  VIC: {
+    COUNTRY: [3.5, 3.25],
+    EXPLODED: [4, 3.25],
+    GRID: [3.5, -1],
+    SINGLE: [3.75, -1]
+  },
+  WA: {
+    COUNTRY: [1.5, 5.5],
+    EXPLODED: [1, 5.5],
+    GRID: [0.75, 1],
+    SINGLE: [1.25, 0]
+  }
+};
+
 const LAYOUT_OFFSCREEN: CellRecord = {
   ACT: [0, 25],
   NSW: [0, 25],
@@ -374,11 +454,11 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
     ACT: [10, 19, true],
     NSW: [0, 0],
     NT: [15, 19],
-    QLD: [0, 10],
+    QLD: [1, 9, true],
     SA: [17, 9, true],
-    TAS: [2, 19],
+    TAS: [3, 19],
     VIC: [12, 0],
-    WA: [11, 8, true]
+    WA: [11, 7]
   },
   // [Layout.GRID]: {
   //   ACT: [10, 21, true],
@@ -400,7 +480,7 @@ const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
   },
   [Layout.NT]: {
     ...LAYOUT_OFFSCREEN,
-    NT: [4.24, 2]
+    NT: [3.75, 1.5]
   },
   [Layout.QLD]: {
     ...LAYOUT_OFFSCREEN,
@@ -450,7 +530,8 @@ export const LAYOUTS_CONFIGS: LayoutsConfigs = {
       vertical: 2
     },
     ...getLayoutDimensions(14, 19),
-    ...getLayoutPolygons(Layout.COUNTRY)
+    ...getLayoutPolygons(Layout.COUNTRY),
+    ...getLayoutLabelsPositions(Layout.COUNTRY)
   },
   [Layout.EXPLODED]: {
     ...COMMON_LAYOUT_CONFIG,
@@ -459,12 +540,14 @@ export const LAYOUTS_CONFIGS: LayoutsConfigs = {
       vertical: 2
     },
     ...getLayoutDimensions(16.75, 20.5),
-    ...getLayoutPolygons(Layout.EXPLODED)
+    ...getLayoutPolygons(Layout.EXPLODED),
+    ...getLayoutLabelsPositions(Layout.EXPLODED)
   },
   [Layout.GRID]: {
     ...COMMON_LAYOUT_CONFIG,
     ...getLayoutDimensions(20, 23),
     ...getLayoutPolygons(Layout.GRID),
+    ...getLayoutLabelsPositions(Layout.GRID),
     margin: {
       horizontal: 2,
       vertical: 77
@@ -472,34 +555,42 @@ export const LAYOUTS_CONFIGS: LayoutsConfigs = {
   },
   [Layout.ACT]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.ACT)
+    ...getLayoutPolygons(Layout.ACT),
+    ...getLayoutLabelsPositions(Layout.ACT)
   },
   [Layout.NSW]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.NSW)
+    ...getLayoutPolygons(Layout.NSW),
+    ...getLayoutLabelsPositions(Layout.NSW)
   },
   [Layout.NT]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.NT)
+    ...getLayoutPolygons(Layout.NT),
+    ...getLayoutLabelsPositions(Layout.NT)
   },
   [Layout.QLD]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.QLD)
+    ...getLayoutPolygons(Layout.QLD),
+    ...getLayoutLabelsPositions(Layout.QLD)
   },
   [Layout.SA]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.SA)
+    ...getLayoutPolygons(Layout.SA),
+    ...getLayoutLabelsPositions(Layout.SA)
   },
   [Layout.TAS]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.TAS)
+    ...getLayoutPolygons(Layout.TAS),
+    ...getLayoutLabelsPositions(Layout.TAS)
   },
   [Layout.VIC]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.VIC)
+    ...getLayoutPolygons(Layout.VIC),
+    ...getLayoutLabelsPositions(Layout.VIC)
   },
   [Layout.WA]: {
     ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.WA)
+    ...getLayoutPolygons(Layout.WA),
+    ...getLayoutLabelsPositions(Layout.WA)
   }
 };

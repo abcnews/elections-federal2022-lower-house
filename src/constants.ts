@@ -331,40 +331,58 @@ export const STATE_IDS = Object.keys(StateID).filter(key => typeof StateID[key] 
 export type State = {
   id: StateID;
   name: string;
+  abbr: string;
+  caps: string;
 };
 
 export const STATES: State[] = [
   {
     id: StateID.ACT,
-    name: 'Australian Capital Territory'
+    name: 'Australian Capital Territory',
+    abbr: 'ACT',
+    caps: 'ACT'
   },
   {
     id: StateID.NSW,
-    name: 'New South Wales'
+    name: 'New South Wales',
+    abbr: 'NSW',
+    caps: 'NSW'
   },
   {
     id: StateID.NT,
-    name: 'Northern Territory'
+    name: 'Northern Territory',
+    abbr: 'NT',
+    caps: 'NT'
   },
   {
     id: StateID.QLD,
-    name: 'Queensland'
+    name: 'Queensland',
+    abbr: 'Qld.',
+    caps: 'QLD'
   },
   {
     id: StateID.SA,
-    name: 'South Australia'
+    name: 'South Australia',
+    abbr: 'SA',
+    caps: 'SA'
   },
   {
     id: StateID.TAS,
-    name: 'Tasmania'
+    name: 'Tasmania',
+    abbr: 'Tas.',
+    caps: 'TAS'
   },
   {
     id: StateID.VIC,
-    name: 'Victoria'
+    name: 'Victoria',
+    abbr: 'Vic.',
+    caps: 'VIC'
   },
   {
     id: StateID.WA,
-    name: 'Western Australia'
+    name: 'Western Australia',
+    abbr: 'WA',
+    caps: 'WA'
   }
 ];
 

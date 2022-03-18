@@ -283,45 +283,28 @@ $focusChangeTransitionDuration: 0.5s;
   display: none;
 }
 
-// Labels (not used yet)
+// States (Labels)
 
-.labels {
+.statesLabels {
   pointer-events: none;
-}
-
-.label {
+  transform: translate(0, 0.6em);
   text-anchor: middle;
-  font-size: 1rem;
-  @include fadedOutTransitionable;
-
-  @media (max-width: 667px) {
-    transform: translate(0, 0.25rem);
-    font-size: 1.5rem;
-  }
-}
-
-.root[data-has-focuses] .label[data-focus='#{$Focus_No}'] {
-  opacity: 0;
-}
-
-.root[data-has-focuses][data-is-inspecting] .label[data-focus='#{$Focus_No}'] {
-  @include fadedOutInspecting;
-  opacity: 1;
-}
-
-.label > * {
-  text-anchor: middle;
-  font-size: 1.5rem;
-
-  @media (min-width: 668px) {
-    font-size: 1rem;
-  }
-}
-
-.labelText {
+  font-size: 1.375rem;
   fill: $color_Text;
 }
 
-.label[data-has-definitive-allocation] > .labelText {
-  fill: $color_BG;
+.root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
+.root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_EXPLODED}'] .statesLabels {
+  display: none;
+}
+
+.root[data-layout='#{$Layout_GRID}'] .statesLabels {
+  font-size: 2rem;
+}
+
+.root[data-layout='#{$Layout_COUNTRY}'] .stateLabel[data-state='ACT'],
+.root[data-layout='#{$Layout_EXPLODED}'] .stateLabel[data-state='ACT'],
+.root[data-layout='#{$Layout_COUNTRY}'] .stateLabel[data-state='NT'],
+.root[data-layout='#{$Layout_EXPLODED}'] .stateLabel[data-state='NT'] {
+  font-size: 0.8em;
 }

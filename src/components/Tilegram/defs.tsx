@@ -7,7 +7,7 @@ export type DefsProps = {
   statesPolygons: PolygonRecord;
 };
 
-const Defs: React.FC<DefsProps> = ({ componentID, electoratesRenderProps: electoratesProps, statesPolygons }) => {
+const Defs: React.FC<DefsProps> = ({ componentID, electoratesRenderProps, statesPolygons }) => {
   return (
     <defs>
       <g id={`${componentID}_states`}>
@@ -15,7 +15,7 @@ const Defs: React.FC<DefsProps> = ({ componentID, electoratesRenderProps: electo
           <polygon key={stateID} points={statesPolygons[stateID].join(' ')} />
         ))}
       </g>
-      {Object.values(electoratesProps).reduce<JSX.Element[]>(
+      {Object.values(electoratesRenderProps).reduce<JSX.Element[]>(
         (memo, { elementIDRecord, name, polygon }) => [
           ...memo,
           <polygon key={elementIDRecord.polygon} id={elementIDRecord.polygon} points={polygon.join(' ')}>

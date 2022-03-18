@@ -1,6 +1,16 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Allocations, ElectionYear, Focuses, Layer, Layout } from '../../constants';
-import { Allocation, ElectorateID, Focus, DEFAULT_LAYER, DEFAULT_LAYOUT, ELECTORATES, PRESETS } from '../../constants';
+import {
+  DEFAULT_LAYER,
+  DEFAULT_LAYOUT,
+  Allocation,
+  ElectorateID,
+  ELECTORATES,
+  Focus,
+  StateID,
+  STATES,
+  PRESETS
+} from '../../constants';
 import {
   determineIfAllocationIsDefinitive,
   determineIfAllocationIsMade,
@@ -39,12 +49,22 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
-  const { electoratesPolygons, statesPolygons, hexWidth, hexHeight, width, height, margin } = LAYOUTS_CONFIGS[layout];
+  const {
+    electoratesPolygons,
+    statesPolygons,
+    statesLabelsPositions,
+    hexWidth,
+    hexHeight,
+    width,
+    height,
+    margin
+  } = LAYOUTS_CONFIGS[layout];
   const svgWidth = width + 2 * margin.horizontal;
   // const svgHeight = height + 2 * margin.vertical;
   const svgHeight = svgWidth; // hack: keep square to stop variable graphic height when switching layout
   const svgViewBox = `0 0 ${svgWidth} ${svgHeight}`;
   const statesPolygonsHref = `#${componentID}_states`;
+  const statesLabelsHref = `#${componentID}_states_labels`;
   const electoratesRenderProps = Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
     const id = ElectorateID[electorate.id];
     const allocation = allocations ? allocations[id] : Allocation.None;
@@ -130,8 +150,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
           statesPolygons={statesPolygons}
         />
         <g transform={`translate(${margin.horizontal} ${margin.vertical})`}>
-          <use xlinkHref={statesPolygonsHref} className={styles.baseOuter}></use>
-          <use xlinkHref={statesPolygonsHref} className={styles.baseInner}></use>
+          <use xlinkHref={statesPolygonsHref} className={styles.baseOuter} />
+          <use xlinkHref={statesPolygonsHref} className={styles.baseInner} />
           <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>
             {Object.values(electoratesRenderProps).map(
               ({ id, elementIDRecord, allocation, relativeAllocation, shouldFlip, wasPreserved, focus, polygon }) => (
@@ -183,7 +203,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
                     data-relative-allocation={relativeAllocation || undefined}
                     data-focus={focus}
-                  ></use>
+                  />
                 </g>
               )
             )}
@@ -198,12 +218,24 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   data-relative-allocation={relativeAllocation || undefined}
                   data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
                   data-focus={focus}
-                ></use>
+                />
               )
             )}
           </g>
           <use xlinkHref={statesPolygonsHref} className={styles.statesBackgrounds} />
           <use xlinkHref={statesPolygonsHref} className={styles.statesBorders} />
+          <g className={styles.statesLabels}>
+            {Object.keys(statesLabelsPositions).map(stateID => {
+              const label = STATES.find(({ id }) => id === StateID[stateID])?.caps;
+              const position = statesLabelsPositions[stateID];
+
+              return (
+                <text key={stateID} className={styles.stateLabel} x={position[0]} y={position[1]} data-state={stateID}>
+                  {label}
+                </text>
+              );
+            })}
+          </g>
         </g>
       </svg>
     </div>
