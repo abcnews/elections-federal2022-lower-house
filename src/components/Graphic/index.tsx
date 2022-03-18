@@ -1,7 +1,7 @@
 import React from 'react';
-import { DEFAULT_ELECTION_YEAR, DEFAULT_LAYOUT } from '../../constants';
+import { DEFAULT_ELECTION_YEAR } from '../../constants';
 import type { TilegramProps } from '../Tilegram';
-import Tilegram from '../Tilegram';
+import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
 import type { TotalsProps } from '../Totals';
 import Totals from '../Totals';
 import styles from './styles.scss';
@@ -19,15 +19,18 @@ export type PossiblyEncodedGraphicProps =
     }
   | GraphicProps;
 
-export const DEFAULT_PROPS = {
-  layout: DEFAULT_LAYOUT,
+export const DEFAULT_PROPS: Partial<GraphicProps> = {
+  ...DEFAULT_TILEGRAM_PROPS,
   year: DEFAULT_ELECTION_YEAR,
   relative: null,
   counting: true
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { title, counting, year, allocations, children, ...otherTilegramProps } = props;
+  const { title, counting, year, allocations, children, ...otherTilegramProps } = {
+    ...DEFAULT_PROPS,
+    ...props
+  };
   const isCounting = typeof counting !== 'boolean' || counting;
 
   return (

@@ -52,6 +52,16 @@ $focusChangeTransitionDuration: 0.5s;
   stroke-linecap: round;
 }
 
+.electoratesLayer,
+.statesLayer {
+  display: none;
+}
+
+.root[data-layer='#{$Layer_ELECTORATES}'] .electoratesLayer,
+.root[data-layer='#{$Layer_STATES}'] .statesLayer {
+  display: initial;
+}
+
 .baseOuter {
   stroke: $color_Grey;
   stroke-width: $swLight;
@@ -227,6 +237,17 @@ $focusChangeTransitionDuration: 0.5s;
 
 .root[data-has-focuses] .electoratePartition[data-focus='#{$Focus_No}'] {
   stroke: none;
+}
+
+.states {
+  pointer-events: none;
+  fill: $color_White;
+  stroke: $color_Black;
+  stroke-width: $swLight;
+
+  @media (max-width: 667px) {
+    stroke-width: $swLight_SM;
+  }
 }
 
 .labels {

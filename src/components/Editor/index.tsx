@@ -1,6 +1,9 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import {
+  Layer,
+  LAYER_LABELS,
   Layout,
+  LAYOUT_LABELS,
   ElectorateID,
   ELECTORATE_IDS,
   ELECTORATES,
@@ -14,8 +17,7 @@ import {
   ElectionYear,
   ELECTION_YEARS,
   MIXINS,
-  PRESETS,
-  LAYOUT_LABELS
+  PRESETS
 } from '../../constants';
 import {
   alternatingCaseToGraphicProps,
@@ -63,11 +65,12 @@ const Editor: React.FC = () => {
     }),
     []
   );
+  const [layer, setLayer] = useState<Layer>(initialUrlParamProps.layer);
   const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
-  const [year, setYear] = useState<ElectionYear>(initialUrlParamProps.year);
-  const [relative, setRelative] = useState<number | null>(initialUrlParamProps.relative);
+  const [year, setYear] = useState<ElectionYear | undefined>(initialUrlParamProps.year);
+  const [relative, setRelative] = useState<number | null | undefined>(initialUrlParamProps.relative);
   const [counting, setCounting] = useState(initialUrlParamProps.counting);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
 
@@ -90,7 +93,7 @@ const Editor: React.FC = () => {
     setSnapshots(nextSnapshots);
   };
 
-  const mixinGraphicProps = (mixin: GraphicProps) => {
+  const mixinGraphicProps = (mixin: Partial<GraphicProps>) => {
     setAllocations({
       ...allocations,
       ...mixin.allocations
@@ -102,7 +105,7 @@ const Editor: React.FC = () => {
     setYear(mixin.year || year);
   };
 
-  const replaceGraphicProps = (replacement: GraphicProps) => {
+  const replaceGraphicProps = (replacement: Partial<GraphicProps>) => {
     setAllocations({
       ...INITIAL_ELECTORATES_ALLOCATIONS,
       ...replacement.allocations
@@ -171,6 +174,7 @@ const Editor: React.FC = () => {
   const graphicProps = useMemo(
     () => ({
       ...initialUrlParamProps,
+      layer,
       layout,
       allocations,
       focuses,
@@ -178,7 +182,7 @@ const Editor: React.FC = () => {
       relative,
       counting
     }),
-    [layout, allocations, focuses, year, relative, counting]
+    [layer, layout, allocations, focuses, year, relative, counting]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -223,6 +227,16 @@ const Editor: React.FC = () => {
             return (
               <button key={key} disabled={key === layout} onClick={() => setLayout(key as Layout)}>
                 {LAYOUT_LABELS[key]}
+              </button>
+            );
+          })}
+        </div>
+        <h3>Layer</h3>
+        <div className={styles.flexRow}>
+          {Object.keys(LAYER_LABELS).map(key => {
+            return (
+              <button key={key} disabled={key === layer} onClick={() => setLayer(key as Layer)}>
+                {LAYER_LABELS[key]}
               </button>
             );
           })}
