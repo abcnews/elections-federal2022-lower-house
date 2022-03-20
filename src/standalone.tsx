@@ -4,13 +4,14 @@ import React from 'react';
 import { render } from 'react-dom';
 import './theme.scss';
 import { alternatingCaseToGraphicProps } from './utils';
+import type { GraphicProps } from './components/Graphic';
 import Graphic from './components/Graphic';
 
 whenDOMReady.then(() => {
   const mounts = selectMounts('lhgraphic');
 
   mounts.forEach(mount => {
-    const graphicProps = alternatingCaseToGraphicProps(getMountValue(mount));
+    const graphicProps = alternatingCaseToGraphicProps(getMountValue(mount)) as GraphicProps;
 
     render(<Graphic {...graphicProps} />, mount);
   });
