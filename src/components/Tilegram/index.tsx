@@ -1,8 +1,9 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Allocations, ElectionYear, Focuses, Layer, Layout } from '../../constants';
+import { Allocations, ElectionYear, Electorate, Focuses, Layer, Layout } from '../../constants';
 import {
   DEFAULT_LAYER,
   DEFAULT_LAYOUT,
+  SINGLE_STATE_LAYOUTS,
   Allocation,
   ElectorateID,
   ELECTORATES,
@@ -44,6 +45,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
   const { allocations, focuses, layer, layout, year, relative, onTapElectorate } = props;
+  const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
   // TODO: Use year with candidate lists (once we get them) to provide chenge options
   // (or maybe just pass year and electorate ID to onTapElectorate for it to be handled outside)
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
@@ -168,6 +170,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
       data-layer={layer}
       data-layout={layout}
       data-has-focuses={hasFocuses ? '' : undefined}
+      data-is-single-state-layout={isSingleStateLayout ? '' : undefined}
       data-is-interactive={isInteractive ? '' : undefined}
       data-is-inspecting={isInspecting ? '' : undefined}
     >
@@ -250,6 +253,36 @@ const Tilegram: React.FC<TilegramProps> = props => {
               )
             )}
           </g>
+          {isInspecting && layer === Layer.ELECTORATES && (
+            <g className={styles.electoratesLabels}>
+              {Object.values(electoratesRenderProps).map(({ id: electorateID, hasAllocation, polygon }) => {
+                const position = polygon[0];
+                const [x, y] = [position[0] + hexWidth / 2, position[1] - hexHeight / 4];
+                const electorate = ELECTORATES.find(
+                  ({ id }) => ((id as unknown) as string) === ElectorateID[electorateID]
+                ) as Electorate;
+                const label = electorate[isSingleStateLayout ? 'name' : 'abbr'];
+                const hasLongLabel = label.length > 9 || (label.length > 8 && (label.match(/w|m/gi) || []).length > 1);
+
+                return (
+                  <text
+                    key={electorateID}
+                    className={styles.electorateLabel}
+                    style={{
+                      transformOrigin: `${x}px ${y}px`
+                    }}
+                    x={x}
+                    y={y}
+                    data-electorate={electorateID}
+                    data-has-allocation={hasAllocation ? '' : undefined}
+                    data-has-long-label={hasLongLabel ? '' : undefined}
+                  >
+                    {label}
+                  </text>
+                );
+              })}
+            </g>
+          )}
           <use xlinkHref={statesPolygonsHref} className={styles.statesBackgrounds} />
           <use xlinkHref={statesPolygonsHref} className={styles.statesBorders} />
           <g className={styles.statesLabels}>

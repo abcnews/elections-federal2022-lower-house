@@ -157,6 +157,7 @@ export const ELECTORATE_IDS = Object.keys(ElectorateID).filter(key => typeof Ele
 export type Electorate = {
   id: ElectorateID;
   name: string;
+  abbr: string;
   isKeySeat?: boolean;
   // TODO: state?
 };
@@ -239,7 +240,7 @@ export const ELECTORATES: Electorate[] = [
   { id: ElectorateID.HINK, name: 'Hinkler' },
   { id: ElectorateID.HOLT, name: 'Holt' },
   { id: ElectorateID.HOTH, name: 'Hotham' },
-  { id: ElectorateID.HUGH, name: 'Hughes (*)', isKeySeat: true },
+  { id: ElectorateID.HUGH, name: 'Hughes', isKeySeat: true },
   { id: ElectorateID.HUME, name: 'Hume' },
   { id: ElectorateID.HUNT, name: 'Hunter', isKeySeat: true },
   { id: ElectorateID.INDI, name: 'Indi', isKeySeat: true },
@@ -313,7 +314,21 @@ export const ELECTORATES: Electorate[] = [
   { id: ElectorateID.WBAY, name: 'Wide Bay' },
   { id: ElectorateID.WILL, name: 'Wills' },
   { id: ElectorateID.WRIG, name: 'Wright' }
-];
+].map((electorate: Partial<Electorate>) => {
+  const { name } = electorate as Electorate;
+  let abbr = name.substring(0, 5).trim();
+
+  const isInitialAbbreviationThin = !!(abbr.match(/i|'|\s/i) && !abbr.match(/m|w/i));
+
+  if (name.length > 6 || (!isInitialAbbreviationThin && name.length > 5)) {
+    abbr = `${name.substring(0, isInitialAbbreviationThin ? 5 : 4).trim()}.`;
+  }
+
+  return {
+    ...electorate,
+    abbr
+  } as Electorate;
+});
 
 export enum StateID {
   ACT,
@@ -511,6 +526,8 @@ export const LAYOUT_LABELS: Record<Layout, string> = {
 };
 
 export const DEFAULT_LAYOUT = Layout.EXPLODED;
+export const MULTI_STATE_LAYOUTS = [Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
+export const SINGLE_STATE_LAYOUTS = LAYOUTS.filter(layout => MULTI_STATE_LAYOUTS.indexOf(layout as Layout) === -1);
 
 export type Preset = {
   name?: string;

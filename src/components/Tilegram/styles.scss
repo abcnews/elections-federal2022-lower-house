@@ -254,6 +254,32 @@ $focusChangeTransitionDuration: 0.5s;
   stroke: none;
 }
 
+// Electorates (Labels)
+
+.electoratesLabels {
+  pointer-events: none;
+  font-size: 0.8rem;
+  font-family: sans-serif;
+}
+
+.root[data-is-single-state-layout] .electoratesLabels {
+  font-size: 0.55rem;
+}
+
+.electorateLabel {
+  transform: rotate(30deg) translate(0, 0.3em);
+  text-anchor: middle;
+  fill: $color_Text;
+}
+
+.electorateLabel[data-has-allocation] {
+  fill: $color_White;
+}
+
+.root[data-is-single-state-layout] .electorateLabel[data-has-long-label] {
+  font-size: 0.7em;
+}
+
 // States (Backgrounds)
 
 .statesBackgrounds {
@@ -287,10 +313,7 @@ $focusChangeTransitionDuration: 0.5s;
 
 .statesLabels {
   pointer-events: none;
-  transform: translate(0, 0.6em);
-  text-anchor: middle;
   font-size: 1.375rem;
-  fill: $color_Text;
 }
 
 .root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
@@ -300,6 +323,12 @@ $focusChangeTransitionDuration: 0.5s;
 
 .root[data-layout='#{$Layout_GRID}'] .statesLabels {
   font-size: 2rem;
+}
+
+.stateLabel {
+  transform: translate(0, 0.6em);
+  text-anchor: middle;
+  fill: $color_Text;
 }
 
 .root[data-layout='#{$Layout_COUNTRY}'] .stateLabel[data-state='ACT'],
