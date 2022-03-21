@@ -443,6 +443,7 @@ export enum AllianceID {
 export type Alliance = {
   id: AllianceID;
   name: string;
+  shortName: string;
   allocations: Allocation[];
   majorAllocation: Allocation;
 };
@@ -451,12 +452,14 @@ export const ALLIANCES: Alliance[] = [
   {
     id: AllianceID.ALP,
     name: 'Labor',
+    shortName: 'ALP',
     allocations: [Allocation.ALP],
     majorAllocation: Allocation.ALP
   },
   {
     id: AllianceID.CLN,
     name: 'Coalition',
+    shortName: 'L/NP',
     allocations: [Allocation.CLP, Allocation.LIB, Allocation.LNP, Allocation.NAT],
     majorAllocation: Allocation.LIB
   }

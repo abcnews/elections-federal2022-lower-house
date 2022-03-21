@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import type { Alliance, Allocations, ElectionYear } from '../../constants';
+import { Alliance, Allocation, Allocations, ElectionYear } from '../../constants';
 import { ALLIANCES, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_PRIMARY_ALLIANCES, ELECTORATES } from '../../constants';
 import { getAllocationsCounts } from '../../utils';
 import styles from './styles.scss';
 
-const MAX_VOTES = ELECTORATES.length;
-const WIN_VOTES = Math.ceil((MAX_VOTES + 1) / 2);
+const MAX_COUNT = ELECTORATES.length;
+const WIN_COUNT = Math.ceil((MAX_COUNT + 1) / 2);
+const DEFAULT_EXTENT_VOTES = WIN_COUNT + 10;
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -22,51 +23,96 @@ export type TotalsProps = {
   allocations?: Allocations;
 };
 
+type Group = {
+  name: string;
+  shortName: string;
+  count: number;
+  majorAllocation: Allocation;
+};
+
 const Totals: React.FC<TotalsProps> = props => {
   const { allocations, year } = props;
+  const allocationsCounts = getAllocationsCounts(allocations || {});
   const primaryAlliances = ELECTION_YEARS_PRIMARY_ALLIANCES[year || DEFAULT_ELECTION_YEAR].map(allianceID =>
     ALLIANCES.find(({ id }) => id === allianceID)
   ) as [Alliance, Alliance];
-  const [governmentAlliance] = primaryAlliances;
+  const [governmentAlliance, oppositionAlliance] = primaryAlliances;
   const previousGovernmentAlliance = usePrevious<Alliance>(governmentAlliance);
-  const allocationsCounts = getAllocationsCounts(allocations || {});
-  const primaryAllianceCounts = primaryAlliances.map(alliance =>
-    alliance.allocations.reduce((count, allocation) => count + allocationsCounts[allocation], 0)
-  );
+  const isConsistentGovernment = previousGovernmentAlliance && primaryAlliances[0].id === previousGovernmentAlliance.id;
+  const groups = Object.keys(allocationsCounts)
+    .filter(allocation => allocation !== Allocation.None)
+    .reduce(
+      (memo, allocation) => {
+        const groupIndex =
+          governmentAlliance.allocations.indexOf(allocation as Allocation) !== -1
+            ? 0
+            : oppositionAlliance.allocations.indexOf(allocation as Allocation) !== -1
+            ? 1
+            : 2;
 
-  const tX = (votes: number, alliance: Alliance) =>
-    alliance === governmentAlliance ? (votes / MAX_VOTES) * 100 - 100 : (votes / MAX_VOTES) * -100 + 100;
+        memo[groupIndex].count += allocationsCounts[allocation];
+
+        return memo;
+      },
+      [
+        {
+          name: governmentAlliance.name,
+          shortName: governmentAlliance.shortName,
+          majorAllocation: governmentAlliance.majorAllocation,
+          count: 0
+        },
+        {
+          name: oppositionAlliance.name,
+          shortName: oppositionAlliance.shortName,
+          majorAllocation: oppositionAlliance.majorAllocation,
+          count: 0
+        },
+        {
+          name: 'Other',
+          shortName: 'OTHER',
+          majorAllocation: Allocation.OTH,
+          count: 0
+        }
+      ] as Group[]
+    );
+  const extentCount = groups.reduce((memo, group) => Math.max(memo, group.count), DEFAULT_EXTENT_VOTES);
+  const previousExtentCount = usePrevious<number>(extentCount);
+  const isConsistentExtentCount = extentCount === previousExtentCount;
+  const getTransformXPercent = (count: number) => (count / extentCount) * 100 - 100;
 
   return (
     <div
       className={styles.root}
-      data-government={primaryAlliances[0].id}
-      data-consistent-government={
-        previousGovernmentAlliance && primaryAlliances[0].id === previousGovernmentAlliance.id ? '' : undefined
-      }
+      data-should-transition={isConsistentGovernment && isConsistentExtentCount ? '' : undefined}
     >
-      <div className={styles.text}>
-        {primaryAlliances.map((alliance, index) => (
-          <div key={alliance.id} className={styles.side} data-allocation={alliance.majorAllocation}>
-            <span className={styles.label}>{alliance.name}</span>
-            <span className={styles.value}>{primaryAllianceCounts[index]}</span>
+      <div className={styles.labels} role="none">
+        {groups.map(({ shortName }) => (
+          <div key={shortName} className={styles.label}>
+            {shortName}
           </div>
         ))}
       </div>
-      <div className={styles.track}>
-        {primaryAlliances.map((alliance, index) => (
-          <div
-            key={alliance.id}
-            className={styles.bar}
-            title={`${alliance.name}: ${primaryAllianceCounts[index]}`}
-            data-allocation={alliance.majorAllocation}
-            style={{ transform: `translate(${tX(primaryAllianceCounts[index], alliance)}%, 0)` }}
-          ></div>
+      <div className={styles.counts}>
+        {groups.map(({ name, shortName, majorAllocation, count }) => (
+          <div key={shortName} className={styles.count} title={`${name}: ${count}`}>
+            <div className={styles.track}>
+              <div
+                className={styles.bar}
+                data-allocation={majorAllocation}
+                style={{ transform: `translate(${getTransformXPercent(count)}%, 0)` }}
+              >
+                <div className={styles.value}>{count}</div>
+              </div>
+            </div>
+          </div>
         ))}
-        <div className={styles.midpoint}>
-          <div className={styles.midpointLabel}>{`${WIN_VOTES} to win`}</div>
+        <div key="win-line" className={styles.win}>
+          <div className={styles.winLine} style={{ left: `${getTransformXPercent(WIN_COUNT)}%` }}>
+            <div className={styles.winLabel}>{`${WIN_COUNT} to win`}</div>
+          </div>
         </div>
       </div>
+      {/* <div className={styles.maxLabel}>{`${MAX_COUNT} seats total`}</div> */}
     </div>
   );
 };
