@@ -23,7 +23,9 @@ import {
   alternatingCaseToGraphicProps,
   graphicPropsToAlternatingCase,
   urlQueryToGraphicProps,
-  graphicPropsToUrlQuery
+  graphicPropsToUrlQuery,
+  fetchLiveResultsElectorates,
+  getLiveResultsElectorateAllocation
 } from '../../utils';
 import type { GraphicProps } from '../Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from '../Graphic';
@@ -115,6 +117,25 @@ const Editor: React.FC = () => {
       ...replacement.focuses
     });
     setYear(replacement.year || DEFAULT_GRAPHIC_PROPS.year);
+  };
+
+  const replaceAllocationsWithLiveResults = async () => {
+    const electorates = await fetchLiveResultsElectorates();
+
+    setAllocations(
+      electorates.reduce<Allocations>(
+        (memo, electorate) => {
+          const allocation = getLiveResultsElectorateAllocation(electorate);
+
+          if (allocation !== Allocation.None) {
+            memo[electorate.code] = allocation;
+          }
+
+          return memo;
+        },
+        { ...INITIAL_ELECTORATES_ALLOCATIONS }
+      )
+    );
   };
 
   const importMarker = (marker: string) => {
@@ -364,6 +385,9 @@ const Editor: React.FC = () => {
               </button>
             );
           })}
+          <button key="live" onClick={() => replaceAllocationsWithLiveResults()}>
+            Live Results
+          </button>
         </div>
         <h3>
           Story markers
