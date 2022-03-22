@@ -33,6 +33,7 @@ import graphicStyles from '../Graphic/styles.scss';
 import Icon from '../Icon';
 import tilegramStyles from '../Tilegram/styles.scss';
 import totalsStyles from '../Totals/styles.scss';
+import candidates from './candidates.json';
 import styles from './styles.scss';
 
 const COMPONENTS_STYLES = {
@@ -150,11 +151,12 @@ const Editor: React.FC = () => {
     const allocationsToMixin: Allocations = {};
 
     const allocation = allocations[electorateID];
-    const allocationIndex = ALLOCATIONS.indexOf(allocation);
+    const allowedAllocations = [Allocation.None, ...candidates[electorateID].map(candidate => Allocation[candidate])];
+    const allocationIndex = allowedAllocations.indexOf(allocation);
 
-    // Cycle to the next Allocation in the enum (or the first if we don't recognise it)
-    allocationsToMixin[electorateID] = ALLOCATIONS[
-      allocationIndex === ALLOCATIONS.length - 1 ? 0 : allocationIndex + 1
+    // Cycle to the next Allocation in allowedAllocations (or the first if we don't recognise it)
+    allocationsToMixin[electorateID] = allowedAllocations[
+      allocationIndex === allowedAllocations.length - 1 ? 0 : allocationIndex + 1
     ] as Allocation;
 
     mixinGraphicProps({ allocations: allocationsToMixin });
