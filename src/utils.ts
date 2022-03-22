@@ -206,6 +206,7 @@ const LIVE_RESULTS_PROPS = FEDERAL_2019_LIVE_RESULTS_PROPS; // TODO: update to 2
 
 interface LiveResultsElectorate {
   code: ElectorateID;
+  counted: string;
   leadingCandidate?: {
     party: {
       code: Allocation;
@@ -225,9 +226,10 @@ export const fetchLiveResultsElectorates = async () => {
 export const getLiveResultsElectorateAllocation = (electorate: LiveResultsElectorate): Allocation => {
   // We only allocate predicted SAFE seats, or seats that no longer need a prediction, based on the logic PL uses for its electorate list:
   // https://stash.abc-dev.net.au/projects/PL/repos/pl/browse/applications/news-web/src/components/channel/elections/ElectorateList/Electorate.tsx
+  const hasCountingBegan = electorate.counted !== '0.0';
   const allocation = electorate.leadingCandidate?.party.code;
   const prediction = electorate.predicted?.predictionString;
   const isSafe = prediction ? prediction.startsWith('SAFE') : false;
 
-  return allocation && (isSafe || !prediction) ? Allocation[allocation] : Allocation.None;
+  return hasCountingBegan && allocation && (isSafe || !prediction) ? Allocation[allocation] : Allocation.None;
 };
