@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { whenDOMReady } from '@abcnews/env-utils';
 import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
