@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
   type: 'react',
   build: {
-    entry: ['doc-block', 'editor', 'index', 'illustrations', 'polyfills', 'standalone']
+    entry: ['index', 'doc-block', 'editor', 'graphics', 'illustrations', 'polyfills']
   },
   serve: {
     hot: false

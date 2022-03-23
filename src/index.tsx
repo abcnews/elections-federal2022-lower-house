@@ -125,9 +125,9 @@ whenOdysseyLoaded.then(() => {
     render(<Illustration name={name} />, mount);
   });
 
-  const standaloneGraphicMounts = selectMounts('lhgraphic');
+  const graphicMounts = selectMounts('lhgraphic');
 
-  standaloneGraphicMounts.forEach(mount => {
+  graphicMounts.forEach(mount => {
     const graphicProps = alternatingCaseToGraphicProps(getMountValue(mount)) as GraphicProps;
 
     mount.classList.add('u-pull');

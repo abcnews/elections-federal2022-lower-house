@@ -29,4 +29,4 @@ const Article = () => (
   </article>
 );
 
-whenDOMReady.then(() => render(<Article />, selectMounts('lhillustrations')[0]));
+whenDOMReady.then(() => render(<Article />, selectMounts('lhallillustrations')[0]));
