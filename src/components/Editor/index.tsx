@@ -9,7 +9,6 @@ import {
   ELECTORATES,
   Allocation,
   Allocations,
-  ALLOCATIONS,
   INITIAL_ELECTORATES_ALLOCATIONS,
   Focus,
   Focuses,
@@ -19,13 +18,12 @@ import {
   MIXINS,
   PRESETS
 } from '../../lib/constants';
+import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from '../../lib/data';
 import {
   alternatingCaseToGraphicProps,
   graphicPropsToAlternatingCase,
   urlQueryToGraphicProps,
-  graphicPropsToUrlQuery,
-  fetchLiveResultsElectorates,
-  getLiveResultsElectorateAllocation
+  graphicPropsToUrlQuery
 } from '../../lib/utils';
 import type { GraphicProps } from '../Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from '../Graphic';
