@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_ELECTION_YEAR } from '../../constants';
+import { DEFAULT_ELECTION_YEAR } from '../../lib/constants';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
 import type { TotalsProps } from '../Totals';

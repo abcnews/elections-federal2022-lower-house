@@ -1,8 +1,8 @@
 import type { PanelDefinition } from '@abcnews/scrollyteller';
 import { ElectorateID, ELECTORATES, PRESETS } from './constants';
 import { determineIfAllocationIsDefinitive } from './utils';
-import blockStyles from './components/Block/styles.scss';
-import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
+import blockStyles from '../components/Block/styles.scss';
+import type { GraphicProps, PossiblyEncodedGraphicProps } from '../components/Graphic';
 
 const SORTED_ELECTORATES = ELECTORATES.sort((a, b) => b.name.length - a.name.length);
 

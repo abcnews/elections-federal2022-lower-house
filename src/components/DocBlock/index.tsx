@@ -1,8 +1,13 @@
 import GoogleDocScrollyteller from '@abcnews/google-doc-scrollyteller';
 import type { PanelDefinition } from '@abcnews/scrollyteller';
 import React from 'react';
-import { applyColourToPanels } from '../../panels';
-import { decodeAllocations, decodeFocuses, graphicPropsToAlternatingCase, urlQueryToGraphicProps } from '../../utils';
+import { applyColourToPanels } from '../../lib/panels';
+import {
+  decodeAllocations,
+  decodeFocuses,
+  graphicPropsToAlternatingCase,
+  urlQueryToGraphicProps
+} from '../../lib/utils';
 import Block from '../Block';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from '../Graphic';
 import './minimal-odyssey';

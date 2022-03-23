@@ -18,7 +18,7 @@ import {
   ELECTION_YEARS,
   MIXINS,
   PRESETS
-} from '../../constants';
+} from '../../lib/constants';
 import {
   alternatingCaseToGraphicProps,
   graphicPropsToAlternatingCase,
@@ -26,7 +26,7 @@ import {
   graphicPropsToUrlQuery,
   fetchLiveResultsElectorates,
   getLiveResultsElectorateAllocation
-} from '../../utils';
+} from '../../lib/utils';
 import type { GraphicProps } from '../Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from '../Graphic';
 import graphicStyles from '../Graphic/styles.scss';

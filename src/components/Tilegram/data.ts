@@ -1,5 +1,5 @@
 import concaveman from 'concaveman';
-import { Allocation, ElectorateID, Focus, Layout } from '../../constants';
+import { Allocation, ElectorateID, Focus, Layout } from '../../lib/constants';
 
 export type ElectorateRenderProps = {
   id: ElectorateID;

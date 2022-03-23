@@ -1,5 +1,5 @@
 import acto from '@abcnews/alternating-case-to-object';
-import { GraphicProps } from './components/Graphic';
+import { GraphicProps } from '../components/Graphic';
 import type { ElectorateID } from './constants';
 import {
   ELECTORATE_IDS,

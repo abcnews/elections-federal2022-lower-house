@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Alliance, Allocation, Allocations, ElectionYear } from '../../constants';
-import { ALLIANCES, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_PRIMARY_ALLIANCES, ELECTORATES } from '../../constants';
-import { getAllocationsCounts } from '../../utils';
+import { Alliance, Allocation, Allocations, ElectionYear } from '../../lib/constants';
+import { ALLIANCES, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_PRIMARY_ALLIANCES, ELECTORATES } from '../../lib/constants';
+import { getAllocationsCounts } from '../../lib/utils';
 import styles from './styles.scss';
 
 const MAX_COUNT = ELECTORATES.length;

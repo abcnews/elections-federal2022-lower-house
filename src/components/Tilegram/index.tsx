@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Allocations, ElectionYear, Electorate, Focuses, Layer, Layout } from '../../constants';
+import { Allocations, ElectionYear, Electorate, Focuses, Layer, Layout } from '../../lib/constants';
 import {
   DEFAULT_LAYER,
   DEFAULT_LAYOUT,
@@ -11,13 +11,13 @@ import {
   StateID,
   STATES,
   PRESETS
-} from '../../constants';
+} from '../../lib/constants';
 import {
   determineIfAllocationIsDefinitive,
   determineIfAllocationIsMade,
   determineIfAllocationShouldFlip,
   determineIfAllocationWasPreserved
-} from '../../utils';
+} from '../../lib/utils';
 import type { ElectoratesRenderProps } from './data';
 import { ELEMENT_NAMES, LAYOUTS_CONFIGS, generateElementIDRecord } from './data';
 import Defs from './defs';

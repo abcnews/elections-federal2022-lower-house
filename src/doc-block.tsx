@@ -3,7 +3,7 @@ import { whenDOMReady } from '@abcnews/env-utils';
 import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';
-import './theme.scss';
+import './lib/theme.scss';
 import DocBlock from './components/DocBlock';
 
 whenDOMReady.then(() => render(<DocBlock />, selectMounts('lhdb')[0]));

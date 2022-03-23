@@ -2,7 +2,7 @@ import { whenDOMReady } from '@abcnews/env-utils';
 import { selectMounts } from '@abcnews/mount-utils';
 import React from 'react';
 import { render } from 'react-dom';
-import './theme.scss';
+import './lib/theme.scss';
 import Illustration, { IllustrationName } from './components/Illustration';
 
 const MarkerText = ({ text }) => (

@@ -4,7 +4,7 @@ import type { GraphicProps } from './components/Graphic';
 import { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from './components/Graphic';
 import graphicStyles from './components/Graphic/styles.scss';
 import tilegramStyles from './components/Tilegram/styles.scss';
-import { graphicPropsToUrlQuery } from './utils';
+import { graphicPropsToUrlQuery } from './lib/utils';
 
 export default function run(initiatingElement, panels) {
   const graphicsProps: GraphicProps[] = [];
