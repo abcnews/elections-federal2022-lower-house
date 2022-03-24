@@ -10,7 +10,7 @@ const ELECTORATE_URLS = ELECTORATE_CODES.filter(code => PREFILLED_DATA[code] ===
   code => `${RESULTS_BASE_URL}OnlineElectorate${code.toUpperCase()}.json`
 );
 
-const electorates = await Promise.all(ELECTORATE_URLS.map((url, index) => got.get(url).json()));
+const electorates = await Promise.all(ELECTORATE_URLS.map(url => got.get(url).json()));
 
 const data = electorates.reduce((memo, electorate) => {
   const {

@@ -3,15 +3,13 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export const DEFAULT_FILE_OPEN_OPTIONS = {
-  create: true,
-  truncate: true,
-  write: true
-};
+export const CARD_COMPONENT_DIR = join(__dirname, '../src/components/Card');
+export const CARD_PAST_WINNERS_FILE_NAME = join(CARD_COMPONENT_DIR, 'past-winners.json');
 
 export const EDITOR_COMPONENT_DIR = join(__dirname, '../src/components/Editor');
 export const EDITOR_CANDIDATES_FILE_NAME = join(EDITOR_COMPONENT_DIR, 'candidates.json');
 
+export const GUIDE_BASE_URL = 'https://www.abc.net.au/dat/news/elections/federal/2022/guide/json/';
 export const RESULTS_BASE_URL = 'https://www.abc.net.au/dat/news/elections/federal/2019/results/';
 
 export const ELECTORATE_CODES = [
