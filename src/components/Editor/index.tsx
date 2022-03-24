@@ -50,7 +50,7 @@ const STORY_MARKERS = [
   {
     h3: 'Scrollyteller opener',
     note: `If you're placing multiple scrollytellers in a single story, each must have a unique NAME.`,
-    prefix: 'scrollytellerNAMEecblock'
+    prefix: 'scrollytellerNAMElhblock'
   },
   { h3: 'Scrollyteller mark', prefix: 'mark' }
 ];
