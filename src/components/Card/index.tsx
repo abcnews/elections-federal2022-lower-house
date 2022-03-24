@@ -54,10 +54,18 @@ const Card: React.FC<CardProps> = ({ electorateID, hasResult }) => {
   const [result, setResult] = useState<LiveResultsElectorate>();
 
   useEffect(() => {
+    if (!hasResult) {
+      return;
+    }
+
     fetchLiveResultsElectorates().then(electorates =>
       setResult(electorates.find(electorate => electorate.code === ((electorateID as unknown) as ElectorateID)))
     );
-  }, [electorateID]);
+
+    return () => {
+      setResult(undefined);
+    };
+  }, [electorateID, hasResult]);
 
   if (!electorate) {
     return <div data-unrecognised-electorate={electorateID}></div>;
@@ -70,7 +78,7 @@ const Card: React.FC<CardProps> = ({ electorateID, hasResult }) => {
   const timeUpdated = result?.updated ? new Date(result.updated) : null;
 
   const electoratePastWinners = pastWinners[electorateID];
-  const allocation = result ? undefined : undefined;
+  const allocation = result ? undefined : undefined; // TODO: add allocation if safe/not-a-prediction
   const relativeAllocation = electoratePastWinners[DEFAULT_RELATIVE_ELECTION_YEAR]
     ? Allocation[electoratePastWinners[DEFAULT_RELATIVE_ELECTION_YEAR]]
     : undefined;
