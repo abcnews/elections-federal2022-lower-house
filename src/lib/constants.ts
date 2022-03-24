@@ -414,7 +414,10 @@ export enum Allocation {
   NAT = 'j',
   ONP = 'k',
   OTH = 'l',
-  UAP = 'm'
+  UAP = 'm',
+  // For previous winners (map to party with same colors),
+  NXT = 'c',
+  PUP = 'm'
 }
 
 export const ALLOCATIONS: string[] = Object.values(Allocation);

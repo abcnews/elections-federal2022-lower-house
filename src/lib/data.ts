@@ -30,7 +30,7 @@ const FEDERAL_2022_LIVE_RESULTS_PROPS = {
 
 const LIVE_RESULTS_PROPS = FEDERAL_2019_LIVE_RESULTS_PROPS; // TODO: update to 2022 when available
 
-interface LiveResultsElectorate {
+export interface LiveResultsElectorate {
   code: ElectorateID;
   counted: string;
   leadingCandidate?: {
@@ -41,6 +41,7 @@ interface LiveResultsElectorate {
   predicted?: {
     predictionString?: string;
   };
+  updated: string;
 }
 
 const liveResultsElectoratesPromises: {

@@ -1,0 +1,131 @@
+@import '../../lib/constants.scss';
+
+[data-mount][id^='lhcard'] + [data-mount][id^='lhcard'] {
+  margin-top: -1rem;
+}
+
+.root {
+  position: relative;
+  margin-left: -2.375rem;
+  margin-right: -2.375rem;
+  padding: 1rem 1.25rem;
+  background-color: #ebebeb;
+  font-size: 0.75rem;
+
+  /* Scrollyteller panel layout matching (large-first responsive) */
+
+  @media only screen and (max-width: 1022px) {
+    font-size: 0.6875rem;
+  }
+
+  @media only screen and (max-width: 667px) {
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    padding: 0.625rem 0.75rem;
+  }
+
+  @media only screen and (min-width: 100rem) and (max-width: 120rem) {
+    font-size: 0.6875rem;
+  }
+
+  :first-child > & {
+    margin-top: -2.25rem;
+
+    @media only screen and (max-width: 667px) {
+      margin-top: -1.5rem;
+    }
+  }
+
+  :last-child > & {
+    margin-bottom: -2.25rem;
+
+    @media only screen and (max-width: 667px) {
+      margin-bottom: -1.5rem;
+    }
+  }
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.flex > :not(.title) {
+  font-family: ABCSans;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.flex > :first-child {
+  padding-right: 0.5rem;
+}
+
+.flex > :last-child {
+  @media only screen and (min-width: 1023px) {
+    margin-left: auto;
+    align-self: flex-start;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.25;
+
+  @media only screen and (max-width: 1022px) {
+    font-size: 1.125rem;
+  }
+
+  @media only screen and (min-width: 100rem) and (max-width: 120rem) {
+    font-size: 1.125rem;
+  }
+}
+
+.pastWinners {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 3px;
+  overflow: hidden;
+  max-height: 1.5rem;
+}
+
+.pastWinner {
+  border-bottom: 5px solid var(--color-allocation);
+  padding: 0 0 3px 0;
+  flex: 1 0 4rem;
+  text-align: center;
+  font-weight: bold;
+
+  @media only screen and (max-width: 479px) {
+    flex-basis: 2.5rem;
+  }
+}
+
+.result {
+  display: inline-block;
+}
+
+.result + .result {
+  margin-left: 0.5em;
+}
+
+.result::before {
+  content: '';
+  vertical-align: middle;
+  margin-right: 0.25em;
+  width: 1em;
+  height: 1em;
+  background-color: $color_Black;
+  display: inline-block;
+}
+
+.result[data-allocation]::before {
+  background-color: var(--color-allocation);
+}
+
+.name {
+  margin-right: 0.25em;
+}
