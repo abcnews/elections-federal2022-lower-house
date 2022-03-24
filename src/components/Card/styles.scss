@@ -48,7 +48,7 @@
 .flex {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .flex > :not(.title) {
@@ -80,6 +80,34 @@
   @media only screen and (min-width: 100rem) and (max-width: 120rem) {
     font-size: 1.125rem;
   }
+}
+
+.hex {
+  display: inline-block;
+  margin-right: 0.5em;
+
+  svg {
+    width: 1.25em;
+    height: auto;
+    vertical-align: text-top;
+  }
+
+  polygon {
+    fill: none;
+    stroke: $color_Black;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: $swHeavy;
+  }
+}
+
+.hex[data-relative-allocation] polygon {
+  stroke: var(--color-relative-allocation);
+}
+
+.hex[data-allocation] polygon {
+  fill: var(--color-allocation);
+  stroke: var(--color-allocation);
 }
 
 .pastWinners {
