@@ -4,12 +4,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import './lib/theme.scss';
 import Illustration, { IllustrationName } from './components/Illustration';
-
-const MarkerText = ({ text }) => (
-  <button onClick={() => navigator.clipboard.writeText(text)} style={{ cursor: 'copy', padding: '0.25rem 0.5rem' }}>
-    <code>{text}</code>
-  </button>
-);
+import MarkerCopyButton from './components/MarkerCopyButton';
 
 const Article = () => (
   <article style={{ fontFamily: 'ABCSans' }}>
@@ -20,9 +15,9 @@ const Article = () => (
           <div style={{ margin: '0 0 2.5rem', maxWidth: '28rem' }}>
             <Illustration name={name} />
           </div>
-          <MarkerText text={`#lhillustrationNAME${name}`}></MarkerText>
+          <MarkerCopyButton text={`#lhillustrationNAME${name}`}></MarkerCopyButton>
           {index === 0 && ' or '}
-          {index === 0 && <MarkerText text="#lhillustration"></MarkerText>}
+          {index === 0 && <MarkerCopyButton text="#lhillustration"></MarkerCopyButton>}
         </div>
       ))}
     </div>
