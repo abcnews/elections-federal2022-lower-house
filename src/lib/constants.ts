@@ -502,6 +502,7 @@ export const LAYER_LABELS: Record<Layer, string> = {
 export const DEFAULT_LAYER = Layer.ELECTORATES;
 
 export enum Layout {
+  GEO = '0',
   COUNTRY = 'a',
   EXPLODED = 'b',
   GRID = 'c',
@@ -518,6 +519,7 @@ export enum Layout {
 export const LAYOUTS: string[] = Object.values(Layout);
 
 export const LAYOUT_LABELS: Record<Layout, string> = {
+  [Layout.GEO]: 'Geo',
   [Layout.COUNTRY]: 'Country',
   [Layout.EXPLODED]: 'Exploded',
   [Layout.GRID]: 'Grid',
@@ -532,7 +534,7 @@ export const LAYOUT_LABELS: Record<Layout, string> = {
 };
 
 export const DEFAULT_LAYOUT = Layout.EXPLODED;
-export const MULTI_STATE_LAYOUTS = [Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
+export const MULTI_STATE_LAYOUTS = [Layout.GEO, Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
 export const SINGLE_STATE_LAYOUTS = LAYOUTS.filter(layout => MULTI_STATE_LAYOUTS.indexOf(layout as Layout) === -1);
 
 export type Preset = {

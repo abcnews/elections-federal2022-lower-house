@@ -1,0 +1,50 @@
+@import '../../lib/constants.scss';
+
+// Root
+
+.root {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+}
+
+.svg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  shape-rendering: crispEdges;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+// Electorates
+
+.electorates {
+  pointer-events: none;
+}
+
+.electorate {
+  fill: $color_White;
+  stroke: $color_Black;
+  stroke-width: 0.75;
+  transition: fill $allocationTransitionDuration;
+
+  @media (max-width: 667px) {
+    stroke-width: 1.25;
+  }
+}
+
+.root[data-layer='#{$Layer_ELECTORATES}'] .electorate {
+  stroke: $color_LightGrey;
+}
+
+.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-has-definitive-allocation] {
+  stroke: $color_White;
+}
+
+.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-allocation] {
+  fill: var(--color-allocation);
+}

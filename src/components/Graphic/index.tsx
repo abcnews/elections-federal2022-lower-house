@@ -1,5 +1,6 @@
 import React from 'react';
-import { DEFAULT_ELECTION_YEAR } from '../../lib/constants';
+import { DEFAULT_ELECTION_YEAR, Layout } from '../../lib/constants';
+import Geo from '../Geo';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
 import type { TotalsProps } from '../Totals';
@@ -27,7 +28,7 @@ export const DEFAULT_PROPS: Partial<GraphicProps> = {
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { title, counting, year, allocations, children, ...otherTilegramProps } = {
+  const { title, counting, year, allocations, children, layout, layer, ...otherTilegramProps } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -38,7 +39,11 @@ const Graphic: React.FC<GraphicProps> = props => {
       <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
         <Totals allocations={allocations} year={year} />
       </header>
-      <Tilegram allocations={allocations} year={year} {...otherTilegramProps} />
+      {layout === Layout.GEO ? (
+        <Geo allocations={allocations} layer={layer} />
+      ) : (
+        <Tilegram allocations={allocations} year={year} layout={layout} layer={layer} {...otherTilegramProps} />
+      )}
     </div>
   );
 };

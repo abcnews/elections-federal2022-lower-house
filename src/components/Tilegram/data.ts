@@ -1,5 +1,6 @@
 import concaveman from 'concaveman';
 import { Allocation, ElectorateID, Focus, Layout } from '../../lib/constants';
+import { flattenNestedRecords, transformNestedRecordsValues } from '../../lib/utils';
 
 export type ElectorateRenderProps = {
   id: ElectorateID;
@@ -29,14 +30,16 @@ export type Polygon = Vector2[];
 export type PolygonRecord = Record<string, Polygon>;
 type NestedPolygonRecord = Record<string, PolygonRecord>;
 
-type LayoutsStatesCells = Record<Layout, Record<string, [number, number, boolean?]>>;
+type StatesCells = Record<string, [number, number, boolean?]>;
+
+type LayoutsStatesCells = Record<Layout, StatesCells>;
 
 type LayoutMargin = {
   horizontal: number;
   vertical: number;
 };
 
-type LayoutConfig = {
+export type LayoutConfig = {
   width: number;
   height: number;
   margin: LayoutMargin;
@@ -65,27 +68,6 @@ export const generateElementIDRecord = (keys: string[], componentID: string, ...
       [key]: generateElementID(componentID, key, ...rest)
     }),
     {} as Record<string, string>
-  );
-
-const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
-  Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
-
-const transformNestedRecordsValues = <F, T>(
-  record: Record<string, Record<string, F>>,
-  transformFn: (from: F, key: string, nestedKey: string) => T
-) =>
-  Object.keys(record).reduce(
-    (memo, key) => ({
-      ...memo,
-      [key]: Object.keys(record[key]).reduce(
-        (memo, nestedKey) => ({
-          ...memo,
-          [nestedKey]: transformFn(record[key][nestedKey], key, nestedKey)
-        }),
-        {} as Record<string, T>
-      )
-    }),
-    {} as Record<string, Record<string, T>>
   );
 
 const addVector2s = (a: Vector2, b: Vector2): Vector2 => [a[0] + b[0], a[1] + b[1]];
@@ -131,7 +113,7 @@ const getLayoutPolygons = (layout: Layout) => {
   const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
     STATES_ELECTORATES_CELLS,
     (electorateCell, stateKey) => {
-      const [offsetX, offsetY, shouldNegateEvenRowOffset] = LAYOUTS_STATES_CELLS[layout][stateKey];
+      const [offsetX, offsetY, shouldNegateEvenRowOffset] = (LAYOUTS_STATES_CELLS[layout] as StatesCells)[stateKey];
 
       return getHexPolygon(addVector2s(electorateCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset);
     }
@@ -161,7 +143,7 @@ const getLayoutPolygons = (layout: Layout) => {
 };
 
 const getLayoutLabelsPositions = (layout: Layout) => {
-  const statesCells = LAYOUTS_STATES_CELLS[layout];
+  const statesCells = LAYOUTS_STATES_CELLS[layout] as StatesCells;
 
   const statesLabelsPositions = Object.keys(statesCells).reduce((memo, stateKey) => {
     const [offsetX, offsetY, shouldNegateEvenRowOffset] = statesCells[stateKey];
@@ -203,7 +185,7 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
     CALA: [0, 1],
     CHIF: [5, 2],
     COOK: [5, 3],
-    COWP: [2, 0],
+    COWP: [1, 0],
     CUNN: [3, 3],
     DOBE: [6, 0],
     EMON: [1, 3],
@@ -216,7 +198,7 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
     HUME: [2, 2],
     HUNT: [8, 0],
     KSMI: [8, 6],
-    LIND: [3, 0],
+    LIND: [2, 0],
     LYNE: [2, 1],
     MACA: [4, 2],
     MACK: [5, 1],
@@ -231,7 +213,7 @@ const STATES_ELECTORATES_CELLS: NestedCellRecord = {
     PARR: [6, 3],
     PATE: [9, 0],
     REID: [8, 2],
-    RICH: [1, 0],
+    RICH: [3, 0],
     RIVE: [0, 2],
     ROBE: [5, 0],
     SHOR: [7, 0],
@@ -419,7 +401,7 @@ const LAYOUT_OFFSCREEN: CellRecord = {
   WA: [0, 25]
 };
 
-const LAYOUTS_STATES_CELLS: LayoutsStatesCells = {
+const LAYOUTS_STATES_CELLS: Partial<LayoutsStatesCells> = {
   [Layout.COUNTRY]: {
     ACT: [9, 10],
     NSW: [4, 6],
@@ -522,7 +504,7 @@ const COMMON_STATE_LAYOUT_CONFIG = {
   ...getLayoutDimensions(10, 8)
 };
 
-export const LAYOUTS_CONFIGS: LayoutsConfigs = {
+export const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
   [Layout.COUNTRY]: {
     ...COMMON_LAYOUT_CONFIG,
     margin: {

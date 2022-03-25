@@ -1,5 +1,5 @@
 import acto from '@abcnews/alternating-case-to-object';
-import { GraphicProps } from '../components/Graphic';
+import type { GraphicProps } from '../components/Graphic';
 import {
   ELECTORATE_IDS,
   Allocation,
@@ -172,3 +172,24 @@ export const graphicPropsToUrlQuery = (graphicProps, defaultGraphicProps?): stri
 
     return urlQuery;
   }, '');
+
+export const flattenNestedRecords = <T>(record: Record<string, Record<string, T>>) =>
+  Object.keys(record).reduce((memo, key) => ({ ...memo, ...record[key] }), {} as Record<string, T>);
+
+export const transformNestedRecordsValues = <F, T>(
+  record: Record<string, Record<string, F>>,
+  transformFn: (from: F, key: string, nestedKey: string) => T
+) =>
+  Object.keys(record).reduce(
+    (memo, key) => ({
+      ...memo,
+      [key]: Object.keys(record[key]).reduce(
+        (memo, nestedKey) => ({
+          ...memo,
+          [nestedKey]: transformFn(record[key][nestedKey], key, nestedKey)
+        }),
+        {} as Record<string, T>
+      )
+    }),
+    {} as Record<string, Record<string, T>>
+  );

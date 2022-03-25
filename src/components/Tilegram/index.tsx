@@ -18,7 +18,7 @@ import {
   determineIfAllocationShouldFlip,
   determineIfAllocationWasPreserved
 } from '../../lib/utils';
-import type { ElectoratesRenderProps } from './data';
+import type { ElectoratesRenderProps, LayoutConfig } from './data';
 import { ELEMENT_NAMES, LAYOUTS_CONFIGS, generateElementIDRecord } from './data';
 import Defs from './defs';
 import styles from './styles.scss';
@@ -46,8 +46,6 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const componentID = useMemo(generateComponentID, []);
   const { allocations, focuses, layer, layout, year, relative, onTapElectorate } = props;
   const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
-  // TODO: Use year with candidate lists (once we get them) to provide chenge options
-  // (or maybe just pass year and electorate ID to onTapElectorate for it to be handled outside)
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
@@ -60,7 +58,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
     width,
     height,
     margin
-  } = useMemo(() => LAYOUTS_CONFIGS[layout], [layout]);
+  } = useMemo(() => LAYOUTS_CONFIGS[layout] as LayoutConfig, [layout]);
   const svgWidth = width + 2 * margin.horizontal;
   // const svgHeight = height + 2 * margin.vertical;
   const svgHeight = svgWidth; // hack: keep square to stop variable graphic height when switching layout

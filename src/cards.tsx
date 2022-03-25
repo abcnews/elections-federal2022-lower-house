@@ -19,7 +19,6 @@ const Article = () => {
 
   useEffect(() => {
     fetchLiveResultsElectorates().then(electorates => {
-      console.log(electorates);
       setGraphicProps({
         ...(DEFAULT_GRAPHIC_PROPS as GraphicProps),
         allocations: electorates.reduce<Allocations>(
