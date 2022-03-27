@@ -6,7 +6,7 @@ import styles from './styles.scss';
 
 const MAX_COUNT = ELECTORATES.length;
 const WIN_COUNT = Math.ceil((MAX_COUNT + 1) / 2);
-const DEFAULT_EXTENT_VOTES = WIN_COUNT + 10;
+const DEFAULT_EXTENT_VOTES = WIN_COUNT + 8;
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -98,8 +98,9 @@ const Totals: React.FC<TotalsProps> = props => {
             <div className={styles.track}>
               <div
                 className={styles.bar}
-                data-allocation={majorAllocation}
                 style={{ transform: `translate(${getTransformXPercent(count)}%, 0)` }}
+                data-allocation={majorAllocation}
+                data-is-single-digit-count={count < 10 ? '' : undefined}
               >
                 <div className={styles.value}>{count}</div>
               </div>

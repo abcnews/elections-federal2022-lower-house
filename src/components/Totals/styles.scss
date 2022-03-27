@@ -34,7 +34,6 @@
 
 .count {
   position: relative;
-  padding-right: 2.25em;
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.025);
 }
@@ -62,11 +61,18 @@
 }
 
 .value {
+  color: $color_White;
   position: absolute;
-  left: calc(100% + 0.25em);
+  right: 0.25em;
   height: 100%;
   font-weight: bold;
   letter-spacing: 0.0625em;
+}
+
+.bar[data-is-single-digit-count] .value {
+  right: auto;
+  left: calc(100% + 0.25em);
+  color: $color_Black;
   text-shadow: 0 0 2px $color_White, 0 0 1px $color_White;
 }
 
@@ -75,7 +81,7 @@
   bottom: -0.5em;
   left: 0;
   margin: 0;
-  width: calc(100% - 2.25em);
+  width: 100%;
   height: calc(100% + 1em);
 }
 
