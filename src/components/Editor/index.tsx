@@ -1,4 +1,7 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import type { ItemParams } from 'react-contexify';
+import { Menu, Item, Separator, useContextMenu } from 'react-contexify';
+import 'react-contexify/dist/ReactContexify.css';
 import {
   Layer,
   LAYER_LABELS,
@@ -6,6 +9,7 @@ import {
   LAYOUT_LABELS,
   ElectorateID,
   ELECTORATE_IDS,
+  Electorate,
   ELECTORATES,
   Allocation,
   Allocations,
@@ -56,6 +60,7 @@ const STORY_MARKERS = [
 ];
 
 const SNAPSHOTS_LOCALSTORAGE_KEY = 'lheditorsnapshots';
+const CONTEXT_MENU_ID = 'context_menu';
 
 const Editor: React.FC = () => {
   const initialUrlParamProps = useMemo(
@@ -74,6 +79,10 @@ const Editor: React.FC = () => {
   const [relative, setRelative] = useState<number | null | undefined>(initialUrlParamProps.relative);
   const [counting, setCounting] = useState(initialUrlParamProps.counting);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
+  const [lastTappedElectorate, setLastTappedElectorate] = useState<Electorate>();
+  const { show: showContextMenu } = useContextMenu({
+    id: CONTEXT_MENU_ID
+  });
 
   const createSnapshot = (name: string, urlQuery: string) => {
     const nextSnapshots = {
@@ -145,19 +154,41 @@ const Editor: React.FC = () => {
     setCounting(graphicProps.counting || DEFAULT_GRAPHIC_PROPS.counting);
   };
 
-  const onTapElectorate = (electorateID: string) => {
-    const allocationsToMixin: Allocations = {};
+  // const onTapElectorate = (electorateID: string) => {
+  //   const allocationsToMixin: Allocations = {};
+  //   const allocation = allocations[electorateID];
+  //   const allowedAllocations = [Allocation.None, ...candidates[electorateID].map(candidate => Allocation[candidate])];
+  //   const allocationIndex = allowedAllocations.indexOf(allocation);
 
-    const allocation = allocations[electorateID];
-    const allowedAllocations = [Allocation.None, ...candidates[electorateID].map(candidate => Allocation[candidate])];
-    const allocationIndex = allowedAllocations.indexOf(allocation);
+  //   // Cycle to the next Allocation in allowedAllocations (or the first if we don't recognise it)
+  //   allocationsToMixin[electorateID] = allowedAllocations[
+  //     allocationIndex === allowedAllocations.length - 1 ? 0 : allocationIndex + 1
+  //   ] as Allocation;
 
-    // Cycle to the next Allocation in allowedAllocations (or the first if we don't recognise it)
-    allocationsToMixin[electorateID] = allowedAllocations[
-      allocationIndex === allowedAllocations.length - 1 ? 0 : allocationIndex + 1
-    ] as Allocation;
+  //   mixinGraphicProps({ allocations: allocationsToMixin });
+  // };
 
-    mixinGraphicProps({ allocations: allocationsToMixin });
+  const onTapElectorate = (electorateID: string, event: React.MouseEvent<SVGElement>) => {
+    const electorate = ELECTORATES.find(
+      ({ id }) => ((id as unknown) as string) === ElectorateID[electorateID]
+    ) as Electorate;
+
+    setLastTappedElectorate(electorate);
+    showContextMenu(event);
+  };
+
+  const onTapContextMenuItem = ({ data }: ItemParams<any, { allocation: Allocation }>) => {
+    if (!data || !lastTappedElectorate) {
+      return;
+    }
+
+    const { allocation } = data;
+
+    mixinGraphicProps({
+      allocations: {
+        [ElectorateID[lastTappedElectorate.id]]: allocation
+      }
+    });
   };
 
   const onChangeFocusedElectorates = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -240,6 +271,23 @@ const Editor: React.FC = () => {
     <div className={styles.root}>
       <div className={styles.graphic}>
         <Graphic onTapElectorate={onTapElectorate} {...graphicProps} />
+        <Menu id={CONTEXT_MENU_ID}>
+          {lastTappedElectorate && (
+            <Item disabled>
+              <strong>{lastTappedElectorate.name}</strong>
+            </Item>
+          )}
+          <Separator />
+          <Item data={{ allocation: Allocation.None }} onClick={onTapContextMenuItem}>
+            None
+          </Item>
+          {lastTappedElectorate &&
+            [...candidates[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
+              <Item key={candidate} data={{ allocation: Allocation[candidate] }} onClick={onTapContextMenuItem}>
+                <div data-allocation={Allocation[candidate]}>{candidate}</div>
+              </Item>
+            ))}
+        </Menu>
       </div>
       <div className={styles.controls}>
         <h3>Layout</h3>

@@ -12,6 +12,17 @@ module.exports = {
   webpack: config => {
     config.devtool = 'source-map';
 
+    const rules = config.module.rules;
+    const stylesRule = rules.find(x => x.__hint__ === 'styles');
+
+    stylesRule.use[1].options.modules.mode = resourcePath => {
+      if (/react-contexify/i.test(resourcePath)) {
+        return 'global';
+      }
+
+      return 'local';
+    };
+
     // Stop `import()`-ed chunks from being split into `[name].js` and `vendors~[name].js`
     config.optimization = {
       ...(config.optimization || {}),

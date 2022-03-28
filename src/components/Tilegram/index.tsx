@@ -30,7 +30,7 @@ export type TilegramProps = {
   focuses?: Focuses;
   year?: ElectionYear;
   relative?: ElectionYear | null;
-  onTapElectorate?: (elecctorateID: string) => void;
+  onTapElectorate?: (electorateID: string, event: React.MouseEvent<SVGElement>) => void;
 };
 
 export const DEFAULT_PROPS: TilegramProps = {
@@ -99,7 +99,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
       const electorateID = event.target.getAttribute('data-electorate');
 
       if (electorateID) {
-        onTapElectorate(electorateID);
+        onTapElectorate(electorateID, event);
       }
     }
   };

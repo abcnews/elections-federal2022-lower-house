@@ -1,3 +1,5 @@
+@import '../../lib/constants.scss';
+
 $color_AlphaGrey: rgba(0, 0, 0, 0.1);
 
 html {
@@ -163,4 +165,23 @@ body {
 
 .flexRow button[disabled] {
   cursor: not-allowed;
+}
+
+:global(.react-contexify__item--disabled) {
+  opacity: 1;
+}
+
+:global(.react-contexify__item__content) {
+  font-family: ABCSans, sans-serif;
+}
+
+:global(.react-contexify__item__content) [data-allocation]::before {
+  content: '';
+  display: inline-block;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  width: 0.75em;
+  height: 0.75em;
+  background-color: var(--color-allocation);
+  // vertical-align: top;
 }
