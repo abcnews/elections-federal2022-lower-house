@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { ProvidePlugin } = require('webpack');
 
 module.exports = {
   type: 'react',
@@ -38,6 +39,12 @@ module.exports = {
       ...(config.resolve.fallback || {}),
       stream: require.resolve('stream-browserify')
     };
+
+    config.plugins.push(
+      new ProvidePlugin({
+        process: 'process/browser'
+      })
+    );
 
     return config;
   },
