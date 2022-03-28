@@ -288,7 +288,7 @@
   }
 }
 
-.root:not([data-layer='#{$Layer_STATES}']) .statesBorders {
+.root[data-has-focuses]:not([data-layer='#{$Layer_STATES}']) .statesBorders {
   display: none;
 }
 
