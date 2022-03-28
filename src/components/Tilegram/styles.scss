@@ -1,22 +1,5 @@
 @import '../../lib/constants.scss';
 
-$opacityUnfocused: 0.05;
-$opacityUnfocusedInspecting: 0.5;
-$focusChangeTransitionDuration: 0.5s;
-
-@mixin fadedOutTransitionable {
-  transition: opacity $focusChangeTransitionDuration;
-}
-
-@mixin fadedOut {
-  opacity: $opacityUnfocused;
-}
-
-@mixin fadedOutInspecting {
-  opacity: $opacityUnfocusedInspecting;
-  transition: opacity 0s;
-}
-
 // Root
 
 .root {

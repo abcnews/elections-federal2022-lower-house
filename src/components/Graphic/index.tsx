@@ -28,7 +28,7 @@ export const DEFAULT_PROPS: Partial<GraphicProps> = {
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { title, counting, year, allocations, children, layout, layer, ...otherTilegramProps } = {
+  const { children, title, counting, year, allocations, focuses, layout, layer, ...otherTilegramProps } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -40,9 +40,16 @@ const Graphic: React.FC<GraphicProps> = props => {
         <Totals allocations={allocations} year={year} />
       </header>
       {layout === Layout.GEO ? (
-        <Geo allocations={allocations} layer={layer} />
+        <Geo allocations={allocations} focuses={focuses} layer={layer} />
       ) : (
-        <Tilegram allocations={allocations} year={year} layout={layout} layer={layer} {...otherTilegramProps} />
+        <Tilegram
+          allocations={allocations}
+          focuses={focuses}
+          year={year}
+          layout={layout}
+          layer={layer}
+          {...otherTilegramProps}
+        />
       )}
     </div>
   );

@@ -71,3 +71,20 @@ $swHeavy_SM: 8;
 // Transitioning
 
 $allocationTransitionDuration: 0.75s;
+
+$opacityUnfocused: 0.05;
+$opacityUnfocusedInspecting: 0.5;
+$focusChangeTransitionDuration: 0.5s;
+
+@mixin fadedOutTransitionable {
+  transition: opacity $focusChangeTransitionDuration;
+}
+
+@mixin fadedOut {
+  opacity: $opacityUnfocused;
+}
+
+@mixin fadedOutInspecting {
+  opacity: $opacityUnfocusedInspecting;
+  transition: opacity 0s;
+}
