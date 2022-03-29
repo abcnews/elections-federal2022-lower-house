@@ -8,7 +8,8 @@ import {
   DEFINITIVE_ALLOCATIONS,
   Focus,
   Focuses,
-  FOCUSES
+  FOCUSES,
+  Layout
 } from './constants';
 
 export const getAllocationsCounts = (allocations: Allocations): { [key: string]: number } => {
@@ -46,7 +47,7 @@ function decode<Dict>(code: string, keys: string[], possibleValues: string[], de
     dict[key] = possibleValues.indexOf(value) > -1 ? value : defaultValue;
 
     return dict;
-  }, {} as Dict);
+  }, ({} as unknown) as Dict);
 }
 
 function encode<Dict>(dict: Dict, keys: string[], possibleValues: string[], defaultValue: string): string {
@@ -79,7 +80,6 @@ export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focus
 
 export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
   const { allocations, focuses, ...otherGraphicProps } = acto(alternatingCase);
-
   const graphicProps = {
     ...otherGraphicProps
   } as Partial<GraphicProps>;
@@ -90,6 +90,10 @@ export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
 
   if (typeof focuses === 'string') {
     graphicProps.focuses = decodeFocuses(focuses);
+  }
+
+  if (typeof graphicProps.layout === 'number') {
+    graphicProps.layout = String(graphicProps.layout) as Layout;
   }
 
   return graphicProps;
@@ -133,6 +137,10 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
 
   graphicProps.allocations = decodeAllocations(graphicProps.allocations);
   graphicProps.focuses = decodeFocuses(graphicProps.focuses);
+
+  if (typeof graphicProps.layout === 'number') {
+    graphicProps.layout = String(graphicProps.layout);
+  }
 
   if (typeof graphicProps.year === 'string') {
     graphicProps.year = +graphicProps.year;

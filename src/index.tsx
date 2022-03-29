@@ -70,6 +70,10 @@ const whenScrollytellersLoaded = new Promise((resolve, reject) =>
         scrollytellerDefinition.panels.forEach(({ data }) => {
           data.allocations = decodeAllocations((data.allocations as string) || '');
           data.focuses = decodeFocuses((data.focuses as string) || '');
+
+          if (typeof data.layout === 'number') {
+            data.layout = String(data.layout);
+          }
         });
 
         // Upgrade scrollyteller' content to show coloured electorate names

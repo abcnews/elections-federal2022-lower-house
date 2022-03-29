@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactChild } from 'react';
 import { DEFAULT_ELECTION_YEAR, Layout } from '../../lib/constants';
 import Geo from '../Geo';
 import type { TilegramProps } from '../Tilegram';
@@ -17,6 +17,7 @@ export type PossiblyEncodedGraphicProps =
   | {
       allocations: string;
       focuses: string;
+      layout: number | string;
     }
   | GraphicProps;
 
@@ -33,15 +34,14 @@ const Graphic: React.FC<GraphicProps> = props => {
     ...props
   };
   const isCounting = typeof counting !== 'boolean' || counting;
+  let map: React.ReactElement;
 
-  return (
-    <div className={styles.root} title={title}>
-      <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
-        <Totals allocations={allocations} year={year} />
-      </header>
-      {layout === Layout.GEO ? (
-        <Geo allocations={allocations} focuses={focuses} layer={layer} />
-      ) : (
+  switch (layout) {
+    case Layout.GEO:
+      map = <Geo allocations={allocations} focuses={focuses} layer={layer} />;
+      break;
+    default:
+      map = (
         <Tilegram
           allocations={allocations}
           focuses={focuses}
@@ -50,7 +50,16 @@ const Graphic: React.FC<GraphicProps> = props => {
           layer={layer}
           {...otherTilegramProps}
         />
-      )}
+      );
+      break;
+  }
+
+  return (
+    <div className={styles.root} title={title}>
+      <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
+        <Totals allocations={allocations} year={year} />
+      </header>
+      {map}
     </div>
   );
 };
