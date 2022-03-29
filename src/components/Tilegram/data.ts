@@ -30,6 +30,11 @@ export type Polygon = Vector2[];
 export type PolygonRecord = Record<string, Polygon>;
 type NestedPolygonRecord = Record<string, PolygonRecord>;
 
+type HexDimensions = {
+  width: number;
+  height: number;
+};
+
 type StatesCells = Record<string, [number, number, boolean?]>;
 
 type LayoutsStatesCells = Record<Layout, StatesCells>;
@@ -40,11 +45,7 @@ type LayoutMargin = {
 };
 
 export type LayoutConfig = {
-  width: number;
-  height: number;
-  margin: LayoutMargin;
-  hexWidth: number;
-  hexHeight: number;
+  hexDimensions: HexDimensions;
   electoratesPolygons: PolygonRecord;
   statesPolygons: PolygonRecord;
   statesLabelsPositions: Vector2Record;
@@ -54,9 +55,7 @@ type LayoutsConfigs = Record<Layout, LayoutConfig>;
 
 export const ELEMENT_NAMES = ['polygon', 'clipPath'];
 
-export const HEX_SIDE_LENGTH = 25;
-export const HEX_WIDTH = Math.sqrt(3) * HEX_SIDE_LENGTH;
-export const HEX_HEIGHT = 2 * HEX_SIDE_LENGTH;
+export const SVG_SIZE = 720;
 
 export const generateElementID = (componentID: string, ...rest: Array<string | number>) =>
   ([componentID] as Array<string | number>).concat(rest).join('_');
@@ -82,40 +81,62 @@ const uniqueVector2sReducer = (memo: Vector2[], vector2: Vector2) => {
   return [...memo, vector2];
 };
 
-const getHexVector2 = ([column, row]: Cell, shouldNegateEvenRowOffset = false): Vector2 => [
-  HEX_WIDTH * (column + (shouldNegateEvenRowOffset ? -0.5 : 0.5) * (row & 1)),
-  ((HEX_HEIGHT * 3) / 4) * row
+const getHexVector2 = (
+  hexDimensions: HexDimensions,
+  [column, row]: Cell,
+  shouldNegateEvenRowOffset = false
+): Vector2 => [
+  hexDimensions.width * (column + (shouldNegateEvenRowOffset ? -0.5 : 0.5) * (row & 1)),
+  ((hexDimensions.height * 3) / 4) * row
 ];
 
-const getHexPolygon = (cell: Cell, shouldNegateEvenRowOffset = false): Polygon => {
-  const [x, y] = getHexVector2(cell, shouldNegateEvenRowOffset);
+const getHexPolygon = (hexDimensions: HexDimensions, cell: Cell, shouldNegateEvenRowOffset = false): Polygon => {
+  const { width, height } = hexDimensions;
+  const [x, y] = getHexVector2(hexDimensions, cell, shouldNegateEvenRowOffset);
 
   return [
-    [x, y + (HEX_HEIGHT / 4) * 3],
-    [x + HEX_WIDTH / 2, y + HEX_HEIGHT],
-    [x + HEX_WIDTH, y + (HEX_HEIGHT / 4) * 3],
-    [x + HEX_WIDTH, y + HEX_HEIGHT / 4],
-    [x + HEX_WIDTH / 2, y],
-    [x, y + HEX_HEIGHT / 4],
-    [x, y + (HEX_HEIGHT / 4) * 3]
+    [x, y + (height / 4) * 3],
+    [x + width / 2, y + height],
+    [x + width, y + (height / 4) * 3],
+    [x + width, y + height / 4],
+    [x + width / 2, y],
+    [x, y + height / 4],
+    [x, y + (height / 4) * 3]
   ];
 };
 
-const getConcavePolygon = (vector2s: Vector2[]) =>
-  concaveman(vector2s, 0.8, Math.min(HEX_WIDTH, HEX_HEIGHT) / 2) as Polygon;
+const getConcavePolygon = (hexDimensions: HexDimensions, vector2s: Vector2[]) =>
+  concaveman(vector2s, 0.8, Math.min(hexDimensions.width, hexDimensions.height) / 2) as Polygon;
 
-const getLayoutDimensions = (cellsWide: number, cellsHigh: number) => ({
-  width: (cellsWide + 0.5) * HEX_WIDTH,
-  height: (cellsHigh + 0.33) * ((HEX_HEIGHT / 4) * 3)
-});
+const getHexDimensions = (cellsWide: number, canvasWidth: number): HexDimensions => {
+  // Calculates pointy-tip hex dimensions, where the canvasWidth needs to
+  // contain n+0.5 hexes (because odd rows are offset by 0.5 hexes)
+  const width = canvasWidth / (cellsWide + 0.5);
+  const sideLength = width / Math.sqrt(3);
+  const height = sideLength * 2;
 
-const getLayoutPolygons = (layout: Layout) => {
+  return {
+    width,
+    height
+  };
+};
+
+const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin): LayoutConfig => {
+  const offset: Vector2 = [margin.horizontal, margin.vertical];
+  const hexDimensions = getHexDimensions(cellsWide, SVG_SIZE - margin.horizontal * 2);
+
   const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
     STATES_ELECTORATES_CELLS,
     (electorateCell, stateKey) => {
       const [offsetX, offsetY, shouldNegateEvenRowOffset] = (LAYOUTS_STATES_CELLS[layout] as StatesCells)[stateKey];
 
-      return getHexPolygon(addVector2s(electorateCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset);
+      const hexPolygon = getHexPolygon(
+        hexDimensions,
+        addVector2s(electorateCell, [offsetX, offsetY]),
+        !!shouldNegateEvenRowOffset
+      );
+
+      return hexPolygon.map(vector2 => addVector2s(vector2, offset));
     }
   );
 
@@ -125,6 +146,7 @@ const getLayoutPolygons = (layout: Layout) => {
     (memo, stateKey) => ({
       ...memo,
       [stateKey]: getConcavePolygon(
+        hexDimensions,
         Object.keys(statesElectoratesPolygons[stateKey])
           .reduce(
             (memo, electorateKey) => [...memo, ...statesElectoratesPolygons[stateKey][electorateKey]],
@@ -136,13 +158,6 @@ const getLayoutPolygons = (layout: Layout) => {
     {} as PolygonRecord
   );
 
-  return {
-    electoratesPolygons,
-    statesPolygons
-  };
-};
-
-const getLayoutLabelsPositions = (layout: Layout) => {
   const statesCells = LAYOUTS_STATES_CELLS[layout] as StatesCells;
 
   const statesLabelsPositions = Object.keys(statesCells).reduce((memo, stateKey) => {
@@ -160,11 +175,17 @@ const getLayoutLabelsPositions = (layout: Layout) => {
 
     return {
       ...memo,
-      [stateKey]: getHexVector2(addVector2s(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset)
+      [stateKey]: addVector2s(
+        getHexVector2(hexDimensions, addVector2s(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset),
+        offset
+      )
     };
   }, {} as Vector2Record);
 
   return {
+    hexDimensions,
+    electoratesPolygons,
+    statesPolygons,
     statesLabelsPositions
   };
 };
@@ -486,93 +507,33 @@ const LAYOUTS_STATES_CELLS: Partial<LayoutsStatesCells> = {
   }
 };
 
-const COMMON_LAYOUT_CONFIG = {
-  hexWidth: HEX_WIDTH,
-  hexHeight: HEX_HEIGHT,
-  margin: {
-    horizontal: 2,
-    vertical: 2
-  }
-};
-
-const COMMON_STATE_LAYOUT_CONFIG = {
-  ...COMMON_LAYOUT_CONFIG,
-  margin: {
+const STATE_LAYOUT_CONFIG_ARGS: [number, LayoutMargin] = [
+  10,
+  {
     horizontal: 2,
     vertical: 102
-  },
-  ...getLayoutDimensions(10, 8)
-};
+  }
+];
 
 export const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
-  [Layout.COUNTRY]: {
-    ...COMMON_LAYOUT_CONFIG,
-    margin: {
-      horizontal: 47,
-      vertical: 2
-    },
-    ...getLayoutDimensions(14, 19),
-    ...getLayoutPolygons(Layout.COUNTRY),
-    ...getLayoutLabelsPositions(Layout.COUNTRY)
-  },
-  [Layout.EXPLODED]: {
-    ...COMMON_LAYOUT_CONFIG,
-    margin: {
-      horizontal: 20,
-      vertical: 2
-    },
-    ...getLayoutDimensions(16.75, 20.5),
-    ...getLayoutPolygons(Layout.EXPLODED),
-    ...getLayoutLabelsPositions(Layout.EXPLODED)
-  },
-  [Layout.GRID]: {
-    ...COMMON_LAYOUT_CONFIG,
-    ...getLayoutDimensions(20, 23),
-    ...getLayoutPolygons(Layout.GRID),
-    ...getLayoutLabelsPositions(Layout.GRID),
-    margin: {
-      horizontal: 2,
-      vertical: 77
-    }
-  },
-  [Layout.ACT]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.ACT),
-    ...getLayoutLabelsPositions(Layout.ACT)
-  },
-  [Layout.NSW]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.NSW),
-    ...getLayoutLabelsPositions(Layout.NSW)
-  },
-  [Layout.NT]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.NT),
-    ...getLayoutLabelsPositions(Layout.NT)
-  },
-  [Layout.QLD]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.QLD),
-    ...getLayoutLabelsPositions(Layout.QLD)
-  },
-  [Layout.SA]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.SA),
-    ...getLayoutLabelsPositions(Layout.SA)
-  },
-  [Layout.TAS]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.TAS),
-    ...getLayoutLabelsPositions(Layout.TAS)
-  },
-  [Layout.VIC]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.VIC),
-    ...getLayoutLabelsPositions(Layout.VIC)
-  },
-  [Layout.WA]: {
-    ...COMMON_STATE_LAYOUT_CONFIG,
-    ...getLayoutPolygons(Layout.WA),
-    ...getLayoutLabelsPositions(Layout.WA)
-  }
+  [Layout.COUNTRY]: getLayoutConfig(Layout.COUNTRY, 14, {
+    horizontal: 47,
+    vertical: 2
+  }),
+  [Layout.EXPLODED]: getLayoutConfig(Layout.EXPLODED, 16.75, {
+    horizontal: 20,
+    vertical: 2
+  }),
+  [Layout.GRID]: getLayoutConfig(Layout.GRID, 20, {
+    horizontal: 2,
+    vertical: 72
+  }),
+  [Layout.ACT]: getLayoutConfig(Layout.ACT, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NSW]: getLayoutConfig(Layout.NSW, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NT]: getLayoutConfig(Layout.NT, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.QLD]: getLayoutConfig(Layout.QLD, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.SA]: getLayoutConfig(Layout.SA, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.TAS]: getLayoutConfig(Layout.TAS, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.VIC]: getLayoutConfig(Layout.VIC, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.WA]: getLayoutConfig(Layout.WA, ...STATE_LAYOUT_CONFIG_ARGS)
 };

@@ -6,8 +6,7 @@
   position: relative;
   width: 100%;
   height: 0;
-  padding: 0;
-  /* padding-bottom will be defined by JS */
+  padding: 0 0 100% 0;
 }
 
 @media (orientation: landscape) and (max-height: 50rem) {
@@ -241,12 +240,12 @@
 
 .electoratesLabels {
   pointer-events: none;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-family: sans-serif;
 }
 
 .root[data-is-single-state-layout] .electoratesLabels {
-  font-size: 0.55rem;
+  font-size: 0.875rem;
 }
 
 .electorateLabel {
@@ -296,16 +295,18 @@
 
 .statesLabels {
   pointer-events: none;
+  font-size: 1.75rem; // Default for individual states
+}
+
+.root[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
+.root[data-layout='#{$Layout_EXPLODED}'] .statesLabels,
+.root[data-layout='#{$Layout_GRID}'] .statesLabels {
   font-size: 1.375rem;
 }
 
 .root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
 .root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_EXPLODED}'] .statesLabels {
   display: none;
-}
-
-.root[data-layout='#{$Layout_GRID}'] .statesLabels {
-  font-size: 2rem;
 }
 
 .stateLabel {
