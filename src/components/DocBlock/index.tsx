@@ -41,6 +41,10 @@ const postprocessScrollytellerDefinition = scrollytellerDefinition => {
   scrollytellerDefinition.panels.forEach(({ data }) => {
     data.allocations = decodeAllocations((data.allocations as string) || '');
     data.focuses = decodeFocuses((data.focuses as string) || '');
+
+    if (typeof data.layout === 'number') {
+      data.layout = String(data.layout);
+    }
   });
 
   applyColourToPanels(scrollytellerDefinition.panels);
