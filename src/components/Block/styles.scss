@@ -175,10 +175,6 @@
   white-space: nowrap;
 }
 
-.electorate[data-is-first-encounter]::after {
-  content: ' (' attr(data-electorate) ')';
-}
-
 .electorate[data-allocation] {
   background-color: var(--color-allocation);
 }
