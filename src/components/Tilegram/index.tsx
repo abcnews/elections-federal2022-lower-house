@@ -49,7 +49,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const relativeAllocations = relative && PRESETS[relative]?.allocations;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
-  const { electoratesPolygons, statesPolygons, statesLabelsPositions, hexDimensions } = useMemo(
+  const { electoratesPolygons, statesPolygons, statesLabelsPositions, hex } = useMemo(
     () => LAYOUTS_CONFIGS[layout] as LayoutConfig,
     [layout]
   );
@@ -183,9 +183,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     xlinkHref={`#${elementIDRecord.polygon}`}
                     className={styles.electorateBackgroundPolygon}
                     style={{
-                      transformOrigin: `${polygon[0][0] + hexDimensions.width / 2}px ${
-                        polygon[0][1] - hexDimensions.height / 4
-                      }px`
+                      transformOrigin: `${polygon[0][0] + hex.width / 2}px ${polygon[0][1] - hex.height / 4}px`
                     }}
                     data-electorate={id}
                     data-allocation={allocation}
@@ -246,7 +244,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
             <g className={styles.electoratesLabels}>
               {Object.values(electoratesRenderProps).map(({ id: electorateID, hasAllocation, polygon }) => {
                 const position = polygon[0];
-                const [x, y] = [position[0] + hexDimensions.width / 2, position[1] - hexDimensions.height / 4];
+                const [x, y] = [position[0] + hex.width / 2, position[1] - hex.height / 4];
                 const electorate = ELECTORATES.find(
                   ({ id }) => ((id as unknown) as string) === ElectorateID[electorateID]
                 ) as Electorate;
