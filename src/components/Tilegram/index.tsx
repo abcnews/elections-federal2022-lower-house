@@ -1,13 +1,15 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Allocations, ElectionYear, Electorate, Focuses, Layer, Layout } from '../../lib/constants';
+import type { Allocations, ElectionYear, Electorate, Focuses } from '../../lib/constants';
 import {
-  DEFAULT_LAYER,
-  DEFAULT_LAYOUT,
-  SINGLE_STATE_LAYOUTS,
   Allocation,
   ElectorateID,
   ELECTORATES,
   Focus,
+  Layer,
+  DEFAULT_LAYER,
+  Layout,
+  DEFAULT_LAYOUT,
+  SINGLE_STATE_LAYOUTS,
   StateID,
   STATES,
   PRESETS
@@ -23,6 +25,8 @@ import Defs from './defs';
 import styles from './styles.scss';
 import type { ElectoratesRenderProps, LayoutConfig, LayoutsConfigs } from './types';
 import { generateElementIDRecord, getLayoutConfig } from './utils';
+
+// const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
 
 const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
   [Layout.COUNTRY]: getLayoutConfig(Layout.COUNTRY, 14, [47, 2]),
