@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import type { ElectoratesRenderProps, PolygonRecord } from './data';
+import type { ElectoratesRenderProps, PolygonRecord } from './types';
 
 export type DefsProps = {
   componentID: string;

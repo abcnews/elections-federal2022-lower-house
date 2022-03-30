@@ -18,10 +18,25 @@ import {
   determineIfAllocationShouldFlip,
   determineIfAllocationWasPreserved
 } from '../../lib/utils';
-import type { ElectoratesRenderProps, LayoutConfig } from './data';
-import { ELEMENT_NAMES, LAYOUTS_CONFIGS, SVG_SIZE, generateElementIDRecord } from './data';
+import { ELEMENT_NAMES, STATE_LAYOUT_CONFIG_ARGS, SVG_SIZE } from './constants';
 import Defs from './defs';
 import styles from './styles.scss';
+import type { ElectoratesRenderProps, LayoutConfig, LayoutsConfigs } from './types';
+import { generateElementIDRecord, getLayoutConfig } from './utils';
+
+const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
+  [Layout.COUNTRY]: getLayoutConfig(Layout.COUNTRY, 14, [47, 2]),
+  [Layout.EXPLODED]: getLayoutConfig(Layout.EXPLODED, 16.75, [20, 2]),
+  [Layout.GRID]: getLayoutConfig(Layout.GRID, 20, [2, 72]),
+  [Layout.ACT]: getLayoutConfig(Layout.ACT, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NSW]: getLayoutConfig(Layout.NSW, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NT]: getLayoutConfig(Layout.NT, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.QLD]: getLayoutConfig(Layout.QLD, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.SA]: getLayoutConfig(Layout.SA, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.TAS]: getLayoutConfig(Layout.TAS, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.VIC]: getLayoutConfig(Layout.VIC, ...STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.WA]: getLayoutConfig(Layout.WA, ...STATE_LAYOUT_CONFIG_ARGS)
+};
 
 export type TilegramProps = {
   layout: Layout;
