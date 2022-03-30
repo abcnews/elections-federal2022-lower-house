@@ -19,14 +19,14 @@ export type ElectorateRenderProps = {
 
 export type ElectoratesRenderProps = Record<string, ElectorateRenderProps>;
 
-type Vector2 = [number, number]; // [x, y]
-export type Vector2Record = Record<string, Vector2>;
+type Point = [number, number]; // [x, y]
+export type PointRecord = Record<string, Point>;
 
 type Cell = [number, number]; // [column, row]
 type CellRecord = Record<string, Cell>;
 type NestedCellRecord = Record<string, CellRecord>;
 
-export type Polygon = Vector2[];
+export type Polygon = Point[];
 export type PolygonRecord = Record<string, Polygon>;
 type NestedPolygonRecord = Record<string, PolygonRecord>;
 
@@ -48,7 +48,7 @@ export type LayoutConfig = {
   hexDimensions: HexDimensions;
   electoratesPolygons: PolygonRecord;
   statesPolygons: PolygonRecord;
-  statesLabelsPositions: Vector2Record;
+  statesLabelsPositions: PointRecord;
 };
 
 type LayoutsConfigs = Record<Layout, LayoutConfig>;
@@ -69,30 +69,30 @@ export const generateElementIDRecord = (keys: string[], componentID: string, ...
     {} as Record<string, string>
   );
 
-const addVector2s = (a: Vector2, b: Vector2): Vector2 => [a[0] + b[0], a[1] + b[1]];
+const addPoints = (a: Point, b: Point): Point => [a[0] + b[0], a[1] + b[1]];
 
-const areVector2sEqual = (a: Vector2, b: Vector2) => a[0] === b[0] && a[1] === b[1];
+const arePointsEqual = (a: Point, b: Point) => a[0] === b[0] && a[1] === b[1];
 
-const uniqueVector2sReducer = (memo: Vector2[], vector2: Vector2) => {
-  if (memo.find(retainedVector2 => areVector2sEqual(vector2, retainedVector2))) {
+const uniquePointsReducer = (memo: Point[], point: Point) => {
+  if (memo.find(retainedPoint => arePointsEqual(point, retainedPoint))) {
     return memo;
   }
 
-  return [...memo, vector2];
+  return [...memo, point];
 };
 
-const getHexVector2 = (
+const getHexPosition = (
   hexDimensions: HexDimensions,
   [column, row]: Cell,
   shouldNegateEvenRowOffset = false
-): Vector2 => [
+): Point => [
   hexDimensions.width * (column + (shouldNegateEvenRowOffset ? -0.5 : 0.5) * (row & 1)),
   ((hexDimensions.height * 3) / 4) * row
 ];
 
 const getHexPolygon = (hexDimensions: HexDimensions, cell: Cell, shouldNegateEvenRowOffset = false): Polygon => {
   const { width, height } = hexDimensions;
-  const [x, y] = getHexVector2(hexDimensions, cell, shouldNegateEvenRowOffset);
+  const [x, y] = getHexPosition(hexDimensions, cell, shouldNegateEvenRowOffset);
 
   return [
     [x, y + (height / 4) * 3],
@@ -105,8 +105,8 @@ const getHexPolygon = (hexDimensions: HexDimensions, cell: Cell, shouldNegateEve
   ];
 };
 
-const getConcavePolygon = (hexDimensions: HexDimensions, vector2s: Vector2[]) =>
-  concaveman(vector2s, 0.8, Math.min(hexDimensions.width, hexDimensions.height) / 2) as Polygon;
+const getConcavePolygon = (hexDimensions: HexDimensions, points: Point[]) =>
+  concaveman(points, 0.8, Math.min(hexDimensions.width, hexDimensions.height) / 2) as Polygon;
 
 const getHexDimensions = (cellsWide: number, canvasWidth: number): HexDimensions => {
   // Calculates pointy-tip hex dimensions, where the canvasWidth needs to
@@ -122,7 +122,7 @@ const getHexDimensions = (cellsWide: number, canvasWidth: number): HexDimensions
 };
 
 const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin): LayoutConfig => {
-  const offset: Vector2 = [margin.horizontal, margin.vertical];
+  const offset: Point = [margin.horizontal, margin.vertical];
   const hexDimensions = getHexDimensions(cellsWide, SVG_SIZE - margin.horizontal * 2);
 
   const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
@@ -132,11 +132,11 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin
 
       const hexPolygon = getHexPolygon(
         hexDimensions,
-        addVector2s(electorateCell, [offsetX, offsetY]),
+        addPoints(electorateCell, [offsetX, offsetY]),
         !!shouldNegateEvenRowOffset
       );
 
-      return hexPolygon.map(vector2 => addVector2s(vector2, offset));
+      return hexPolygon.map(point => addPoints(point, offset));
     }
   );
 
@@ -150,9 +150,9 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin
         Object.keys(statesElectoratesPolygons[stateKey])
           .reduce(
             (memo, electorateKey) => [...memo, ...statesElectoratesPolygons[stateKey][electorateKey]],
-            [] as Vector2[]
+            [] as Point[]
           )
-          .reduce(uniqueVector2sReducer, [] as Vector2[])
+          .reduce(uniquePointsReducer, [] as Point[])
       )
     }),
     {} as PolygonRecord
@@ -175,12 +175,12 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin
 
     return {
       ...memo,
-      [stateKey]: addVector2s(
-        getHexVector2(hexDimensions, addVector2s(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset),
+      [stateKey]: addPoints(
+        getHexPosition(hexDimensions, addPoints(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset),
         offset
       )
     };
-  }, {} as Vector2Record);
+  }, {} as PointRecord);
 
   return {
     hexDimensions,
