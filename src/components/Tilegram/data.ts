@@ -69,12 +69,12 @@ export const generateElementIDRecord = (keys: string[], componentID: string, ...
     {} as Record<string, string>
   );
 
-const addCouples = (a: NumberCouple, b: NumberCouple): NumberCouple => [a[0] + b[0], a[1] + b[1]];
+const addNumberCouples = (a: NumberCouple, b: NumberCouple): NumberCouple => [a[0] + b[0], a[1] + b[1]];
 
-const areCouplesEqual = (a: NumberCouple, b: NumberCouple) => a[0] === b[0] && a[1] === b[1];
+const areNumberCouplesEqual = (a: NumberCouple, b: NumberCouple) => a[0] === b[0] && a[1] === b[1];
 
 const uniquePointsReducer = (memo: Point[], point: Point) => {
-  if (memo.find(retainedPoint => areCouplesEqual(point, retainedPoint))) {
+  if (memo.find(retainedPoint => areNumberCouplesEqual(point, retainedPoint))) {
     return memo;
   }
 
@@ -137,11 +137,11 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: MarginHorizo
 
       const hexPolygon = getHexPolygon(
         hex,
-        addCouples(electorateCell, [offsetX, offsetY]),
+        addNumberCouples(electorateCell, [offsetX, offsetY]),
         !!shouldNegateEvenRowOffset
       );
 
-      return hexPolygon.map(point => addCouples(point, margin));
+      return hexPolygon.map(point => addNumberCouples(point, margin));
     }
   );
 
@@ -180,8 +180,8 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: MarginHorizo
 
     return {
       ...memo,
-      [stateKey]: addCouples(
-        getHexPosition(hex, addCouples(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset),
+      [stateKey]: addNumberCouples(
+        getHexPosition(hex, addNumberCouples(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset),
         margin
       )
     };
