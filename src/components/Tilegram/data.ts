@@ -24,10 +24,6 @@ type NumberCouple = [number, number];
 type Point = NumberCouple; // [x, y]
 export type PointRecord = Record<string, Point>;
 
-type Cell = NumberCouple; // [column, row]
-type CellRecord = Record<string, Cell>;
-type NestedCellRecord = Record<string, CellRecord>;
-
 export type Polygon = Point[];
 export type PolygonRecord = Record<string, Polygon>;
 type NestedPolygonRecord = Record<string, PolygonRecord>;
@@ -38,14 +34,15 @@ type Hex = {
   polygon: Polygon;
 };
 
+type Cell = NumberCouple; // [column, row]
+type CellRecord = Record<string, Cell>;
+type NestedCellRecord = Record<string, CellRecord>;
+
 type StatesCells = Record<string, [number, number, boolean?]>;
 
 type LayoutsStatesCells = Record<Layout, StatesCells>;
 
-type LayoutMargin = {
-  horizontal: number;
-  vertical: number;
-};
+type MarginHorizontalVertical = NumberCouple; // [horizontal, vertical]
 
 export type LayoutConfig = {
   hex: Hex;
@@ -130,9 +127,8 @@ const getHex = (cellsWide: number, canvasWidth: number): Hex => {
   };
 };
 
-const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin): LayoutConfig => {
-  const marginOffset: NumberCouple = [margin.horizontal, margin.vertical];
-  const hex = getHex(cellsWide, SVG_SIZE - margin.horizontal * 2);
+const getLayoutConfig = (layout: Layout, cellsWide: number, margin: MarginHorizontalVertical): LayoutConfig => {
+  const hex = getHex(cellsWide, SVG_SIZE - margin[0] * 2);
 
   const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
     STATES_ELECTORATES_CELLS,
@@ -145,7 +141,7 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin
         !!shouldNegateEvenRowOffset
       );
 
-      return hexPolygon.map(point => addCouples(point, marginOffset));
+      return hexPolygon.map(point => addCouples(point, margin));
     }
   );
 
@@ -186,7 +182,7 @@ const getLayoutConfig = (layout: Layout, cellsWide: number, margin: LayoutMargin
       ...memo,
       [stateKey]: addCouples(
         getHexPosition(hex, addCouples(stateLabelCell, [offsetX, offsetY]), !!shouldNegateEvenRowOffset),
-        marginOffset
+        margin
       )
     };
   }, {} as PointRecord);
@@ -516,27 +512,12 @@ const LAYOUTS_STATES_CELLS: Partial<LayoutsStatesCells> = {
   }
 };
 
-const STATE_LAYOUT_CONFIG_ARGS: [number, LayoutMargin] = [
-  10,
-  {
-    horizontal: 2,
-    vertical: 102
-  }
-];
+const STATE_LAYOUT_CONFIG_ARGS: [number, MarginHorizontalVertical] = [10, [2, 102]];
 
 export const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
-  [Layout.COUNTRY]: getLayoutConfig(Layout.COUNTRY, 14, {
-    horizontal: 47,
-    vertical: 2
-  }),
-  [Layout.EXPLODED]: getLayoutConfig(Layout.EXPLODED, 16.75, {
-    horizontal: 20,
-    vertical: 2
-  }),
-  [Layout.GRID]: getLayoutConfig(Layout.GRID, 20, {
-    horizontal: 2,
-    vertical: 72
-  }),
+  [Layout.COUNTRY]: getLayoutConfig(Layout.COUNTRY, 14, [47, 2]),
+  [Layout.EXPLODED]: getLayoutConfig(Layout.EXPLODED, 16.75, [20, 2]),
+  [Layout.GRID]: getLayoutConfig(Layout.GRID, 20, [2, 72]),
   [Layout.ACT]: getLayoutConfig(Layout.ACT, ...STATE_LAYOUT_CONFIG_ARGS),
   [Layout.NSW]: getLayoutConfig(Layout.NSW, ...STATE_LAYOUT_CONFIG_ARGS),
   [Layout.NT]: getLayoutConfig(Layout.NT, ...STATE_LAYOUT_CONFIG_ARGS),
