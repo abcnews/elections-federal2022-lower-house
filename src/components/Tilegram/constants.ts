@@ -1,8 +1,6 @@
 import { Layout } from '../../lib/constants';
 import type { CellRecord, LayoutsStatesCells, MarginHorizontalVertical, NestedCellRecord } from './types';
 
-export const ELEMENT_NAMES = ['polygon', 'clipPath'];
-
 export const SVG_SIZE = 720;
 
 export const LAYOUT_OFFSCREEN: CellRecord = {

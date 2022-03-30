@@ -6,6 +6,7 @@ export type MarginHorizontalVertical = NumberCouple; // [horizontal, vertical]
 
 export type Point = NumberCouple; // [x, y]
 export type PointRecord = Record<string, Point>;
+export type NestedPointRecord = Record<string, PointRecord>;
 
 export type Polygon = Point[];
 export type PolygonRecord = Record<string, Polygon>;
@@ -27,7 +28,7 @@ export type LayoutsStatesCells = Record<Layout, StatesCells>;
 
 export type LayoutConfig = {
   hex: Hex;
-  electoratesPolygons: PolygonRecord;
+  electoratesPositions: PointRecord;
   statesPolygons: PolygonRecord;
   statesLabelsPositions: PointRecord;
 };
@@ -37,7 +38,6 @@ export type LayoutsConfigs = Record<Layout, LayoutConfig>;
 export type ElectorateRenderProps = {
   id: ElectorateID;
   name: string;
-  elementIDRecord: Record<string, string>;
   allocation: Allocation;
   hasAllocation: boolean;
   hasDefinitiveAllocation: boolean;
@@ -46,7 +46,7 @@ export type ElectorateRenderProps = {
   shouldFlip: boolean;
   wasPreserved: boolean;
   focus: Focus;
-  polygon: Polygon;
+  gTransform: string;
 };
 
 export type ElectoratesRenderProps = Record<string, ElectorateRenderProps>;

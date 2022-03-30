@@ -1,34 +1,24 @@
 import React, { memo } from 'react';
-import type { ElectoratesRenderProps, PolygonRecord } from './types';
+import type { Hex, PolygonRecord } from './types';
 
 export type DefsProps = {
-  componentID: string;
-  electoratesRenderProps: ElectoratesRenderProps;
+  elementsIDs: Record<string, string>;
+  hex: Hex;
   statesPolygons: PolygonRecord;
 };
 
-const Defs: React.FC<DefsProps> = ({ componentID, electoratesRenderProps, statesPolygons }) => {
-  return (
-    <defs>
-      <g id={`${componentID}_states`}>
-        {Object.keys(statesPolygons).map(stateID => (
-          <polygon key={stateID} points={statesPolygons[stateID].join(' ')} />
-        ))}
-      </g>
-      {Object.values(electoratesRenderProps).reduce<JSX.Element[]>(
-        (memo, { elementIDRecord, name, polygon }) => [
-          ...memo,
-          <polygon key={elementIDRecord.polygon} id={elementIDRecord.polygon} points={polygon.join(' ')}>
-            <title>{name}</title>
-          </polygon>,
-          <clipPath key={elementIDRecord.clipPath} id={elementIDRecord.clipPath}>
-            <use xlinkHref={`#${elementIDRecord.polygon}`} />
-          </clipPath>
-        ],
-        []
-      )}
-    </defs>
-  );
-};
+const Defs: React.FC<DefsProps> = ({ elementsIDs, hex, statesPolygons }) => (
+  <defs>
+    <polygon id={elementsIDs.hexPolygon} points={hex.polygon.join(' ')}></polygon>
+    <clipPath id={elementsIDs.hexClipPath}>
+      <use xlinkHref={`#${elementsIDs.hexPolygon}`} />
+    </clipPath>
+    <g id={elementsIDs.statesPolygons}>
+      {Object.keys(statesPolygons).map(stateID => (
+        <polygon key={stateID} points={statesPolygons[stateID].join(' ')} />
+      ))}
+    </g>
+  </defs>
+);
 
 export default memo(Defs);

@@ -7,6 +7,7 @@ import type {
   Hex,
   LayoutConfig,
   MarginHorizontalVertical,
+  NestedPointRecord,
   NestedPolygonRecord,
   NumberCouple,
   Point,
@@ -16,7 +17,8 @@ import type {
   StatesCells
 } from './types';
 
-const addNumberCouples = (a: NumberCouple, b: NumberCouple): NumberCouple => [a[0] + b[0], a[1] + b[1]];
+const addNumberCouples = (...numberCouples: NumberCouple[]): NumberCouple =>
+  numberCouples.reduce((a, b) => [a[0] + b[0], a[1] + b[1]]);
 
 const areNumberCouplesEqual = (a: NumberCouple, b: NumberCouple) => a[0] === b[0] && a[1] === b[1];
 
@@ -34,18 +36,7 @@ const getHexPosition = (hex: Hex, [column, row]: Cell, shouldNegateEvenRowOffset
 ];
 
 const getHexPolygon = (hex: Hex, cell: Cell, shouldNegateEvenRowOffset = false): Polygon => {
-  const { width, height } = hex;
-  const [x, y] = getHexPosition(hex, cell, shouldNegateEvenRowOffset);
-
-  return [
-    [x, y + (height / 4) * 3],
-    [x + width / 2, y + height],
-    [x + width, y + (height / 4) * 3],
-    [x + width, y + height / 4],
-    [x + width / 2, y],
-    [x, y + height / 4],
-    [x, y + (height / 4) * 3]
-  ];
+  return hex.polygon.map(point => addNumberCouples(point, getHexPosition(hex, cell, shouldNegateEvenRowOffset)));
 };
 
 const getConcavePolygon = (hex: Hex, points: Point[]) =>
@@ -53,18 +44,19 @@ const getConcavePolygon = (hex: Hex, points: Point[]) =>
 
 const getHex = (cellsWide: number, canvasWidth: number): Hex => {
   // Calculates pointy-tip hex dimensions, where the canvasWidth needs to
-  // contain n+0.5 hexes (because odd rows are offset by 0.5 hexes)
+  // contain n+0.5 hexes (because odd rows are offset by 0.5 hexes).
+  // The polygon points are arranged around the center.
   const width = canvasWidth / (cellsWide + 0.5);
   const sideLength = width / Math.sqrt(3);
   const height = sideLength * 2;
   const polygon: Polygon = [
-    [0, (height / 4) * 3],
-    [width / 2, height],
-    [width, (height / 4) * 3],
-    [width, height / 4],
-    [width / 2, 0],
-    [0, height / 4],
-    [0, (height / 4) * 3]
+    [width / -2, height / 4],
+    [width / -2, height / -4],
+    [0, height / -2],
+    [width / 2, height / -4],
+    [width / 2, height / 4],
+    [0, height / 2],
+    [width / -2, height / 4]
   ];
 
   return {
@@ -77,22 +69,39 @@ const getHex = (cellsWide: number, canvasWidth: number): Hex => {
 export const getLayoutConfig = (layout: Layout, cellsWide: number, margin: MarginHorizontalVertical): LayoutConfig => {
   const hex = getHex(cellsWide, SVG_SIZE - margin[0] * 2);
 
-  const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
+  const statesElectoratesPositions: NestedPointRecord = transformNestedRecordsValues<Cell, Point>(
     STATES_ELECTORATES_CELLS,
     (electorateCell, stateKey) => {
-      const [offsetX, offsetY, shouldNegateEvenRowOffset] = (LAYOUTS_STATES_CELLS[layout] as StatesCells)[stateKey];
+      const [offsetX, offsetY, shouldNegateEvenRowOffset = false] = (LAYOUTS_STATES_CELLS[layout] as StatesCells)[
+        stateKey
+      ];
 
-      const hexPolygon = getHexPolygon(
+      const hexPosition = getHexPosition(
         hex,
         addNumberCouples(electorateCell, [offsetX, offsetY]),
-        !!shouldNegateEvenRowOffset
+        shouldNegateEvenRowOffset
       );
 
-      return hexPolygon.map(point => addNumberCouples(point, margin));
+      return addNumberCouples(hexPosition, [hex.width / 2, hex.height / 2], margin);
     }
   );
 
-  const electoratesPolygons: PolygonRecord = flattenNestedRecords<Polygon>(statesElectoratesPolygons);
+  const electoratesPositions: PointRecord = flattenNestedRecords<Point>(statesElectoratesPositions);
+
+  const statesElectoratesPolygons: NestedPolygonRecord = transformNestedRecordsValues<Cell, Polygon>(
+    STATES_ELECTORATES_CELLS,
+    (electorateCell, stateKey) => {
+      const [offsetX, offsetY, shouldNegateEvenRowOffset = false] = (LAYOUTS_STATES_CELLS[layout] as StatesCells)[
+        stateKey
+      ];
+
+      return getHexPolygon(
+        hex,
+        addNumberCouples(electorateCell, [offsetX, offsetY]),
+        shouldNegateEvenRowOffset
+      ).map(point => addNumberCouples(point, [hex.width / 2, hex.height / 2], margin));
+    }
+  );
 
   const statesPolygons = Object.keys(statesElectoratesPolygons).reduce(
     (memo, stateKey) => ({
@@ -136,11 +145,13 @@ export const getLayoutConfig = (layout: Layout, cellsWide: number, margin: Margi
 
   return {
     hex,
-    electoratesPolygons,
+    electoratesPositions,
     statesPolygons,
     statesLabelsPositions
   };
 };
+
+export const generateComponentID = () => (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
 
 const generateElementID = (componentID: string, ...rest: Array<string | number>) =>
   ([componentID] as Array<string | number>).concat(rest).join('_');
