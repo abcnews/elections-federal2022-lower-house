@@ -37,7 +37,8 @@ export type LayoutsConfigs = Record<Layout, LayoutConfig>;
 
 export type ElectorateRenderProps = {
   id: ElectorateID;
-  name: string;
+  label: string;
+  hasLongLabel: boolean;
   allocation: Allocation;
   hasAllocation: boolean;
   hasDefinitiveAllocation: boolean;

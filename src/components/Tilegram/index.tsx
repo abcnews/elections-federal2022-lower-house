@@ -75,12 +75,15 @@ const Tilegram: React.FC<TilegramProps> = props => {
         const id = ElectorateID[electorate.id];
         const allocation = allocations ? allocations[id] : Allocation.None;
         const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
+        const label = electorate[isSingleStateLayout ? 'name' : 'abbr'];
+        const hasLongLabel = label.length > 9 || (label.length > 8 && (label.match(/w|m/gi) || []).length > 1);
 
         return {
           ...memo,
           [electorate.id]: {
             id,
-            name: electorate.name,
+            label,
+            hasLongLabel,
             allocation,
             hasAllocation: allocation && determineIfAllocationIsMade(allocation),
             hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
@@ -94,7 +97,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
           }
         };
       }, {}),
-    [allocations, componentID, electoratesPositions, focuses, relativeAllocations]
+    [allocations, electoratesPositions, focuses, relativeAllocations]
   );
 
   const onTapElectorateBackground = (event: React.MouseEvent<SVGElement>) => {
@@ -229,10 +232,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
           <g className={styles.electoratesPartitions}>
             {Object.values(electoratesRenderProps).map(
               ({ id, relativeAllocation, hasDefinitiveRelativeAllocation, focus, gTransform }) => (
-                <g key={id} transform={gTransform}>
+                <g key={id} className={styles.electoratePartition} transform={gTransform}>
                   <use
                     xlinkHref={`#${elementsIDs.hexPolygon}`}
-                    className={styles.electoratePartition}
+                    className={styles.electoratePartitionPolygon}
                     data-relative-allocation={relativeAllocation || undefined}
                     data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
                     data-focus={focus}
@@ -243,26 +246,18 @@ const Tilegram: React.FC<TilegramProps> = props => {
           </g>
           {isInspecting && layer === Layer.ELECTORATES && (
             <g className={styles.electoratesLabels}>
-              {Object.values(electoratesRenderProps).map(({ id, hasAllocation, gTransform }) => {
-                const electorate = ELECTORATES.find(
-                  ({ id: electorateID }) => ((electorateID as unknown) as string) === ElectorateID[id]
-                ) as Electorate;
-                const label = electorate[isSingleStateLayout ? 'name' : 'abbr'];
-                const hasLongLabel = label.length > 9 || (label.length > 8 && (label.match(/w|m/gi) || []).length > 1);
-
-                return (
-                  <g key={id} transform={gTransform}>
-                    <text
-                      className={styles.electorateLabel}
-                      data-electorate={id}
-                      data-has-allocation={hasAllocation ? '' : undefined}
-                      data-has-long-label={hasLongLabel ? '' : undefined}
-                    >
-                      {label}
-                    </text>
-                  </g>
-                );
-              })}
+              {Object.values(electoratesRenderProps).map(({ id, label, hasLongLabel, hasAllocation, gTransform }) => (
+                <g key={id} className={styles.electorateLabel} transform={gTransform}>
+                  <text
+                    className={styles.electorateLabelText}
+                    data-electorate={id}
+                    data-has-allocation={hasAllocation ? '' : undefined}
+                    data-has-long-label={hasLongLabel ? '' : undefined}
+                  >
+                    {label}
+                  </text>
+                </g>
+              ))}
             </g>
           )}
           <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.statesBackgrounds} />

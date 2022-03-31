@@ -218,6 +218,9 @@
 }
 
 .electoratePartition {
+}
+
+.electoratePartitionPolygon {
   fill: none;
   stroke: none;
   stroke-width: $swLight;
@@ -227,12 +230,12 @@
   }
 }
 
-.electoratePartition[data-focus='#{$Focus_Yes}'],
-.electoratePartition[data-focus='#{$Focus_No}'][data-has-definitive-allocation] {
+.electoratePartitionPolygon[data-focus='#{$Focus_Yes}'],
+.electoratePartitionPolygon[data-focus='#{$Focus_No}'][data-has-definitive-allocation] {
   stroke: $color_BG;
 }
 
-.root[data-has-focuses] .electoratePartition[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .electoratePartitionPolygon[data-focus='#{$Focus_No}'] {
   stroke: none;
 }
 
@@ -249,16 +252,19 @@
 }
 
 .electorateLabel {
+}
+
+.electorateLabelText {
   transform: rotate(30deg) translate(0, 0.3em);
   text-anchor: middle;
   fill: $color_Text;
 }
 
-.electorateLabel[data-has-allocation] {
+.electorateLabelText[data-has-allocation] {
   fill: $color_White;
 }
 
-.root[data-is-single-state-layout] .electorateLabel[data-has-long-label] {
+.root[data-is-single-state-layout] .electorateLabelText[data-has-long-label] {
   font-size: 0.7em;
 }
 
