@@ -10,7 +10,8 @@
   --color-allocation: #{$color_PtyRed};
 }
 
-[data-allocation='#{$Allocation_CA}'] {
+[data-allocation='#{$Allocation_CA}'],
+[data-allocation='#{$Allocation_ONP}'] {
   --color-allocation: #{$color_PtyOrange};
 }
 
@@ -37,10 +38,6 @@
   --color-allocation: #{$color_PtyGreen};
 }
 
-[data-allocation='#{$Allocation_ONP}'] {
-  --color-allocation: #{$color_PtyOrange};
-}
-
 [data-allocation='#{$Allocation_UAP}'] {
   --color-allocation: #{$color_PtyGold};
 }
@@ -51,7 +48,8 @@
   --color-relative-allocation: #{$color_White};
 }
 
-[data-allocation='#{$Allocation_CA}'] {
+[data-relative-allocation='#{$Allocation_CA}'],
+[data-relative-allocation='#{$Allocation_ONP}'] {
   --color-relative-allocation: #{$color_PtyOrange};
 }
 
@@ -82,20 +80,6 @@
   --color-relative-allocation: #{$color_PtyGreen};
 }
 
-[data-relative-allocation='#{$Allocation_ONP}'] {
-  --color-relative-allocation: #{$color_PtyOrange};
-}
-
 [data-relative-allocation='#{$Allocation_UAP}'] {
   --color-relative-allocation: #{$color_PtyGold};
-}
-
-/* Focus colors */
-
-[data-focus='#{$Focus_No}'] {
-  --color-focus: #{$color_White};
-}
-
-[data-focus='#{$Focus_Yes}'] {
-  --color-focus: #{$color_Black};
 }
