@@ -43,9 +43,8 @@ export type ElectorateRenderProps = {
   hasAllocation: boolean;
   hasDefinitiveAllocation: boolean;
   relativeAllocation: Allocation | undefined;
-  hasDefinitiveRelativeAllocation: boolean;
+  wasAllocationPreserved: boolean;
   shouldFlip: boolean;
-  wasPreserved: boolean;
   focus: Focus;
   gTransform: string;
 };

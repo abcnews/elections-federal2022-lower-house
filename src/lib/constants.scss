@@ -1,45 +1,4 @@
-// Layer enum
-
-$Layer_ELECTORATES: 'a';
-$Layer_STATES: 'b';
-
-// Layout enum
-
-$Layout_GEO: '0';
-$Layout_COUNTRY: 'a';
-$Layout_EXPLODED: 'b';
-$Layout_GRID: 'c';
-$Layout_ACT: 'd';
-$Layout_NSW: 'e';
-$Layout_NT: 'f';
-$Layout_QLD: 'g';
-$Layout_SA: 'h';
-$Layout_TAS: 'i';
-$Layout_VIC: 'j';
-$Layout_WA: 'k';
-
-// Allocation enum
-
-$Allocation_None: 'a';
-$Allocation_ALP: 'b';
-$Allocation_CA: 'c';
-$Allocation_CLP: 'd';
-$Allocation_GRN: 'e';
-$Allocation_IND: 'f';
-$Allocation_KAP: 'g';
-$Allocation_LIB: 'h';
-$Allocation_LNP: 'i';
-$Allocation_NAT: 'j';
-$Allocation_ONP: 'k';
-$Allocation_OTH: 'l';
-$Allocation_UAP: 'm';
-
-// Focus enum
-
-$Focus_No: 'n';
-$Focus_Yes: 'y';
-
-// Theming
+// Colors
 
 $color_Black: #000;
 $color_Grey: #989494;
@@ -62,29 +21,50 @@ $color_BG: $color_White;
 
 $swNone: 0;
 $swLight: 1;
-$swLight_SM: 2;
 $swMedium: 2;
-$swMedium_SM: 4;
-$swHeavy: 5;
-$swHeavy_SM: 8;
+$swHeavy: 6.5;
 
-// Transitioning
+// Opacities
 
-$allocationTransitionDuration: 0.75s;
+$opacityFadedOut: 0.05;
+$opacityFadedOutInspecting: 0.5;
 
-$opacityUnfocused: 0.05;
-$opacityUnfocusedInspecting: 0.5;
-$focusChangeTransitionDuration: 0.5s;
+// Durations
 
-@mixin fadedOutTransitionable {
-  transition: opacity $focusChangeTransitionDuration;
-}
+$durationDefault: 0.5s;
+$durationAllocationChange: 0.75s;
 
-@mixin fadedOut {
-  opacity: $opacityUnfocused;
-}
+// Enums
 
-@mixin fadedOutInspecting {
-  opacity: $opacityUnfocusedInspecting;
-  transition: opacity 0s;
-}
+$Allocation_None: 'a';
+$Allocation_ALP: 'b';
+$Allocation_CA: 'c';
+$Allocation_CLP: 'd';
+$Allocation_GRN: 'e';
+$Allocation_IND: 'f';
+$Allocation_KAP: 'g';
+$Allocation_LIB: 'h';
+$Allocation_LNP: 'i';
+$Allocation_NAT: 'j';
+$Allocation_ONP: 'k';
+$Allocation_OTH: 'l';
+$Allocation_UAP: 'm';
+
+$Focus_No: 'n';
+$Focus_Yes: 'y';
+
+$Layer_ELECTORATES: 'a';
+$Layer_STATES: 'b';
+
+$Layout_GEO: '0';
+$Layout_COUNTRY: 'a';
+$Layout_EXPLODED: 'b';
+$Layout_GRID: 'c';
+$Layout_ACT: 'd';
+$Layout_NSW: 'e';
+$Layout_NT: 'f';
+$Layout_QLD: 'g';
+$Layout_SA: 'h';
+$Layout_TAS: 'i';
+$Layout_VIC: 'j';
+$Layout_WA: 'k';

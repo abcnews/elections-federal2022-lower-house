@@ -88,10 +88,9 @@ const Tilegram: React.FC<TilegramProps> = props => {
             hasAllocation: allocation && determineIfAllocationIsMade(allocation),
             hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
             relativeAllocation,
-            hasDefinitiveRelativeAllocation:
-              relativeAllocation && determineIfAllocationIsDefinitive(relativeAllocation),
+            wasAllocationPreserved:
+              relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
             shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
-            wasPreserved: relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
             focus: focuses ? focuses[id] : Focus.No,
             gTransform: `translate(${electoratesPositions[id][0]} ${electoratesPositions[id][1]})`
           }
@@ -100,7 +99,9 @@ const Tilegram: React.FC<TilegramProps> = props => {
     [allocations, electoratesPositions, focuses, relativeAllocations]
   );
 
-  const onTapElectorateBackground = (event: React.MouseEvent<SVGElement>) => {
+  // Tapping an electorate background calls the onTapElectorate function prop
+  // (if it's defined) with the element's respective electorate ID
+  const onTapElectorateHex = (event: React.MouseEvent<SVGUseElement>) => {
     if (onTapElectorate && event.target instanceof SVGUseElement) {
       const electorateID = event.target.getAttribute('data-electorate');
 
@@ -110,8 +111,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
     }
   };
 
-  // We need to trick svg4everyone into not nuking our <use> elements,
-  // by making it think the <svg>'s nodeName isn't "svg"
+  // We need to trick svg4everyone (a PL-included polyfill) into not nuking
+  // our <use> elements, by making it think the <svg>'s nodeName isn't "svg"
   useLayoutEffect(() => {
     const svgEl = svgRef.current;
 
@@ -125,6 +126,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
     });
   }, []);
 
+  // We need to manually manage data-attributes to trigger flips for every
+  // allocation change that warrants one, because React would only add it
+  // once and trigger one flip, when we want subsequent ones. Used along
+  // with the polygon element's onAnimationEnd event to perform the reset.
   useLayoutEffect(() => {
     const svgEl = svgRef.current;
 
@@ -133,22 +138,33 @@ const Tilegram: React.FC<TilegramProps> = props => {
     }
 
     Object.values(electoratesRenderProps).forEach(({ id, allocation, shouldFlip }) => {
-      const electorateBackgroundPolygon =
-        shouldFlip && svgEl.querySelector(`.${styles.electorateBackgroundPolygon}[data-electorate=${id}]`);
+      const electorateHex = svgEl.querySelector(`.${styles.electorateHex}[data-electorate=${id}]`);
 
-      if (!electorateBackgroundPolygon) {
+      if (!electorateHex) {
         return;
       }
 
-      const previousAllocation = electorateBackgroundPolygon.getAttribute('data-last-flipped-allocation');
+      if (!shouldFlip) {
+        electorateHex.removeAttribute('data-last-flipped-allocation');
+        return;
+      }
+
+      const previousAllocation = electorateHex.getAttribute('data-last-flipped-allocation');
 
       if (!previousAllocation || previousAllocation !== allocation) {
-        electorateBackgroundPolygon.setAttribute('data-last-flipped-allocation', allocation);
-        electorateBackgroundPolygon.setAttribute('data-should-flip', '');
+        electorateHex.setAttribute('data-last-flipped-allocation', allocation);
+        electorateHex.setAttribute('data-should-flip', '');
       }
     });
   }, [svgRef.current, allocations, relativeAllocations]);
 
+  // <see useLayoutEffect above>
+  const onFlipFinished = (event: React.AnimationEvent<SVGUseElement>) =>
+    event.currentTarget.removeAttribute('data-should-flip');
+
+  // While the alt key is held down on an interactive graphic, we enable
+  // 'inspecting' mode. Currentnly, this displays labels on each electorate to
+  // help with authoring graphics in the editor.
   useEffect(() => {
     if (!isInteractive) {
       return;
@@ -180,87 +196,49 @@ const Tilegram: React.FC<TilegramProps> = props => {
       <svg ref={svgRef} className={styles.svg} viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}>
         <Defs elementsIDs={elementsIDs} hex={hex} statesPolygons={statesPolygons} />
         <g>
-          <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.baseOuter} />
-          <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.baseInner} />
-          <g className={styles.electoratesBackgrounds} onClick={onTapElectorateBackground}>
+          <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.base} />
+          <g className={styles.electorates} onClick={onTapElectorateHex}>
             {Object.values(electoratesRenderProps).map(
-              ({ id, allocation, relativeAllocation, shouldFlip, wasPreserved, focus, gTransform }) => (
+              ({
+                id,
+                label,
+                hasLongLabel,
+                allocation,
+                hasAllocation,
+                hasDefinitiveAllocation,
+                relativeAllocation,
+                wasAllocationPreserved,
+                focus,
+                gTransform
+              }) => (
                 <g
                   key={id}
-                  className={styles.electorateBackground}
+                  className={styles.electorate}
                   transform={gTransform}
-                  clipPath={shouldFlip ? `url(#${elementsIDs.hexClipPath})` : undefined}
+                  data-has-long-label={hasLongLabel ? '' : undefined}
+                  data-allocation={allocation}
+                  data-has-allocation={hasAllocation ? '' : undefined}
+                  data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
+                  data-relative-allocation={relativeAllocation || undefined}
+                  data-was-allocation-preserved={wasAllocationPreserved ? '' : undefined}
                   data-focus={focus}
                 >
-                  <use
-                    xlinkHref={`#${elementsIDs.hexPolygon}`}
-                    className={styles.electorateBackgroundPolygon}
-                    data-electorate={id}
-                    data-allocation={allocation}
-                    data-relative-allocation={relativeAllocation || undefined}
-                    data-was-preserved={wasPreserved ? '' : undefined}
-                    onAnimationEnd={e => e.currentTarget.removeAttribute('data-should-flip')}
-                  />
+                  <g clipPath={`url(#${elementsIDs.hexClipPath})`}>
+                    <use
+                      xlinkHref={`#${elementsIDs.hexPolygon}`}
+                      className={styles.electorateHex}
+                      onAnimationEnd={onFlipFinished}
+                      data-electorate={id}
+                    />
+                  </g>
+                  <use xlinkHref={`#${elementsIDs.hexPolygon}`} className={styles.electorateHexOutline} />
+                  {isInspecting && layer === Layer.ELECTORATES && (
+                    <text className={styles.electorateLabel}>{label}</text>
+                  )}
                 </g>
               )
             )}
           </g>
-          <g className={styles.electoratesBorders}>
-            {Object.values(electoratesRenderProps).map(
-              ({ id, allocation, hasAllocation, hasDefinitiveAllocation, relativeAllocation, focus, gTransform }) => (
-                <g
-                  key={id}
-                  className={styles.electorateBorder}
-                  transform={gTransform}
-                  clipPath={focus === Focus.Yes || relativeAllocation ? `url(#${elementsIDs.hexClipPath})` : undefined}
-                  data-focus={focus}
-                >
-                  <use
-                    xlinkHref={`#${elementsIDs.hexPolygon}`}
-                    className={styles.electorateBorderPolygon}
-                    data-electorate={id}
-                    data-allocation={allocation || undefined}
-                    data-has-allocation={hasAllocation ? '' : undefined}
-                    data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
-                    data-relative-allocation={relativeAllocation || undefined}
-                    data-focus={focus}
-                  />
-                </g>
-              )
-            )}
-          </g>
-          <g className={styles.electoratesPartitions}>
-            {Object.values(electoratesRenderProps).map(
-              ({ id, relativeAllocation, hasDefinitiveRelativeAllocation, focus, gTransform }) => (
-                <g key={id} className={styles.electoratePartition} transform={gTransform}>
-                  <use
-                    xlinkHref={`#${elementsIDs.hexPolygon}`}
-                    className={styles.electoratePartitionPolygon}
-                    data-relative-allocation={relativeAllocation || undefined}
-                    data-has-definitive-allocation={hasDefinitiveRelativeAllocation ? '' : undefined}
-                    data-focus={focus}
-                  />
-                </g>
-              )
-            )}
-          </g>
-          {isInspecting && layer === Layer.ELECTORATES && (
-            <g className={styles.electoratesLabels}>
-              {Object.values(electoratesRenderProps).map(({ id, label, hasLongLabel, hasAllocation, gTransform }) => (
-                <g key={id} className={styles.electorateLabel} transform={gTransform}>
-                  <text
-                    className={styles.electorateLabelText}
-                    data-electorate={id}
-                    data-has-allocation={hasAllocation ? '' : undefined}
-                    data-has-long-label={hasLongLabel ? '' : undefined}
-                  >
-                    {label}
-                  </text>
-                </g>
-              ))}
-            </g>
-          )}
-          <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.statesBackgrounds} />
           <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.statesBorders} />
           <g className={styles.statesLabels}>
             {Object.keys(statesLabelsPositions).map(stateID => {

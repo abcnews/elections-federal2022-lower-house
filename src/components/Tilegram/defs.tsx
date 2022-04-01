@@ -1,5 +1,12 @@
 import React, { memo } from 'react';
 import type { Hex, PolygonRecord } from './types';
+import { getHex } from './utils';
+
+declare global {
+  interface Window {
+    chrome: unknown;
+  }
+}
 
 export type DefsProps = {
   elementsIDs: Record<string, string>;
@@ -8,10 +15,14 @@ export type DefsProps = {
 };
 
 const Defs: React.FC<DefsProps> = ({ elementsIDs, hex, statesPolygons }) => (
-  <defs>
+  <defs data-is-chrome={!!window.chrome ? '' : undefined}>
     <polygon id={elementsIDs.hexPolygon} points={hex.polygon.join(' ')}></polygon>
     <clipPath id={elementsIDs.hexClipPath}>
-      <use xlinkHref={`#${elementsIDs.hexPolygon}`} />
+      <polygon
+        stroke="black"
+        strokeWidth="9"
+        points={getHex(0.5, hex.width - Math.sqrt(3)).polygon.join(' ')}
+      ></polygon>
     </clipPath>
     <g id={elementsIDs.statesPolygons}>
       {Object.keys(statesPolygons).map(stateID => (

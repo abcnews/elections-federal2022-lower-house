@@ -30,7 +30,7 @@
   fill: $color_White;
   stroke: $color_Black;
   stroke-width: 0.75;
-  transition: fill $allocationTransitionDuration;
+  transition: fill $durationAllocationChange;
 
   @media (max-width: 667px) {
     stroke-width: 1.25;
@@ -38,15 +38,12 @@
 }
 
 .root[data-layer='#{$Layer_ELECTORATES}'] .electorate {
+  fill: var(--color-allocation);
   stroke: $color_LightGrey;
 }
 
 .root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-has-definitive-allocation] {
   stroke: $color_White;
-}
-
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-allocation] {
-  fill: var(--color-allocation);
 }
 
 .root[data-layer='#{$Layer_ELECTORATES}'][data-has-focuses] .electorate[data-focus='#{$Focus_No}'] {

@@ -53,7 +53,7 @@
 }
 
 .root[data-should-transition] .bar {
-  transition: transform $allocationTransitionDuration;
+  transition: transform $durationAllocationChange;
 }
 
 .bar[data-allocation] {

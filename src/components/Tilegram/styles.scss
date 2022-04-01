@@ -7,6 +7,7 @@
   width: 100%;
   height: 0;
   padding: 0 0 100% 0;
+  --color-allocation: $color_White;
 }
 
 @media (orientation: landscape) and (max-height: 50rem) {
@@ -30,88 +31,59 @@
   left: 0;
   top: 0;
   stroke-linecap: round;
-}
-
-// Base (Outer)
-
-.baseOuter {
-  stroke: $color_Grey;
-  // stroke-width: $swLight;
-  stroke-width: $swMedium;
-  fill: none;
-  @include fadedOutTransitionable;
-
-  @media (max-width: 667px) {
-    // stroke-width: $swLight_SM;
-    stroke-width: $swMedium_SM;
-  }
-}
-
-.root[data-has-focuses] .baseOuter {
-  @include fadedOut;
-}
-
-.root[data-has-focuses][data-is-inspecting] .baseOuter {
-  @include fadedOutInspecting;
-}
-
-// Base (Inner)
-
-.baseInner {
-  stroke: $color_White;
-  stroke-width: $swLight;
-  fill: rgba(0, 0, 0, 0.025);
-
-  @media (max-width: 667px) {
-    stroke-width: $swLight_SM;
-  }
-}
-
-// Electorates (Backgrounds)
-
-.electoratesBackgrounds {
-  pointer-events: none;
-  shape-rendering: crispEdges;
-}
-
-.root:not([data-layer='#{$Layer_ELECTORATES}']) .electoratesBackgrounds {
-  display: none;
-}
-
-.root[data-is-interactive] .electoratesBackgrounds {
-  pointer-events: all;
-}
-
-.electorateBackground {
-  @include fadedOutTransitionable;
-}
-
-.root[data-has-focuses] .electorateBackground[data-focus='#{$Focus_No}'] {
-  @include fadedOut;
-}
-
-.root[data-has-focuses][data-is-inspecting] .electorateBackground[data-focus='#{$Focus_No}'] {
-  @include fadedOutInspecting;
-}
-
-.electorateBackgroundPolygon {
-  fill: $color_White;
-  stroke: none;
-  stroke-width: $swHeavy;
   stroke-linejoin: round;
-  stroke-linecap: round;
-  transition: fill $allocationTransitionDuration;
-
-  @media (max-width: 667px) {
-    stroke-width: $swHeavy_SM;
-  }
 }
 
-.electorateBackgroundPolygon[data-allocation] {
-  fill: var(--color-allocation);
+// This polygon only has a stroke/strokeWidth to fix a Chrome rendering bug
+// where hairline box fragments are drawn around elements which use clipping
+.svg defs[data-is-chrome] > clipPath > polygon {
+  stroke: $color_Black;
+  stroke-width: $swHeavy * 2;
 }
 
-@keyframes flipAllocations {
+// Base
+
+.base {
+  stroke: none;
+  fill: $color_LightGrey;
+  transition: filter $durationDefault;
+}
+
+.root[data-layer='#{$Layer_ELECTORATES}'][data-has-focuses] .base {
+  filter: brightness(1.105);
+}
+
+.root[data-layer='#{$Layer_STATES}'] .base {
+  filter: brightness(2);
+}
+
+// Electorates
+
+.electorates {
+  transition: opacity $durationDefault;
+}
+
+.root:not([data-layer='#{$Layer_ELECTORATES}']) .electorates {
+  opacity: 0;
+}
+
+.electorate {
+  pointer-events: none;
+  transition: opacity $durationDefault;
+}
+
+.root[data-has-focuses] .electorate[data-focus='#{$Focus_No}'] {
+  opacity: $opacityFadedOut;
+}
+
+.root[data-has-focuses][data-is-inspecting] .electorate[data-focus='#{$Focus_No}'] {
+  opacity: $opacityFadedOutInspecting;
+  transition: none;
+}
+
+// Electorates (Hexes)
+
+@keyframes electorateHexFlip {
   0% {
     fill: $color_White;
     stroke: var(--color-relative-allocation);
@@ -136,172 +108,101 @@
   }
 }
 
-.electorateBackgroundPolygon[data-should-flip] {
-  animation: flipAllocations $allocationTransitionDuration linear 1 both;
+.electorateHex {
+  will-change: opacity, transform, fill, stroke;
+  fill: var(--color-allocation);
+  stroke: none;
+  stroke-width: $swHeavy;
+  shape-rendering: crispEdges;
+  transition: opacity $durationDefault, fill $durationAllocationChange, stroke $durationAllocationChange;
 }
 
-.root[data-is-interactive] .electorateBackgroundPolygon {
+.root[data-is-interactive][data-layer='#{$Layer_ELECTORATES}'] .electorateHex {
+  pointer-events: all;
   cursor: pointer;
 }
 
-// Electorates (Borders)
-
-.electoratesBorders {
-  pointer-events: none;
+.electorate[data-focus='#{$Focus_Yes}'] .electorateHex {
+  stroke: $color_Black;
 }
 
-.root:not([data-layer='#{$Layer_ELECTORATES}']) .electoratesBorders {
-  display: none;
-}
-
-.electorateBorder {
-  @include fadedOutTransitionable;
-}
-
-.root[data-has-focuses] .electorateBorder[data-focus='#{$Focus_No}'] {
-  @include fadedOut;
-}
-
-.root[data-has-focuses][data-is-inspecting] .electorateBorder[data-focus='#{$Focus_No}'] {
-  @include fadedOutInspecting;
-}
-
-.electorateBorderPolygon {
-  pointer-events: none;
-  fill: none;
-  stroke: $color_LightGrey;
-  stroke-width: $swLight;
-
-  @media (max-width: 667px) {
-    stroke-width: $swLight_SM;
-  }
-}
-
-.electorateBorderPolygon[data-focus='#{$Focus_No}'][data-has-allocation],
-.electorateBorderPolygon[data-focus='#{$Focus_Yes}'] {
-  stroke: var(--color-focus);
-}
-
-.electorateBorderPolygon[data-focus='#{$Focus_Yes}'] {
-  stroke-width: $swHeavy;
-
-  @media (max-width: 667px) {
-    stroke-width: $swHeavy_SM;
-  }
-}
-
-.electorateBorderPolygon[data-focus='#{$Focus_Yes}'][data-relative-allocation] {
+.electorate[data-relative-allocation][data-focus='#{$Focus_Yes}'] .electorateHex {
   stroke: var(--color-relative-allocation);
 }
 
-.electorateBorderPolygon[data-focus='#{$Focus_Yes}'][data-has-definitive-allocation] {
+.electorate[data-has-definitive-allocation][data-focus='#{$Focus_Yes}'] .electorateHex {
   stroke: none;
 }
 
-.electorateBorderPolygon[data-focus='#{$Focus_Yes}'][data-was-preserved] {
+.electorate[data-was-allocation-preserved][data-focus='#{$Focus_Yes}'] .electorateHex {
   stroke: var(--color-allocation);
 }
 
-// Electorates (Partitions)
-
-.electoratesPartitions {
-  pointer-events: none;
-  opacity: 0;
+.electorateHex[data-should-flip] {
+  animation: electorateHexFlip $durationAllocationChange linear 1 both;
 }
 
-.root:not([data-layer='#{$Layer_ELECTORATES}']) .electoratesPartitions {
-  display: none;
-}
+// Electorates (Hex Outlines)
 
-.root[data-has-focuses] .electoratesPartitions {
-  opacity: 1;
-}
-
-.electoratePartition {
-}
-
-.electoratePartitionPolygon {
+.electorateHexOutline {
   fill: none;
-  stroke: none;
+  stroke: $color_White;
   stroke-width: $swLight;
-
-  @media (max-width: 667px) {
-    stroke-width: $swLight_SM;
-  }
+  transition: stroke 0s #{$durationAllocationChange / 2};
 }
 
-.electoratePartitionPolygon[data-focus='#{$Focus_Yes}'],
-.electoratePartitionPolygon[data-focus='#{$Focus_No}'][data-has-definitive-allocation] {
-  stroke: $color_BG;
-}
-
-.root[data-has-focuses] .electoratePartitionPolygon[data-focus='#{$Focus_No}'] {
+.electorate[data-allocation='#{$Allocation_None}'] .electorateHexOutline {
   stroke: none;
 }
 
 // Electorates (Labels)
 
-.electoratesLabels {
-  pointer-events: none;
+.electorateLabel {
+  transform: rotate(30deg) translate(0, 0.3em);
+  fill: $color_Text;
   font-size: 0.75rem;
   font-family: sans-serif;
+  text-anchor: middle;
 }
 
-.root[data-is-single-state-layout] .electoratesLabels {
+.root[data-is-single-state-layout] .electorateLabel {
   font-size: 0.875rem;
 }
 
-.electorateLabel {
+.root[data-is-single-state-layout] .electorate[data-has-long-label] .electorateLabel {
+  font-size: 0.625rem;
 }
 
-.electorateLabelText {
-  transform: rotate(30deg) translate(0, 0.3em);
-  text-anchor: middle;
-  fill: $color_Text;
-}
-
-.electorateLabelText[data-has-allocation] {
+.electorate[data-has-allocation] .electorateLabel {
   fill: $color_White;
-}
-
-.root[data-is-single-state-layout] .electorateLabelText[data-has-long-label] {
-  font-size: 0.7em;
-}
-
-// States (Backgrounds)
-
-.statesBackgrounds {
-  pointer-events: none;
-  fill: $color_White;
-  stroke: none;
-}
-
-.root:not([data-layer='#{$Layer_STATES}']) .statesBackgrounds {
-  display: none;
 }
 
 // States (Borders)
 
 .statesBorders {
   pointer-events: none;
+  will-change: opacity;
   fill: none;
   stroke: $color_Black;
-  stroke-width: $swLight;
-
-  @media (max-width: 667px) {
-    stroke-width: $swLight_SM;
-  }
+  stroke-width: $swMedium;
+  transition: opacity $durationDefault;
 }
 
-.root[data-has-focuses]:not([data-layer='#{$Layer_STATES}']) .statesBorders {
-  opacity: 0.125;
+.root:not([data-layer='#{$Layer_STATES}'])[data-has-focuses] .statesBorders {
+  opacity: $opacityFadedOut;
 }
 
 // States (Labels)
 
 .statesLabels {
+  opacity: 1;
   pointer-events: none;
   font-size: 1.75rem; // Default for individual states
+  transition: opacity #{$durationDefault / 2} #{$durationDefault / 2};
+}
+
+.root:not([data-layer='#{$Layer_STATES}']) .statesLabels {
+  transition-delay: 0s;
 }
 
 .root[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
@@ -312,7 +213,7 @@
 
 .root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
 .root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_EXPLODED}'] .statesLabels {
-  display: none;
+  opacity: 0;
 }
 
 .stateLabel {

@@ -42,7 +42,7 @@ const getHexPolygon = (hex: Hex, cell: Cell, shouldNegateEvenRowOffset = false):
 const getConcavePolygon = (hex: Hex, points: Point[]) =>
   concaveman(points, 0.8, Math.min(hex.width, hex.height) / 2) as Polygon;
 
-const getHex = (cellsWide: number, canvasWidth: number): Hex => {
+export const getHex = (cellsWide: number, canvasWidth: number): Hex => {
   // Calculates pointy-tip hex dimensions, where the canvasWidth needs to
   // contain n+0.5 hexes (because odd rows are offset by 0.5 hexes).
   // The polygon points are arranged around the center.
