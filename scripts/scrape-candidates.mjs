@@ -3,7 +3,7 @@ import { writeJsonFile } from 'write-json-file';
 import { ELECTORATE_CODES, RESULTS_BASE_URL, EDITOR_CANDIDATES_FILE_NAME } from './constants.mjs';
 
 const PREFILLED_DATA = {
-  HAWK: ['ALP', 'LIB']
+  HAWK: ['LIB', 'ALP', 'GRN', 'UAP', 'ONP', 'IND', 'OTH']
 };
 
 const ELECTORATE_URLS = ELECTORATE_CODES.filter(code => PREFILLED_DATA[code] === undefined).map(

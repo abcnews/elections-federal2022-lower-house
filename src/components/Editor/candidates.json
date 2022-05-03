@@ -1,7 +1,12 @@
 {
 	"HAWK": [
+		"LIB",
 		"ALP",
-		"LIB"
+		"GRN",
+		"ONP",
+		"UAP",
+		"IND",
+		"OTH"
 	],
 	"ADEL": [
 		"LIB",
