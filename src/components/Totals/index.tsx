@@ -1,22 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Alliance, Allocation, Allocations, ElectionYear } from '../../lib/constants';
 import { ALLIANCES, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_PRIMARY_ALLIANCES, ELECTORATES } from '../../lib/constants';
+import { usePrevious } from '../../lib/hooks';
 import { getAllocationsCounts } from '../../lib/utils';
 import styles from './styles.scss';
 
 const MAX_COUNT = ELECTORATES.length;
 const WIN_COUNT = Math.ceil((MAX_COUNT + 1) / 2);
 const DEFAULT_EXTENT_VOTES = WIN_COUNT + 8;
-
-function usePrevious<T>(value: T) {
-  const ref = useRef<T>();
-
-  useEffect(() => {
-    ref.current = value;
-  });
-
-  return ref.current;
-}
 
 export type TotalsProps = {
   year?: ElectionYear;
