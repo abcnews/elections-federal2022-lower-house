@@ -183,6 +183,11 @@ const Tilegram: React.FC<TilegramProps> = props => {
     };
   }, [isInteractive]);
 
+  const defs = useMemo(
+    () => <Defs elementsIDs={elementsIDs} hex={hex} layout={layout} statesPolygons={statesPolygons} />,
+    [layout]
+  );
+
   return (
     <div
       className={styles.root}
@@ -194,7 +199,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
       data-is-inspecting={isInspecting ? '' : undefined}
     >
       <svg ref={svgRef} className={styles.svg} viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}>
-        <Defs elementsIDs={elementsIDs} hex={hex} statesPolygons={statesPolygons} />
+        {defs}
         <g>
           <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.base} />
           <g className={styles.electorates} onClick={onTapElectorateHex}>

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import type { Hex, PolygonRecord } from './types';
 import { getHex } from './utils';
 
@@ -32,4 +32,4 @@ const Defs: React.FC<DefsProps> = ({ elementsIDs, hex, statesPolygons }) => (
   </defs>
 );
 
-export default memo(Defs);
+export default Defs;
