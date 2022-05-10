@@ -1,5 +1,5 @@
 import type { ElectorateID } from './constants';
-import { Allocation, DEFAULT_ELECTION_YEAR } from './constants';
+import { Allocation } from './constants';
 
 const LIVE_RESULTS_URL_PREFIX =
   'https://www.abc.net.au/news-web/api/loader/channelrefetch?name=ElectionElectorateList&props=';
@@ -22,7 +22,7 @@ const SA_2022_LIVE_RESULTS_PROPS = {
 
 const FEDERAL_2022_LIVE_RESULTS_PROPS = {
   meta: {
-    year: String(DEFAULT_ELECTION_YEAR),
+    year: '2022',
     state: 'federal',
     useV3: true
   }

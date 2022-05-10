@@ -1,6 +1,6 @@
 import React from 'react';
-import { Alliance, Allocation, Allocations, ElectionYear } from '../../lib/constants';
-import { ALLIANCES, DEFAULT_ELECTION_YEAR, ELECTION_YEARS_PRIMARY_ALLIANCES, ELECTORATES } from '../../lib/constants';
+import { Alliance, Allocation, Allocations } from '../../lib/constants';
+import { ALLIANCES, PRIMARY_ALLIANCES, ELECTORATES } from '../../lib/constants';
 import { usePrevious } from '../../lib/hooks';
 import { getAllocationsCounts } from '../../lib/utils';
 import styles from './styles.scss';
@@ -10,7 +10,6 @@ const WIN_COUNT = Math.ceil((MAX_COUNT + 1) / 2);
 const DEFAULT_EXTENT_VOTES = WIN_COUNT + 8;
 
 export type TotalsProps = {
-  year?: ElectionYear;
   allocations?: Allocations;
 };
 
@@ -22,11 +21,12 @@ type Group = {
 };
 
 const Totals: React.FC<TotalsProps> = props => {
-  const { allocations, year } = props;
+  const { allocations } = props;
   const allocationsCounts = getAllocationsCounts(allocations || {});
-  const primaryAlliances = ELECTION_YEARS_PRIMARY_ALLIANCES[year || DEFAULT_ELECTION_YEAR].map(allianceID =>
-    ALLIANCES.find(({ id }) => id === allianceID)
-  ) as [Alliance, Alliance];
+  const primaryAlliances = PRIMARY_ALLIANCES.map(allianceID => ALLIANCES.find(({ id }) => id === allianceID)) as [
+    Alliance,
+    Alliance
+  ];
   const [governmentAlliance, oppositionAlliance] = primaryAlliances;
   const previousGovernmentAlliance = usePrevious<Alliance>(governmentAlliance);
   const isConsistentGovernment = previousGovernmentAlliance && primaryAlliances[0].id === previousGovernmentAlliance.id;

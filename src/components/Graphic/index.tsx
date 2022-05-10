@@ -1,5 +1,5 @@
-import React, { ReactChild } from 'react';
-import { DEFAULT_ELECTION_YEAR, Layout } from '../../lib/constants';
+import React from 'react';
+import { Layout } from '../../lib/constants';
 import Geo from '../Geo';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
@@ -8,7 +8,6 @@ import Totals from '../Totals';
 import styles from './styles.scss';
 
 export type GraphicProps = {
-  title?: string;
   counting?: boolean;
 } & TilegramProps &
   TotalsProps;
@@ -23,13 +22,11 @@ export type PossiblyEncodedGraphicProps =
 
 export const DEFAULT_PROPS: Partial<GraphicProps> = {
   ...DEFAULT_TILEGRAM_PROPS,
-  year: DEFAULT_ELECTION_YEAR,
-  relative: null,
   counting: true
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { children, title, counting, year, allocations, focuses, layout, layer, ...otherTilegramProps } = {
+  const { children, counting, allocations, focuses, layout, layer, ...otherTilegramProps } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -42,22 +39,15 @@ const Graphic: React.FC<GraphicProps> = props => {
       break;
     default:
       map = (
-        <Tilegram
-          allocations={allocations}
-          focuses={focuses}
-          year={year}
-          layout={layout}
-          layer={layer}
-          {...otherTilegramProps}
-        />
+        <Tilegram allocations={allocations} focuses={focuses} layout={layout} layer={layer} {...otherTilegramProps} />
       );
       break;
   }
 
   return (
-    <div className={styles.root} title={title}>
+    <div className={styles.root}>
       <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
-        <Totals allocations={allocations} year={year} />
+        <Totals allocations={allocations} />
       </header>
       {map}
     </div>

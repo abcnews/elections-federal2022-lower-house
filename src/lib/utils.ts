@@ -96,6 +96,15 @@ export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
     graphicProps.layout = String(graphicProps.layout) as Layout;
   }
 
+  // backwards-compatibility with deprecated year-based type
+  if (typeof graphicProps.relative === 'number') {
+    // e.g. 2019
+    graphicProps.relative = true;
+  } else if (typeof graphicProps.relative === 'string') {
+    // e.g. "null"
+    graphicProps.relative = false;
+  }
+
   return graphicProps;
 };
 
@@ -142,12 +151,9 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
     graphicProps.layout = String(graphicProps.layout);
   }
 
-  if (typeof graphicProps.year === 'string') {
-    graphicProps.year = +graphicProps.year;
-  }
-
   if (typeof graphicProps.relative === 'string') {
-    graphicProps.relative = graphicProps.relative === 'null' ? null : +graphicProps.relative;
+    // backwards-compatibility
+    graphicProps.relative = graphicProps.relative === 'true' || graphicProps.relative === '2019';
   }
 
   if (typeof graphicProps.counting === 'string') {

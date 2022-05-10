@@ -1,5 +1,5 @@
 import type { PanelDefinition } from '@abcnews/scrollyteller';
-import { ElectorateID, ELECTORATES, PRESETS } from './constants';
+import { ElectorateID, ELECTORATES, ELECTORATES_HELD_ALLOCATIONS } from './constants';
 import { determineIfAllocationIsDefinitive } from './utils';
 import blockStyles from '../components/Block/styles.scss';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from '../components/Graphic';
@@ -50,7 +50,7 @@ export function applyColourToPanels(panels: PanelDefinition<PossiblyEncodedGraph
         const { allocations, relative } = data as GraphicProps;
         const allocation = allocations && allocations[electorateID];
         const hasDefinitiveAllocation = allocation && determineIfAllocationIsDefinitive(allocation);
-        const relativeAllocations = relative && PRESETS[relative]?.allocations;
+        const relativeAllocations = relative && ELECTORATES_HELD_ALLOCATIONS;
         const relativeAllocation = relativeAllocations && relativeAllocations[electorateID];
 
         if (!electorateIntroductionTracker[electorateID]) {

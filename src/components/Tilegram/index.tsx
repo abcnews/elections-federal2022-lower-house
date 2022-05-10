@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Allocations, ElectionYear, Electorate, Focuses } from '../../lib/constants';
+import type { Allocations, Focuses } from '../../lib/constants';
 import {
   Allocation,
   ElectorateID,
@@ -12,7 +12,7 @@ import {
   SINGLE_STATE_LAYOUTS,
   StateID,
   STATES,
-  PRESETS
+  ELECTORATES_HELD_ALLOCATIONS
 } from '../../lib/constants';
 import {
   determineIfAllocationIsDefinitive,
@@ -45,14 +45,14 @@ export type TilegramProps = {
   layer: Layer;
   allocations?: Allocations;
   focuses?: Focuses;
-  year?: ElectionYear;
-  relative?: ElectionYear | null;
+  relative?: boolean;
   onTapElectorate?: (electorateID: string, event: React.MouseEvent<SVGElement>) => void;
 };
 
 export const DEFAULT_PROPS: TilegramProps = {
   layout: DEFAULT_LAYOUT,
-  layer: DEFAULT_LAYER
+  layer: DEFAULT_LAYER,
+  relative: false
 };
 
 const Tilegram: React.FC<TilegramProps> = props => {
@@ -60,9 +60,9 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
   const elementsIDs = generateElementIDRecord(['hexClipPath', 'hexPolygon', 'statesPolygons'], componentID);
-  const { allocations, focuses, layer, layout, year, relative, onTapElectorate } = props;
+  const { allocations, focuses, layer, layout, relative, onTapElectorate } = props;
   const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
-  const relativeAllocations = relative && PRESETS[relative]?.allocations;
+  const relativeAllocations = relative && ELECTORATES_HELD_ALLOCATIONS;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
   const isInteractive = !!onTapElectorate;
   const { electoratesPositions, statesPolygons, statesLabelsPositions, hex } = useMemo(
@@ -183,10 +183,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
     };
   }, [isInteractive]);
 
-  const defs = useMemo(
-    () => <Defs elementsIDs={elementsIDs} hex={hex} layout={layout} statesPolygons={statesPolygons} />,
-    [layout]
-  );
+  const defs = useMemo(() => <Defs elementsIDs={elementsIDs} hex={hex} statesPolygons={statesPolygons} />, [layout]);
 
   return (
     <div

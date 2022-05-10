@@ -1,3 +1,124 @@
+// Allocations
+
+export enum Allocation {
+  None = 'a',
+  ALP = 'b',
+  CA = 'c',
+  CLP = 'd',
+  GRN = 'e',
+  IND = 'f',
+  KAP = 'g',
+  LIB = 'h',
+  LNP = 'i',
+  NAT = 'j',
+  ONP = 'k',
+  OTH = 'l',
+  UAP = 'm',
+  // For previous winners (map to party with same colors),
+  NXT = 'c',
+  PUP = 'm'
+}
+
+export const ALLOCATIONS: string[] = Object.values(Allocation);
+
+export const UNCERTAIN_ALLOCATIONS = [Allocation.None];
+
+export const DEFINITIVE_ALLOCATIONS = ALLOCATIONS.filter(
+  allocation => UNCERTAIN_ALLOCATIONS.indexOf(allocation as Allocation) === -1
+);
+
+export type Allocations = {
+  [key: string]: Allocation;
+};
+
+// States
+
+export enum StateID {
+  ACT,
+  NSW,
+  NT,
+  QLD,
+  SA,
+  TAS,
+  VIC,
+  WA
+}
+
+export const STATE_IDS = Object.keys(StateID).filter(key => typeof StateID[key] === 'number');
+
+export type State = {
+  id: StateID;
+  name: string;
+  abbr: string;
+  caps: string;
+};
+
+export const STATES: State[] = [
+  {
+    id: StateID.ACT,
+    name: 'Australian Capital Territory',
+    abbr: 'ACT',
+    caps: 'ACT'
+  },
+  {
+    id: StateID.NSW,
+    name: 'New South Wales',
+    abbr: 'NSW',
+    caps: 'NSW'
+  },
+  {
+    id: StateID.NT,
+    name: 'Northern Territory',
+    abbr: 'NT',
+    caps: 'NT'
+  },
+  {
+    id: StateID.QLD,
+    name: 'Queensland',
+    abbr: 'Qld.',
+    caps: 'QLD'
+  },
+  {
+    id: StateID.SA,
+    name: 'South Australia',
+    abbr: 'SA',
+    caps: 'SA'
+  },
+  {
+    id: StateID.TAS,
+    name: 'Tasmania',
+    abbr: 'Tas.',
+    caps: 'TAS'
+  },
+  {
+    id: StateID.VIC,
+    name: 'Victoria',
+    abbr: 'Vic.',
+    caps: 'VIC'
+  },
+  {
+    id: StateID.WA,
+    name: 'Western Australia',
+    abbr: 'WA',
+    caps: 'WA'
+  }
+];
+
+// Electorates
+
+export enum ElectorateSecurity {
+  MARGINAL,
+  SAFE,
+  VERY_SAFE
+}
+
+export enum ElectorateSituation {
+  INNER_METRO,
+  OUTER_METRO,
+  REGIONAL,
+  RURAL
+}
+
 export enum ElectorateID {
   ADEL,
   ASTO,
@@ -156,164 +277,1223 @@ export const ELECTORATE_IDS = Object.keys(ElectorateID).filter(key => typeof Ele
 
 export type Electorate = {
   id: ElectorateID;
+  state: StateID;
+  holder: Allocation;
+  security: ElectorateSecurity;
+  situation: ElectorateSituation;
   name: string;
   abbr: string;
-  isKeySeat?: boolean;
-  // TODO: state?
 };
 
 export const ELECTORATES: Electorate[] = [
-  { id: ElectorateID.ADEL, name: 'Adelaide' },
-  { id: ElectorateID.ASTO, name: 'Aston' },
-  { id: ElectorateID.BALL, name: 'Ballarat' },
-  { id: ElectorateID.BANK, name: 'Banks', isKeySeat: true },
-  { id: ElectorateID.BARK, name: 'Barker' },
-  { id: ElectorateID.BART, name: 'Barton' },
-  { id: ElectorateID.BASS, name: 'Bass', isKeySeat: true },
-  { id: ElectorateID.BEAN, name: 'Bean' },
-  { id: ElectorateID.BEND, name: 'Bendigo' },
-  { id: ElectorateID.BENN, name: 'Bennelong' },
-  { id: ElectorateID.BERO, name: 'Berowra' },
-  { id: ElectorateID.BLAI, name: 'Blair', isKeySeat: true },
-  { id: ElectorateID.BLAX, name: 'Blaxland' },
-  { id: ElectorateID.BONN, name: 'Bonner' },
-  { id: ElectorateID.BOOT, name: 'Boothby', isKeySeat: true },
-  { id: ElectorateID.BOWM, name: 'Bowman' },
-  { id: ElectorateID.BRAD, name: 'Braddon', isKeySeat: true },
-  { id: ElectorateID.BRFD, name: 'Bradfield' },
-  { id: ElectorateID.BRAN, name: 'Brand' },
-  { id: ElectorateID.BRIS, name: 'Brisbane', isKeySeat: true },
-  { id: ElectorateID.BRUC, name: 'Bruce' },
-  { id: ElectorateID.BURT, name: 'Burt' },
-  { id: ElectorateID.CALA, name: 'Calare' },
-  { id: ElectorateID.CALW, name: 'Calwell' },
-  { id: ElectorateID.CANB, name: 'Canberra' },
-  { id: ElectorateID.CANN, name: 'Canning' },
-  { id: ElectorateID.CAPR, name: 'Capricornia' },
-  { id: ElectorateID.CASE, name: 'Casey' },
-  { id: ElectorateID.CHIF, name: 'Chifley' },
-  { id: ElectorateID.CHIS, name: 'Chisholm', isKeySeat: true },
-  { id: ElectorateID.CLAR, name: 'Clark' },
-  { id: ElectorateID.COOK, name: 'Cook' },
-  { id: ElectorateID.COOP, name: 'Cooper' },
-  { id: ElectorateID.CORA, name: 'Corangamite', isKeySeat: true },
-  { id: ElectorateID.CORI, name: 'Corio' },
-  { id: ElectorateID.COWA, name: 'Cowan', isKeySeat: true },
-  { id: ElectorateID.COWP, name: 'Cowper' },
-  { id: ElectorateID.CUNN, name: 'Cunningham' },
-  { id: ElectorateID.CURT, name: 'Curtin' },
-  { id: ElectorateID.DAWS, name: 'Dawson' },
-  { id: ElectorateID.DEAK, name: 'Deakin', isKeySeat: true },
-  { id: ElectorateID.DICK, name: 'Dickson', isKeySeat: true },
-  { id: ElectorateID.DOBE, name: 'Dobell', isKeySeat: true },
-  { id: ElectorateID.DUNK, name: 'Dunkley', isKeySeat: true },
-  { id: ElectorateID.DURA, name: 'Durack' },
-  { id: ElectorateID.EMON, name: 'Eden-Monaro', isKeySeat: true },
-  { id: ElectorateID.FADD, name: 'Fadden' },
-  { id: ElectorateID.FAIR, name: 'Fairfax' },
-  { id: ElectorateID.FARR, name: 'Farrer' },
-  { id: ElectorateID.FENN, name: 'Fenner' },
-  { id: ElectorateID.FISH, name: 'Fisher' },
-  { id: ElectorateID.FLIN, name: 'Flinders' },
-  { id: ElectorateID.FLYN, name: 'Flynn', isKeySeat: true },
-  { id: ElectorateID.FORD, name: 'Forde' },
-  { id: ElectorateID.FORR, name: 'Forrest' },
-  { id: ElectorateID.FOWL, name: 'Fowler' },
-  { id: ElectorateID.FRAN, name: 'Franklin' },
-  { id: ElectorateID.FRAS, name: 'Fraser' },
-  { id: ElectorateID.FREM, name: 'Fremantle' },
-  { id: ElectorateID.GELL, name: 'Gellibrand' },
-  { id: ElectorateID.GILM, name: 'Gilmore', isKeySeat: true },
-  { id: ElectorateID.GIPP, name: 'Gippsland' },
-  { id: ElectorateID.GOLD, name: 'Goldstein' },
-  { id: ElectorateID.GORT, name: 'Gorton' },
-  { id: ElectorateID.GRAY, name: 'Grayndler' },
-  { id: ElectorateID.GREE, name: 'Greenway', isKeySeat: true },
-  { id: ElectorateID.GREY, name: 'Grey' },
-  { id: ElectorateID.GRIF, name: 'Griffith', isKeySeat: true },
-  { id: ElectorateID.GROO, name: 'Groom' },
-  { id: ElectorateID.HASL, name: 'Hasluck', isKeySeat: true },
-  { id: ElectorateID.HAWK, name: 'Hawke' },
-  { id: ElectorateID.HERB, name: 'Herbert' },
-  { id: ElectorateID.HIGG, name: 'Higgins', isKeySeat: true },
-  { id: ElectorateID.HIND, name: 'Hindmarsh' },
-  { id: ElectorateID.HINK, name: 'Hinkler' },
-  { id: ElectorateID.HOLT, name: 'Holt' },
-  { id: ElectorateID.HOTH, name: 'Hotham' },
-  { id: ElectorateID.HUGH, name: 'Hughes', isKeySeat: true },
-  { id: ElectorateID.HUME, name: 'Hume' },
-  { id: ElectorateID.HUNT, name: 'Hunter', isKeySeat: true },
-  { id: ElectorateID.INDI, name: 'Indi', isKeySeat: true },
-  { id: ElectorateID.ISAA, name: 'Isaacs' },
-  { id: ElectorateID.JAGA, name: 'Jagajaga' },
-  { id: ElectorateID.KENN, name: 'Kennedy' },
-  { id: ElectorateID.KSMI, name: 'Kingsford Smith' },
-  { id: ElectorateID.KING, name: 'Kingston' },
-  { id: ElectorateID.KOOY, name: 'Kooyong' },
-  { id: ElectorateID.LTRO, name: 'La Trobe' },
-  { id: ElectorateID.LALO, name: 'Lalor' },
-  { id: ElectorateID.LEIC, name: 'Leichhardt', isKeySeat: true },
-  { id: ElectorateID.LILL, name: 'Lilley', isKeySeat: true },
-  { id: ElectorateID.LIND, name: 'Lindsay', isKeySeat: true },
-  { id: ElectorateID.LING, name: 'Lingiari' },
-  { id: ElectorateID.LONG, name: 'Longman' },
-  { id: ElectorateID.LYNE, name: 'Lyne' },
-  { id: ElectorateID.LYON, name: 'Lyons', isKeySeat: true },
-  { id: ElectorateID.MACA, name: 'Macarthur' },
-  { id: ElectorateID.MACK, name: 'Mackellar' },
-  { id: ElectorateID.MACN, name: 'Macnamara', isKeySeat: true },
-  { id: ElectorateID.MACQ, name: 'Macquarie', isKeySeat: true },
-  { id: ElectorateID.MAKI, name: 'Makin' },
-  { id: ElectorateID.MALL, name: 'Mallee' },
-  { id: ElectorateID.MARA, name: 'Maranoa' },
-  { id: ElectorateID.MARI, name: 'Maribyrnong' },
-  { id: ElectorateID.MAYO, name: 'Mayo', isKeySeat: true },
-  { id: ElectorateID.MCEW, name: 'McEwen' },
-  { id: ElectorateID.MCMA, name: 'McMahon' },
-  { id: ElectorateID.MCPH, name: 'McPherson' },
-  { id: ElectorateID.MELB, name: 'Melbourne' },
-  { id: ElectorateID.MENZ, name: 'Menzies' },
-  { id: ElectorateID.MITC, name: 'Mitchell' },
-  { id: ElectorateID.MONA, name: 'Monash' },
-  { id: ElectorateID.MONC, name: 'Moncrieff' },
-  { id: ElectorateID.MOOR, name: 'Moore' },
-  { id: ElectorateID.MORE, name: 'Moreton', isKeySeat: true },
-  { id: ElectorateID.NENG, name: 'New England' },
-  { id: ElectorateID.NEWC, name: 'Newcastle' },
-  { id: ElectorateID.NICH, name: 'Nicholls' },
-  { id: ElectorateID.NSYD, name: 'North Sydney' },
-  { id: ElectorateID.OCON, name: "O'Connor" },
-  { id: ElectorateID.OXLE, name: 'Oxley' },
-  { id: ElectorateID.PAGE, name: 'Page' },
-  { id: ElectorateID.PARK, name: 'Parkes' },
-  { id: ElectorateID.PARR, name: 'Parramatta', isKeySeat: true },
-  { id: ElectorateID.PATE, name: 'Paterson', isKeySeat: true },
-  { id: ElectorateID.PEAR, name: 'Pearce', isKeySeat: true },
-  { id: ElectorateID.PERT, name: 'Perth' },
-  { id: ElectorateID.PETR, name: 'Petrie' },
-  { id: ElectorateID.RANK, name: 'Rankin' },
-  { id: ElectorateID.REID, name: 'Reid', isKeySeat: true },
-  { id: ElectorateID.RICH, name: 'Richmond' },
-  { id: ElectorateID.RIVE, name: 'Riverina' },
-  { id: ElectorateID.ROBE, name: 'Robertson', isKeySeat: true },
-  { id: ElectorateID.RYAN, name: 'Ryan' },
-  { id: ElectorateID.SCUL, name: 'Scullin' },
-  { id: ElectorateID.SHOR, name: 'Shortland' },
-  { id: ElectorateID.SOLO, name: 'Solomon', isKeySeat: true },
-  { id: ElectorateID.SPEN, name: 'Spence' },
-  { id: ElectorateID.STUR, name: 'Sturt', isKeySeat: true },
-  { id: ElectorateID.SWAN, name: 'Swan', isKeySeat: true },
-  { id: ElectorateID.SYDN, name: 'Sydney' },
-  { id: ElectorateID.TANG, name: 'Tangney' },
-  { id: ElectorateID.WANN, name: 'Wannon' },
-  { id: ElectorateID.WARR, name: 'Warringah' },
-  { id: ElectorateID.WATS, name: 'Watson' },
-  { id: ElectorateID.WENT, name: 'Wentworth', isKeySeat: true },
-  { id: ElectorateID.WERR, name: 'Werriwa' },
-  { id: ElectorateID.WHIT, name: 'Whitlam' },
-  { id: ElectorateID.WBAY, name: 'Wide Bay' },
-  { id: ElectorateID.WILL, name: 'Wills' },
-  { id: ElectorateID.WRIG, name: 'Wright' }
+  {
+    id: ElectorateID.ADEL,
+    state: StateID.SA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Adelaide'
+  },
+  {
+    id: ElectorateID.ASTO,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Aston'
+  },
+  {
+    id: ElectorateID.BALL,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Ballarat'
+  },
+  {
+    id: ElectorateID.BANK,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Banks'
+  },
+  {
+    id: ElectorateID.BARK,
+    state: StateID.SA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Barker'
+  },
+  {
+    id: ElectorateID.BART,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Barton'
+  },
+  {
+    id: ElectorateID.BASS,
+    state: StateID.TAS,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Bass'
+  },
+  {
+    id: ElectorateID.BEAN,
+    state: StateID.ACT,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Bean'
+  },
+  {
+    id: ElectorateID.BEND,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Bendigo'
+  },
+  {
+    id: ElectorateID.BENN,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Bennelong'
+  },
+  {
+    id: ElectorateID.BERO,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Berowra'
+  },
+  {
+    id: ElectorateID.BLAI,
+    state: StateID.QLD,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Blair'
+  },
+  {
+    id: ElectorateID.BLAX,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Blaxland'
+  },
+  {
+    id: ElectorateID.BONN,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Bonner'
+  },
+  {
+    id: ElectorateID.BOOT,
+    state: StateID.SA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Boothby'
+  },
+  {
+    id: ElectorateID.BOWM,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Bowman'
+  },
+  {
+    id: ElectorateID.BRAD,
+    state: StateID.TAS,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Braddon'
+  },
+  {
+    id: ElectorateID.BRFD,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Bradfield'
+  },
+  {
+    id: ElectorateID.BRAN,
+    state: StateID.WA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Brand'
+  },
+  {
+    id: ElectorateID.BRIS,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Brisbane'
+  },
+  {
+    id: ElectorateID.BRUC,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Bruce'
+  },
+  {
+    id: ElectorateID.BURT,
+    state: StateID.WA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Burt'
+  },
+  {
+    id: ElectorateID.CALA,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Calare'
+  },
+  {
+    id: ElectorateID.CALW,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Calwell'
+  },
+  {
+    id: ElectorateID.CANB,
+    state: StateID.ACT,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Canberra'
+  },
+  {
+    id: ElectorateID.CANN,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Canning'
+  },
+  {
+    id: ElectorateID.CAPR,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Capricornia'
+  },
+  {
+    id: ElectorateID.CASE,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Casey'
+  },
+  {
+    id: ElectorateID.CHIF,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Chifley'
+  },
+  {
+    id: ElectorateID.CHIS,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Chisholm'
+  },
+  {
+    id: ElectorateID.CLAR,
+    state: StateID.TAS,
+    holder: Allocation.IND,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Clark'
+  },
+  {
+    id: ElectorateID.COOK,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Cook'
+  },
+  {
+    id: ElectorateID.COOP,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Cooper'
+  },
+  {
+    id: ElectorateID.CORA,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Corangamite'
+  },
+  {
+    id: ElectorateID.CORI,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Corio'
+  },
+  {
+    id: ElectorateID.COWA,
+    state: StateID.WA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Cowan'
+  },
+  {
+    id: ElectorateID.COWP,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Cowper'
+  },
+  {
+    id: ElectorateID.CUNN,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Cunningham'
+  },
+  {
+    id: ElectorateID.CURT,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Curtin'
+  },
+  {
+    id: ElectorateID.DAWS,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Dawson'
+  },
+  {
+    id: ElectorateID.DEAK,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Deakin'
+  },
+  {
+    id: ElectorateID.DICK,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Dickson'
+  },
+  {
+    id: ElectorateID.DOBE,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Dobell'
+  },
+  {
+    id: ElectorateID.DUNK,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Dunkley'
+  },
+  {
+    id: ElectorateID.DURA,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Durack'
+  },
+  {
+    id: ElectorateID.EMON,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Eden-Monaro'
+  },
+  {
+    id: ElectorateID.FADD,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Fadden'
+  },
+  {
+    id: ElectorateID.FAIR,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Fairfax'
+  },
+  {
+    id: ElectorateID.FARR,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Farrer'
+  },
+  {
+    id: ElectorateID.FENN,
+    state: StateID.ACT,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Fenner'
+  },
+  {
+    id: ElectorateID.FISH,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Fisher'
+  },
+  {
+    id: ElectorateID.FLIN,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Flinders'
+  },
+  {
+    id: ElectorateID.FLYN,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Flynn'
+  },
+  {
+    id: ElectorateID.FORD,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Forde'
+  },
+  {
+    id: ElectorateID.FORR,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Forrest'
+  },
+  {
+    id: ElectorateID.FOWL,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Fowler'
+  },
+  {
+    id: ElectorateID.FRAN,
+    state: StateID.TAS,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Franklin'
+  },
+  {
+    id: ElectorateID.FRAS,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Fraser'
+  },
+  {
+    id: ElectorateID.FREM,
+    state: StateID.WA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Fremantle'
+  },
+  {
+    id: ElectorateID.GELL,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Gellibrand'
+  },
+  {
+    id: ElectorateID.GILM,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Gilmore'
+  },
+  {
+    id: ElectorateID.GIPP,
+    state: StateID.VIC,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Gippsland'
+  },
+  {
+    id: ElectorateID.GOLD,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Goldstein'
+  },
+  {
+    id: ElectorateID.GORT,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Gorton'
+  },
+  {
+    id: ElectorateID.GRAY,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Grayndler'
+  },
+  {
+    id: ElectorateID.GREE,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Greenway'
+  },
+  {
+    id: ElectorateID.GREY,
+    state: StateID.SA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Grey'
+  },
+  {
+    id: ElectorateID.GRIF,
+    state: StateID.QLD,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Griffith'
+  },
+  {
+    id: ElectorateID.GROO,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Groom'
+  },
+  {
+    id: ElectorateID.HASL,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Hasluck'
+  },
+  {
+    id: ElectorateID.HAWK,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Hawke'
+  },
+  {
+    id: ElectorateID.HERB,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Herbert'
+  },
+  {
+    id: ElectorateID.HIGG,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Higgins'
+  },
+  {
+    id: ElectorateID.HIND,
+    state: StateID.SA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Hindmarsh'
+  },
+  {
+    id: ElectorateID.HINK,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Hinkler'
+  },
+  {
+    id: ElectorateID.HOLT,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Holt'
+  },
+  {
+    id: ElectorateID.HOTH,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Hotham'
+  },
+  {
+    id: ElectorateID.HUGH,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Hughes'
+  },
+  {
+    id: ElectorateID.HUME,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Hume'
+  },
+  {
+    id: ElectorateID.HUNT,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Hunter'
+  },
+  {
+    id: ElectorateID.INDI,
+    state: StateID.VIC,
+    holder: Allocation.IND,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.RURAL,
+    name: 'Indi'
+  },
+  {
+    id: ElectorateID.ISAA,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Isaacs'
+  },
+  {
+    id: ElectorateID.JAGA,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Jagajaga'
+  },
+  {
+    id: ElectorateID.KENN,
+    state: StateID.QLD,
+    holder: Allocation.KAP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Kennedy'
+  },
+  {
+    id: ElectorateID.KSMI,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Kingsford Smith'
+  },
+  {
+    id: ElectorateID.KING,
+    state: StateID.SA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Kingston'
+  },
+  {
+    id: ElectorateID.KOOY,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Kooyong'
+  },
+  {
+    id: ElectorateID.LTRO,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'La Trobe'
+  },
+  {
+    id: ElectorateID.LALO,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Lalor'
+  },
+  {
+    id: ElectorateID.LEIC,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Leichhardt'
+  },
+  {
+    id: ElectorateID.LILL,
+    state: StateID.QLD,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Lilley'
+  },
+  {
+    id: ElectorateID.LIND,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Lindsay'
+  },
+  {
+    id: ElectorateID.LING,
+    state: StateID.NT,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.RURAL,
+    name: 'Lingiari'
+  },
+  {
+    id: ElectorateID.LONG,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Longman'
+  },
+  {
+    id: ElectorateID.LYNE,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Lyne'
+  },
+  {
+    id: ElectorateID.LYON,
+    state: StateID.TAS,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.RURAL,
+    name: 'Lyons'
+  },
+  {
+    id: ElectorateID.MACA,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Macarthur'
+  },
+  {
+    id: ElectorateID.MACK,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Mackellar'
+  },
+  {
+    id: ElectorateID.MACN,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Macnamara'
+  },
+  {
+    id: ElectorateID.MACQ,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Macquarie'
+  },
+  {
+    id: ElectorateID.MAKI,
+    state: StateID.SA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Makin'
+  },
+  {
+    id: ElectorateID.MALL,
+    state: StateID.VIC,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Mallee'
+  },
+  {
+    id: ElectorateID.MARA,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Maranoa'
+  },
+  {
+    id: ElectorateID.MARI,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Maribyrnong'
+  },
+  {
+    id: ElectorateID.MAYO,
+    state: StateID.SA,
+    holder: Allocation.CA,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Mayo'
+  },
+  {
+    id: ElectorateID.MCEW,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'McEwen'
+  },
+  {
+    id: ElectorateID.MCMA,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'McMahon'
+  },
+  {
+    id: ElectorateID.MCPH,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'McPherson'
+  },
+  {
+    id: ElectorateID.MELB,
+    state: StateID.VIC,
+    holder: Allocation.GRN,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Melbourne'
+  },
+  {
+    id: ElectorateID.MENZ,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Menzies'
+  },
+  {
+    id: ElectorateID.MITC,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Mitchell'
+  },
+  {
+    id: ElectorateID.MONA,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Monash'
+  },
+  {
+    id: ElectorateID.MONC,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Moncrieff'
+  },
+  {
+    id: ElectorateID.MOOR,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Moore'
+  },
+  {
+    id: ElectorateID.MORE,
+    state: StateID.QLD,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Moreton'
+  },
+  {
+    id: ElectorateID.NENG,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'New England'
+  },
+  {
+    id: ElectorateID.NEWC,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Newcastle'
+  },
+  {
+    id: ElectorateID.NICH,
+    state: StateID.VIC,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Nicholls'
+  },
+  {
+    id: ElectorateID.NSYD,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'North Sydney'
+  },
+  {
+    id: ElectorateID.OCON,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: "O'Connor"
+  },
+  {
+    id: ElectorateID.OXLE,
+    state: StateID.QLD,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Oxley'
+  },
+  {
+    id: ElectorateID.PAGE,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Page'
+  },
+  {
+    id: ElectorateID.PARK,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Parkes'
+  },
+  {
+    id: ElectorateID.PARR,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Parramatta'
+  },
+  {
+    id: ElectorateID.PATE,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Paterson'
+  },
+  {
+    id: ElectorateID.PEAR,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Pearce'
+  },
+  {
+    id: ElectorateID.PERT,
+    state: StateID.WA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Perth'
+  },
+  {
+    id: ElectorateID.PETR,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Petrie'
+  },
+  {
+    id: ElectorateID.RANK,
+    state: StateID.QLD,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Rankin'
+  },
+  {
+    id: ElectorateID.REID,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Reid'
+  },
+  {
+    id: ElectorateID.RICH,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Richmond'
+  },
+  {
+    id: ElectorateID.RIVE,
+    state: StateID.NSW,
+    holder: Allocation.NAT,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Riverina'
+  },
+  {
+    id: ElectorateID.ROBE,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Robertson'
+  },
+  {
+    id: ElectorateID.RYAN,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Ryan'
+  },
+  {
+    id: ElectorateID.SCUL,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Scullin'
+  },
+  {
+    id: ElectorateID.SHOR,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Shortland'
+  },
+  {
+    id: ElectorateID.SOLO,
+    state: StateID.NT,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Solomon'
+  },
+  {
+    id: ElectorateID.SPEN,
+    state: StateID.SA,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Spence'
+  },
+  {
+    id: ElectorateID.STUR,
+    state: StateID.SA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Sturt'
+  },
+  {
+    id: ElectorateID.SWAN,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Swan'
+  },
+  {
+    id: ElectorateID.SYDN,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Sydney'
+  },
+  {
+    id: ElectorateID.TANG,
+    state: StateID.WA,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Tangney'
+  },
+  {
+    id: ElectorateID.WANN,
+    state: StateID.VIC,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Wannon'
+  },
+  {
+    id: ElectorateID.WARR,
+    state: StateID.NSW,
+    holder: Allocation.IND,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Warringah'
+  },
+  {
+    id: ElectorateID.WATS,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Watson'
+  },
+  {
+    id: ElectorateID.WENT,
+    state: StateID.NSW,
+    holder: Allocation.LIB,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Wentworth'
+  },
+  {
+    id: ElectorateID.WERR,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.MARGINAL,
+    situation: ElectorateSituation.OUTER_METRO,
+    name: 'Werriwa'
+  },
+  {
+    id: ElectorateID.WHIT,
+    state: StateID.NSW,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Whitlam'
+  },
+  {
+    id: ElectorateID.WBAY,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.RURAL,
+    name: 'Wide Bay'
+  },
+  {
+    id: ElectorateID.WILL,
+    state: StateID.VIC,
+    holder: Allocation.ALP,
+    security: ElectorateSecurity.SAFE,
+    situation: ElectorateSituation.INNER_METRO,
+    name: 'Wills'
+  },
+  {
+    id: ElectorateID.WRIG,
+    state: StateID.QLD,
+    holder: Allocation.LNP,
+    security: ElectorateSecurity.VERY_SAFE,
+    situation: ElectorateSituation.REGIONAL,
+    name: 'Wright'
+  }
 ].map((electorate: Partial<Electorate>) => {
   const { name } = electorate as Electorate;
   let abbr = name.substring(0, 5).trim();
@@ -330,107 +1510,15 @@ export const ELECTORATES: Electorate[] = [
   } as Electorate;
 });
 
-export enum StateID {
-  ACT,
-  NSW,
-  NT,
-  QLD,
-  SA,
-  TAS,
-  VIC,
-  WA
-}
+// Electorates > Allocationss
 
-export const STATE_IDS = Object.keys(StateID).filter(key => typeof StateID[key] === 'number');
-
-export type State = {
-  id: StateID;
-  name: string;
-  abbr: string;
-  caps: string;
-};
-
-export const STATES: State[] = [
-  {
-    id: StateID.ACT,
-    name: 'Australian Capital Territory',
-    abbr: 'ACT',
-    caps: 'ACT'
-  },
-  {
-    id: StateID.NSW,
-    name: 'New South Wales',
-    abbr: 'NSW',
-    caps: 'NSW'
-  },
-  {
-    id: StateID.NT,
-    name: 'Northern Territory',
-    abbr: 'NT',
-    caps: 'NT'
-  },
-  {
-    id: StateID.QLD,
-    name: 'Queensland',
-    abbr: 'Qld.',
-    caps: 'QLD'
-  },
-  {
-    id: StateID.SA,
-    name: 'South Australia',
-    abbr: 'SA',
-    caps: 'SA'
-  },
-  {
-    id: StateID.TAS,
-    name: 'Tasmania',
-    abbr: 'Tas.',
-    caps: 'TAS'
-  },
-  {
-    id: StateID.VIC,
-    name: 'Victoria',
-    abbr: 'Vic.',
-    caps: 'VIC'
-  },
-  {
-    id: StateID.WA,
-    name: 'Western Australia',
-    abbr: 'WA',
-    caps: 'WA'
-  }
-];
-
-export enum Allocation {
-  None = 'a',
-  ALP = 'b',
-  CA = 'c',
-  CLP = 'd',
-  GRN = 'e',
-  IND = 'f',
-  KAP = 'g',
-  LIB = 'h',
-  LNP = 'i',
-  NAT = 'j',
-  ONP = 'k',
-  OTH = 'l',
-  UAP = 'm',
-  // For previous winners (map to party with same colors),
-  NXT = 'c',
-  PUP = 'm'
-}
-
-export const ALLOCATIONS: string[] = Object.values(Allocation);
-
-export const UNCERTAIN_ALLOCATIONS = [Allocation.None];
-
-export const DEFINITIVE_ALLOCATIONS = ALLOCATIONS.filter(
-  allocation => UNCERTAIN_ALLOCATIONS.indexOf(allocation as Allocation) === -1
+export const ELECTORATES_HELD_ALLOCATIONS = ELECTORATES.reduce(
+  (memo, electorate) => ({
+    ...memo,
+    [ElectorateID[electorate.id]]: electorate.holder
+  }),
+  {} as Allocations
 );
-
-export type Allocations = {
-  [key: string]: Allocation;
-};
 
 export const INITIAL_ELECTORATES_ALLOCATIONS = ELECTORATE_IDS.reduce((allocations, electorateID) => {
   allocations[electorateID] = Allocation.None;
@@ -438,10 +1526,14 @@ export const INITIAL_ELECTORATES_ALLOCATIONS = ELECTORATE_IDS.reduce((allocation
   return allocations;
 }, {} as Allocations);
 
+// Alliances
+
 export enum AllianceID {
   ALP,
   CLN
 }
+
+export const PRIMARY_ALLIANCES: [AllianceID, AllianceID] = [AllianceID.CLN, AllianceID.ALP];
 
 export type Alliance = {
   id: AllianceID;
@@ -472,6 +1564,8 @@ export const ALLOCATIONS_ALLIANCES = ALLOCATIONS.map(allocation =>
   ALLIANCES.find(alliance => alliance.allocations.indexOf(allocation as Allocation) !== -1)
 );
 
+// Focuses
+
 export enum Focus {
   No = 'n',
   Yes = 'y'
@@ -488,6 +1582,8 @@ export const INITIAL_ELECTORATES_FOCUSES = ELECTORATE_IDS.reduce((focuses, elect
 
   return focuses;
 }, {} as Focuses);
+
+// Layers
 
 export enum Layer {
   ELECTORATES = 'a',
@@ -516,6 +1612,8 @@ export enum Layout {
   WA = 'k'
 }
 
+// Layouts
+
 export const LAYOUTS: string[] = Object.values(Layout);
 
 export const LAYOUT_LABELS: Record<Layout, string> = {
@@ -536,709 +1634,3 @@ export const LAYOUT_LABELS: Record<Layout, string> = {
 export const DEFAULT_LAYOUT = Layout.EXPLODED;
 export const MULTI_STATE_LAYOUTS = [Layout.GEO, Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
 export const SINGLE_STATE_LAYOUTS = LAYOUTS.filter(layout => MULTI_STATE_LAYOUTS.indexOf(layout as Layout) === -1);
-
-const electoratesIDsToFocuses = (electorateIDs: ElectorateID[], focus: Focus) =>
-  electorateIDs.reduce(
-    (memo, electorateID) => ({
-      ...memo,
-      [electorateID]: focus
-    }),
-    {} as Focuses
-  );
-
-export type Preset = {
-  name?: string;
-  year?: ElectionYear;
-  allocations: Allocations;
-  focuses: Focuses;
-};
-
-export type Presets = {
-  [key: string]: Preset;
-};
-
-export const MIXINS: Presets = {
-  safelabor: {
-    name: 'Safe Labor',
-    allocations: {
-      ADEL: Allocation.ALP,
-      BALL: Allocation.ALP,
-      BART: Allocation.ALP,
-      BEAN: Allocation.ALP,
-      BEND: Allocation.ALP,
-      // BLAI: Allocation.ALP,
-      BLAX: Allocation.ALP,
-      BRAN: Allocation.ALP,
-      BRUC: Allocation.ALP,
-      // BURT: Allocation.ALP,
-      CALW: Allocation.ALP,
-      CANB: Allocation.ALP,
-      CHIF: Allocation.ALP,
-      COOP: Allocation.ALP,
-      // CORA: Allocation.ALP,
-      CORI: Allocation.ALP,
-      // COWA: Allocation.ALP,
-      CUNN: Allocation.ALP,
-      // DOBE: Allocation.ALP,
-      // DUNK: Allocation.ALP,
-      // EMON: Allocation.ALP,
-      FENN: Allocation.ALP,
-      FOWL: Allocation.ALP,
-      FRAN: Allocation.ALP,
-      FRAS: Allocation.ALP,
-      FREM: Allocation.ALP,
-      GELL: Allocation.ALP,
-      // GILM: Allocation.ALP,
-      GORT: Allocation.ALP,
-      GRAY: Allocation.ALP,
-      // GREE: Allocation.ALP,
-      // GRIF: Allocation.ALP,
-      HAWK: Allocation.ALP,
-      HIND: Allocation.ALP,
-      HOLT: Allocation.ALP,
-      HOTH: Allocation.ALP,
-      // HUNT: Allocation.ALP,
-      ISAA: Allocation.ALP,
-      JAGA: Allocation.ALP,
-      KSMI: Allocation.ALP,
-      KING: Allocation.ALP,
-      LALO: Allocation.ALP,
-      // LILL: Allocation.ALP,
-      // LING: Allocation.ALP,
-      // LYON: Allocation.ALP,
-      MACA: Allocation.ALP,
-      MACN: Allocation.ALP,
-      // MACQ: Allocation.ALP,
-      MAKI: Allocation.ALP,
-      MARI: Allocation.ALP,
-      // MCEW: Allocation.ALP,
-      MCMA: Allocation.ALP,
-      // MORE: Allocation.ALP,
-      NEWC: Allocation.ALP,
-      OXLE: Allocation.ALP,
-      // PARR: Allocation.ALP,
-      // PATE: Allocation.ALP,
-      // PERT: Allocation.ALP,
-      RANK: Allocation.ALP,
-      // RICH: Allocation.ALP,
-      SCUL: Allocation.ALP,
-      // SHOR: Allocation.ALP,
-      // SOLO: Allocation.ALP,
-      SPEN: Allocation.ALP,
-      SYDN: Allocation.ALP,
-      WATS: Allocation.ALP,
-      // WERR: Allocation.ALP,
-      WHIT: Allocation.ALP,
-      WILL: Allocation.ALP
-    },
-    focuses: {}
-  },
-  safecoalition: {
-    name: 'Safe Coalition',
-    allocations: {
-      ASTO: Allocation.LIB,
-      BANK: Allocation.LIB,
-      BARK: Allocation.LIB,
-      // BASS: Allocation.LIB,
-      BENN: Allocation.LIB,
-      BERO: Allocation.LIB,
-      BONN: Allocation.LNP,
-      // BOOT: Allocation.LIB,
-      BOWM: Allocation.LNP,
-      // BRAD: Allocation.LIB,
-      BRFD: Allocation.LIB,
-      // BRIS: Allocation.LNP,
-      CALA: Allocation.NAT,
-      CANN: Allocation.LIB,
-      CAPR: Allocation.LNP,
-      // CASE: Allocation.LIB,
-      // CHIS: Allocation.LIB,
-      COOK: Allocation.LIB,
-      COWP: Allocation.NAT,
-      CURT: Allocation.LIB,
-      DAWS: Allocation.LNP,
-      // DEAK: Allocation.LIB,
-      // DICK: Allocation.LNP,
-      DURA: Allocation.LIB,
-      FADD: Allocation.LNP,
-      FAIR: Allocation.LNP,
-      FARR: Allocation.LIB,
-      FISH: Allocation.LNP,
-      // FLIN: Allocation.LIB,
-      FLYN: Allocation.LNP,
-      FORD: Allocation.LNP,
-      FORR: Allocation.LIB,
-      GIPP: Allocation.NAT,
-      GOLD: Allocation.LIB,
-      GREY: Allocation.LIB,
-      GROO: Allocation.LNP,
-      // HASL: Allocation.LIB,
-      HERB: Allocation.LNP,
-      // HIGG: Allocation.LIB,
-      HINK: Allocation.LNP,
-      HUGH: Allocation.LIB,
-      HUME: Allocation.LIB,
-      // KOOY: Allocation.LIB,
-      // LTRO: Allocation.LIB,
-      // LEIC: Allocation.LNP,
-      // LIND: Allocation.LIB,
-      // LONG: Allocation.LNP,
-      LYNE: Allocation.NAT,
-      MACK: Allocation.LIB,
-      MALL: Allocation.NAT,
-      MARA: Allocation.LNP,
-      MCPH: Allocation.LNP,
-      MENZ: Allocation.LIB,
-      MITC: Allocation.LIB,
-      MONA: Allocation.LIB,
-      MONC: Allocation.LNP,
-      MOOR: Allocation.LIB,
-      NENG: Allocation.NAT,
-      NICH: Allocation.NAT,
-      NSYD: Allocation.LIB,
-      OCON: Allocation.LIB,
-      PAGE: Allocation.NAT,
-      PARK: Allocation.NAT,
-      PEAR: Allocation.LIB,
-      PETR: Allocation.LNP,
-      // REID: Allocation.LIB,
-      RIVE: Allocation.NAT,
-      // ROBE: Allocation.LIB,
-      RYAN: Allocation.LNP,
-      STUR: Allocation.LIB,
-      // SWAN: Allocation.LIB,
-      TANG: Allocation.LIB,
-      WANN: Allocation.LIB,
-      // WENT: Allocation.LIB,
-      WBAY: Allocation.LNP,
-      WRIG: Allocation.LNP
-    },
-    focuses: {}
-  },
-  innermetro: {
-    name: 'Inner Metro',
-    allocations: {},
-    focuses: {
-      ADEL: Focus.Yes,
-      BANK: Focus.Yes,
-      BART: Focus.Yes,
-      BONN: Focus.Yes,
-      BRIS: Focus.Yes,
-      CANB: Focus.Yes,
-      CHIS: Focus.Yes,
-      CLAR: Focus.Yes,
-      COOP: Focus.Yes,
-      COWA: Focus.Yes,
-      CURT: Focus.Yes,
-      FREM: Focus.Yes,
-      GELL: Focus.Yes,
-      GOLD: Focus.Yes,
-      GRAY: Focus.Yes,
-      GRIF: Focus.Yes,
-      HIGG: Focus.Yes,
-      HIND: Focus.Yes,
-      HOTH: Focus.Yes,
-      KSMI: Focus.Yes,
-      KOOY: Focus.Yes,
-      LILL: Focus.Yes,
-      MACN: Focus.Yes,
-      MARI: Focus.Yes,
-      MELB: Focus.Yes,
-      MORE: Focus.Yes,
-      NSYD: Focus.Yes,
-      PERT: Focus.Yes,
-      REID: Focus.Yes,
-      RYAN: Focus.Yes,
-      STUR: Focus.Yes,
-      SWAN: Focus.Yes,
-      SYDN: Focus.Yes,
-      TANG: Focus.Yes,
-      WATS: Focus.Yes,
-      WENT: Focus.Yes,
-      WILL: Focus.Yes
-    }
-  },
-  outermetro: {
-    name: 'Outer Metro',
-    allocations: {},
-    focuses: {
-      ASTO: Focus.Yes,
-      BEAN: Focus.Yes,
-      BENN: Focus.Yes,
-      BERO: Focus.Yes,
-      BLAI: Focus.Yes,
-      BLAX: Focus.Yes,
-      BOOT: Focus.Yes,
-      BOWM: Focus.Yes,
-      BRFD: Focus.Yes,
-      BRAN: Focus.Yes,
-      BRUC: Focus.Yes,
-      BURT: Focus.Yes,
-      CALW: Focus.Yes,
-      CANN: Focus.Yes,
-      CASE: Focus.Yes,
-      CHIF: Focus.Yes,
-      COOK: Focus.Yes,
-      DEAK: Focus.Yes,
-      DICK: Focus.Yes,
-      DOBE: Focus.Yes,
-      DUNK: Focus.Yes,
-      FADD: Focus.Yes,
-      FAIR: Focus.Yes,
-      FENN: Focus.Yes,
-      FISH: Focus.Yes,
-      FLIN: Focus.Yes,
-      FORD: Focus.Yes,
-      FOWL: Focus.Yes,
-      FRAN: Focus.Yes,
-      FRAS: Focus.Yes,
-      GORT: Focus.Yes,
-      GREE: Focus.Yes,
-      HASL: Focus.Yes,
-      HAWK: Focus.Yes,
-      HOLT: Focus.Yes,
-      HUGH: Focus.Yes,
-      ISAA: Focus.Yes,
-      JAGA: Focus.Yes,
-      KING: Focus.Yes,
-      LTRO: Focus.Yes,
-      LALO: Focus.Yes,
-      LIND: Focus.Yes,
-      LONG: Focus.Yes,
-      MACA: Focus.Yes,
-      MACK: Focus.Yes,
-      MACQ: Focus.Yes,
-      MAKI: Focus.Yes,
-      MAYO: Focus.Yes,
-      MCMA: Focus.Yes,
-      MCPH: Focus.Yes,
-      MENZ: Focus.Yes,
-      MITC: Focus.Yes,
-      MONC: Focus.Yes,
-      MOOR: Focus.Yes,
-      OXLE: Focus.Yes,
-      PARR: Focus.Yes,
-      PEAR: Focus.Yes,
-      PETR: Focus.Yes,
-      RANK: Focus.Yes,
-      ROBE: Focus.Yes,
-      SCUL: Focus.Yes,
-      SOLO: Focus.Yes,
-      SPEN: Focus.Yes,
-      WARR: Focus.Yes,
-      WERR: Focus.Yes
-    }
-  },
-  regional: {
-    name: 'Regional',
-    allocations: {},
-    focuses: {
-      BALL: Focus.Yes,
-      BASS: Focus.Yes,
-      BEND: Focus.Yes,
-      BRAD: Focus.Yes,
-      CORA: Focus.Yes,
-      CORI: Focus.Yes,
-      CUNN: Focus.Yes,
-      EMON: Focus.Yes,
-      FORR: Focus.Yes,
-      GILM: Focus.Yes,
-      GROO: Focus.Yes,
-      HERB: Focus.Yes,
-      HUNT: Focus.Yes,
-      LEIC: Focus.Yes,
-      MCEW: Focus.Yes,
-      NEWC: Focus.Yes,
-      PATE: Focus.Yes,
-      RICH: Focus.Yes,
-      SHOR: Focus.Yes,
-      WHIT: Focus.Yes,
-      WRIG: Focus.Yes
-    }
-  },
-  rural: {
-    name: 'Rural',
-    allocations: {},
-    focuses: {
-      BARK: Focus.Yes,
-      CALA: Focus.Yes,
-      CAPR: Focus.Yes,
-      COWP: Focus.Yes,
-      DAWS: Focus.Yes,
-      DURA: Focus.Yes,
-      FARR: Focus.Yes,
-      FLYN: Focus.Yes,
-      GIPP: Focus.Yes,
-      GREY: Focus.Yes,
-      HINK: Focus.Yes,
-      HUME: Focus.Yes,
-      INDI: Focus.Yes,
-      KENN: Focus.Yes,
-      LING: Focus.Yes,
-      LYNE: Focus.Yes,
-      LYON: Focus.Yes,
-      MALL: Focus.Yes,
-      MARA: Focus.Yes,
-      MONA: Focus.Yes,
-      NENG: Focus.Yes,
-      NICH: Focus.Yes,
-      OCON: Focus.Yes,
-      PAGE: Focus.Yes,
-      PARK: Focus.Yes,
-      RIVE: Focus.Yes,
-      WANN: Focus.Yes,
-      WBAY: Focus.Yes
-    }
-  },
-  marginal: {
-    name: 'Marginal',
-    allocations: {},
-    focuses: {
-      BASS: Focus.Yes,
-      BLAI: Focus.Yes,
-      BOOT: Focus.Yes,
-      BRAD: Focus.Yes,
-      BRIS: Focus.Yes,
-      BURT: Focus.Yes,
-      CASE: Focus.Yes,
-      CHIS: Focus.Yes,
-      CORA: Focus.Yes,
-      COWA: Focus.Yes,
-      DEAK: Focus.Yes,
-      DICK: Focus.Yes,
-      DOBE: Focus.Yes,
-      DUNK: Focus.Yes,
-      EMON: Focus.Yes,
-      FLIN: Focus.Yes,
-      GILM: Focus.Yes,
-      GREE: Focus.Yes,
-      GRIF: Focus.Yes,
-      HASL: Focus.Yes,
-      HIGG: Focus.Yes,
-      HUNT: Focus.Yes,
-      INDI: Focus.Yes,
-      KOOY: Focus.Yes,
-      LTRO: Focus.Yes,
-      LEIC: Focus.Yes,
-      LILL: Focus.Yes,
-      LIND: Focus.Yes,
-      LING: Focus.Yes,
-      LONG: Focus.Yes,
-      LYON: Focus.Yes,
-      MACQ: Focus.Yes,
-      MAYO: Focus.Yes,
-      MCEW: Focus.Yes,
-      MORE: Focus.Yes,
-      PARR: Focus.Yes,
-      PATE: Focus.Yes,
-      PERT: Focus.Yes,
-      REID: Focus.Yes,
-      RICH: Focus.Yes,
-      ROBE: Focus.Yes,
-      SHOR: Focus.Yes,
-      SOLO: Focus.Yes,
-      SWAN: Focus.Yes,
-      WENT: Focus.Yes,
-      WERR: Focus.Yes
-    }
-  },
-  safe: {
-    name: 'Safe',
-    allocations: {},
-    focuses: {
-      ADEL: Focus.Yes,
-      ASTO: Focus.Yes,
-      BALL: Focus.Yes,
-      BANK: Focus.Yes,
-      BART: Focus.Yes,
-      BEAN: Focus.Yes,
-      BEND: Focus.Yes,
-      BENN: Focus.Yes,
-      BONN: Focus.Yes,
-      BOWM: Focus.Yes,
-      BRAN: Focus.Yes,
-      BRUC: Focus.Yes,
-      CANN: Focus.Yes,
-      CORI: Focus.Yes,
-      COWP: Focus.Yes,
-      FENN: Focus.Yes,
-      FLYN: Focus.Yes,
-      FORD: Focus.Yes,
-      FREM: Focus.Yes,
-      GOLD: Focus.Yes,
-      HAWK: Focus.Yes,
-      HERB: Focus.Yes,
-      HIND: Focus.Yes,
-      HOLT: Focus.Yes,
-      HOTH: Focus.Yes,
-      HUGH: Focus.Yes,
-      ISAA: Focus.Yes,
-      JAGA: Focus.Yes,
-      KSMI: Focus.Yes,
-      KING: Focus.Yes,
-      MACA: Focus.Yes,
-      MACN: Focus.Yes,
-      MAKI: Focus.Yes,
-      MARI: Focus.Yes,
-      MCMA: Focus.Yes,
-      MENZ: Focus.Yes,
-      MONA: Focus.Yes,
-      MOOR: Focus.Yes,
-      NSYD: Focus.Yes,
-      OXLE: Focus.Yes,
-      PAGE: Focus.Yes,
-      PEAR: Focus.Yes,
-      PETR: Focus.Yes,
-      RANK: Focus.Yes,
-      RYAN: Focus.Yes,
-      STUR: Focus.Yes,
-      TANG: Focus.Yes,
-      WANN: Focus.Yes,
-      WARR: Focus.Yes,
-      WHIT: Focus.Yes,
-      WILL: Focus.Yes
-    }
-  },
-  verysafe: {
-    name: 'Very Safe',
-    allocations: {},
-    focuses: {
-      BARK: Focus.Yes,
-      BERO: Focus.Yes,
-      BLAX: Focus.Yes,
-      BRFD: Focus.Yes,
-      CALA: Focus.Yes,
-      CALW: Focus.Yes,
-      CANB: Focus.Yes,
-      CAPR: Focus.Yes,
-      CHIF: Focus.Yes,
-      CLAR: Focus.Yes,
-      COOK: Focus.Yes,
-      COOP: Focus.Yes,
-      CUNN: Focus.Yes,
-      CURT: Focus.Yes,
-      DAWS: Focus.Yes,
-      DURA: Focus.Yes,
-      FADD: Focus.Yes,
-      FAIR: Focus.Yes,
-      FARR: Focus.Yes,
-      FISH: Focus.Yes,
-      FORR: Focus.Yes,
-      FOWL: Focus.Yes,
-      FRAN: Focus.Yes,
-      FRAS: Focus.Yes,
-      GELL: Focus.Yes,
-      GIPP: Focus.Yes,
-      GORT: Focus.Yes,
-      GRAY: Focus.Yes,
-      GREY: Focus.Yes,
-      GROO: Focus.Yes,
-      HINK: Focus.Yes,
-      HUME: Focus.Yes,
-      KENN: Focus.Yes,
-      LALO: Focus.Yes,
-      LYNE: Focus.Yes,
-      MACK: Focus.Yes,
-      MALL: Focus.Yes,
-      MARA: Focus.Yes,
-      MCPH: Focus.Yes,
-      MELB: Focus.Yes,
-      MITC: Focus.Yes,
-      MONC: Focus.Yes,
-      NENG: Focus.Yes,
-      NEWC: Focus.Yes,
-      NICH: Focus.Yes,
-      OCON: Focus.Yes,
-      PARK: Focus.Yes,
-      RIVE: Focus.Yes,
-      SCUL: Focus.Yes,
-      SPEN: Focus.Yes,
-      SYDN: Focus.Yes,
-      WATS: Focus.Yes,
-      WBAY: Focus.Yes,
-      WRIG: Focus.Yes
-    }
-  }
-};
-
-export const PRESETS: Presets = {
-  2019: {
-    allocations: {
-      ADEL: Allocation.ALP,
-      ASTO: Allocation.LIB,
-      BALL: Allocation.ALP,
-      BANK: Allocation.LIB,
-      BARK: Allocation.LIB,
-      BART: Allocation.ALP,
-      BASS: Allocation.LIB,
-      BEAN: Allocation.ALP,
-      BEND: Allocation.ALP,
-      BENN: Allocation.LIB,
-      BERO: Allocation.LIB,
-      BLAI: Allocation.ALP,
-      BLAX: Allocation.ALP,
-      BONN: Allocation.LNP,
-      BOOT: Allocation.LIB,
-      BOWM: Allocation.LNP,
-      BRAD: Allocation.LIB,
-      BRFD: Allocation.LIB,
-      BRAN: Allocation.ALP,
-      BRIS: Allocation.LNP,
-      BRUC: Allocation.ALP,
-      BURT: Allocation.ALP,
-      CALA: Allocation.NAT,
-      CALW: Allocation.ALP,
-      CANB: Allocation.ALP,
-      CANN: Allocation.LIB,
-      CAPR: Allocation.LNP,
-      CASE: Allocation.LIB,
-      CHIF: Allocation.ALP,
-      CHIS: Allocation.LIB,
-      CLAR: Allocation.IND,
-      COOK: Allocation.LIB,
-      COOP: Allocation.ALP,
-      CORA: Allocation.ALP,
-      CORI: Allocation.ALP,
-      COWA: Allocation.ALP,
-      COWP: Allocation.NAT,
-      CUNN: Allocation.ALP,
-      CURT: Allocation.LIB,
-      DAWS: Allocation.LNP,
-      DEAK: Allocation.LIB,
-      DICK: Allocation.LNP,
-      DOBE: Allocation.ALP,
-      DUNK: Allocation.ALP,
-      DURA: Allocation.LIB,
-      EMON: Allocation.ALP,
-      FADD: Allocation.LNP,
-      FAIR: Allocation.LNP,
-      FARR: Allocation.LIB,
-      FENN: Allocation.ALP,
-      FISH: Allocation.LNP,
-      FLIN: Allocation.LIB,
-      FLYN: Allocation.LNP,
-      FORD: Allocation.LNP,
-      FORR: Allocation.LIB,
-      FOWL: Allocation.ALP,
-      FRAN: Allocation.ALP,
-      FRAS: Allocation.ALP,
-      FREM: Allocation.ALP,
-      GELL: Allocation.ALP,
-      GILM: Allocation.ALP,
-      GIPP: Allocation.NAT,
-      GOLD: Allocation.LIB,
-      GORT: Allocation.ALP,
-      GRAY: Allocation.ALP,
-      GREE: Allocation.ALP,
-      GREY: Allocation.LIB,
-      GRIF: Allocation.ALP,
-      GROO: Allocation.LNP,
-      HASL: Allocation.LIB,
-      HAWK: Allocation.ALP,
-      HERB: Allocation.LNP,
-      HIGG: Allocation.LIB,
-      HIND: Allocation.ALP,
-      HINK: Allocation.LNP,
-      HOLT: Allocation.ALP,
-      HOTH: Allocation.ALP,
-      HUGH: Allocation.LIB,
-      HUME: Allocation.LIB,
-      HUNT: Allocation.ALP,
-      INDI: Allocation.IND,
-      ISAA: Allocation.ALP,
-      JAGA: Allocation.ALP,
-      KENN: Allocation.KAP,
-      KSMI: Allocation.ALP,
-      KING: Allocation.ALP,
-      KOOY: Allocation.LIB,
-      LTRO: Allocation.LIB,
-      LALO: Allocation.ALP,
-      LEIC: Allocation.LNP,
-      LILL: Allocation.ALP,
-      LIND: Allocation.LIB,
-      LING: Allocation.ALP,
-      LONG: Allocation.LNP,
-      LYNE: Allocation.NAT,
-      LYON: Allocation.ALP,
-      MACA: Allocation.ALP,
-      MACK: Allocation.LIB,
-      MACN: Allocation.ALP,
-      MACQ: Allocation.ALP,
-      MAKI: Allocation.ALP,
-      MALL: Allocation.NAT,
-      MARA: Allocation.LNP,
-      MARI: Allocation.ALP,
-      MAYO: Allocation.CA,
-      MCEW: Allocation.ALP,
-      MCMA: Allocation.ALP,
-      MCPH: Allocation.LNP,
-      MELB: Allocation.GRN,
-      MENZ: Allocation.LIB,
-      MITC: Allocation.LIB,
-      MONA: Allocation.LIB,
-      MONC: Allocation.LNP,
-      MOOR: Allocation.LIB,
-      MORE: Allocation.ALP,
-      NENG: Allocation.NAT,
-      NEWC: Allocation.ALP,
-      NICH: Allocation.NAT,
-      NSYD: Allocation.LIB,
-      OCON: Allocation.LIB,
-      OXLE: Allocation.ALP,
-      PAGE: Allocation.NAT,
-      PARK: Allocation.NAT,
-      PARR: Allocation.ALP,
-      PATE: Allocation.ALP,
-      PEAR: Allocation.LIB,
-      PERT: Allocation.ALP,
-      PETR: Allocation.LNP,
-      RANK: Allocation.ALP,
-      REID: Allocation.LIB,
-      RICH: Allocation.ALP,
-      RIVE: Allocation.NAT,
-      ROBE: Allocation.LIB,
-      RYAN: Allocation.LNP,
-      SCUL: Allocation.ALP,
-      SHOR: Allocation.ALP,
-      SOLO: Allocation.ALP,
-      SPEN: Allocation.ALP,
-      STUR: Allocation.LIB,
-      SWAN: Allocation.LIB,
-      SYDN: Allocation.ALP,
-      TANG: Allocation.LIB,
-      WANN: Allocation.LIB,
-      WARR: Allocation.IND,
-      WATS: Allocation.ALP,
-      WENT: Allocation.LIB,
-      WERR: Allocation.ALP,
-      WHIT: Allocation.ALP,
-      WBAY: Allocation.LNP,
-      WILL: Allocation.ALP,
-      WRIG: Allocation.LNP
-    },
-    focuses: {},
-    year: 2019
-  },
-  safe: {
-    name: 'Safe',
-    allocations: {
-      ...MIXINS.safecoalition.allocations,
-      ...MIXINS.safelabor.allocations
-    },
-    focuses: {}
-  }
-};
-
-export const ELECTION_YEARS = [2022, 2019] as const;
-
-export const [DEFAULT_ELECTION_YEAR, DEFAULT_RELATIVE_ELECTION_YEAR] = ELECTION_YEARS;
-
-export type ElectionYear = typeof ELECTION_YEARS[number];
-
-type ElectionYearsPrimaryAlliances = Record<ElectionYear, [AllianceID, AllianceID]>;
-
-// Important: Alliance IDs need to be ordered: [government, opposition], as this impacts Totals sides
-export const ELECTION_YEARS_PRIMARY_ALLIANCES: ElectionYearsPrimaryAlliances = {
-  2022: [AllianceID.CLN, AllianceID.ALP],
-  2019: [AllianceID.CLN, AllianceID.ALP]
-};

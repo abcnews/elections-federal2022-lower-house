@@ -16,11 +16,7 @@ import {
   INITIAL_ELECTORATES_ALLOCATIONS,
   Focus,
   Focuses,
-  INITIAL_ELECTORATES_FOCUSES,
-  ElectionYear,
-  ELECTION_YEARS,
-  MIXINS,
-  PRESETS
+  INITIAL_ELECTORATES_FOCUSES
 } from '../../lib/constants';
 import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from '../../lib/data';
 import {
@@ -36,6 +32,7 @@ import Icon from '../Icon';
 import tilegramStyles from '../Tilegram/styles.scss';
 import totalsStyles from '../Totals/styles.scss';
 import candidates from './candidates.json';
+import { MIXINS, PRESETS } from './constants';
 import styles from './styles.scss';
 
 const COMPONENTS_STYLES = {
@@ -75,9 +72,8 @@ const Editor: React.FC = () => {
   const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
-  const [year, setYear] = useState<ElectionYear | undefined>(initialUrlParamProps.year);
-  const [relative, setRelative] = useState<number | null | undefined>(initialUrlParamProps.relative);
-  const [counting, setCounting] = useState(initialUrlParamProps.counting);
+  const [relative, setRelative] = useState<boolean>(initialUrlParamProps.relative);
+  const [counting, setCounting] = useState<boolean>(initialUrlParamProps.counting);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
   const [lastTappedElectorate, setLastTappedElectorate] = useState<Electorate>();
   const { show: showContextMenu } = useContextMenu({
@@ -106,25 +102,23 @@ const Editor: React.FC = () => {
   const mixinGraphicProps = (mixin: Partial<GraphicProps>) => {
     setAllocations({
       ...allocations,
-      ...mixin.allocations
+      ...(mixin.allocations || {})
     });
     setFocuses({
       ...focuses,
-      ...mixin.focuses
+      ...(mixin.focuses || {})
     });
-    setYear(mixin.year || year);
   };
 
   const replaceGraphicProps = (replacement: Partial<GraphicProps>) => {
     setAllocations({
       ...INITIAL_ELECTORATES_ALLOCATIONS,
-      ...replacement.allocations
+      ...(replacement.allocations || {})
     });
     setFocuses({
       ...INITIAL_ELECTORATES_FOCUSES,
-      ...replacement.focuses
+      ...(replacement.focuses || {})
     });
-    setYear(replacement.year || DEFAULT_GRAPHIC_PROPS.year);
   };
 
   const replaceAllocationsWithLiveResults = async () => {
@@ -150,23 +144,8 @@ const Editor: React.FC = () => {
     const graphicProps = alternatingCaseToGraphicProps(marker);
 
     replaceGraphicProps(graphicProps);
-    setRelative(graphicProps.relative || DEFAULT_GRAPHIC_PROPS.relative);
-    setCounting(graphicProps.counting || DEFAULT_GRAPHIC_PROPS.counting);
+    setCounting(graphicProps.counting || DEFAULT_GRAPHIC_PROPS.counting || false);
   };
-
-  // const onTapElectorate = (electorateID: string) => {
-  //   const allocationsToMixin: Allocations = {};
-  //   const allocation = allocations[electorateID];
-  //   const allowedAllocations = [Allocation.None, ...candidates[electorateID].map(candidate => Allocation[candidate])];
-  //   const allocationIndex = allowedAllocations.indexOf(allocation);
-
-  //   // Cycle to the next Allocation in allowedAllocations (or the first if we don't recognise it)
-  //   allocationsToMixin[electorateID] = allowedAllocations[
-  //     allocationIndex === allowedAllocations.length - 1 ? 0 : allocationIndex + 1
-  //   ] as Allocation;
-
-  //   mixinGraphicProps({ allocations: allocationsToMixin });
-  // };
 
   const onTapElectorate = (electorateID: string, event: React.MouseEvent<SVGElement>) => {
     const electorate = ELECTORATES.find(
@@ -230,11 +209,10 @@ const Editor: React.FC = () => {
       layout,
       allocations,
       focuses,
-      year,
       relative,
       counting
     }),
-    [layer, layout, allocations, focuses, year, relative, counting]
+    [layer, layout, allocations, focuses, relative, counting]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -310,59 +288,20 @@ const Editor: React.FC = () => {
             );
           })}
         </div>
-        <h3>
-          Current year <small>(set sides)</small>
-        </h3>
-        <div className={styles.flexRow}>
-          {ELECTION_YEARS.map(_year => (
-            <span key={_year}>
-              <label>
-                <input
-                  type="radio"
-                  name="year"
-                  value={_year}
-                  checked={_year === year}
-                  onChange={() => setYear(_year)}
-                ></input>
-                {_year}
-              </label>
-            </span>
-          ))}
-        </div>
-        <h3>
-          Relative year <small>(show holder outlines and flips)</small>
-        </h3>
+        <h3>Relative</h3>
         <div className={styles.flexRow}>
           <span key="none">
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="relative"
-                value={'none'}
-                checked={null === relative}
-                onChange={() => setRelative(null)}
+                value="relative"
+                checked={relative}
+                onChange={() => setRelative(!relative)}
               ></input>
-              None
+              Show holder outlines and flips
             </label>
           </span>
-          {Object.keys(PRESETS)
-            .map(key => parseInt(key, 10))
-            .filter(key => !isNaN(key))
-            .reverse()
-            .map(year => (
-              <span key={year}>
-                <label>
-                  <input
-                    type="radio"
-                    name="relative"
-                    value={year}
-                    checked={year === relative}
-                    onChange={() => setRelative(year)}
-                  ></input>
-                  {year}
-                </label>
-              </span>
-            ))}
         </div>
         <h3>Counting</h3>
         <div className={styles.flexRow}>
@@ -375,7 +314,7 @@ const Editor: React.FC = () => {
                 checked={counting}
                 onChange={() => setCounting(!counting)}
               ></input>
-              Show totals
+              Show totals bars
             </label>
           </span>
         </div>
@@ -403,15 +342,33 @@ const Editor: React.FC = () => {
             ))}
           </select>
         </div>
+        <br></br>
+        <div className={styles.flexRow}>
+          {Object.keys(MIXINS)
+            .filter(key => MIXINS[key].focuses)
+            .map(key => {
+              const { name, focuses: mixinFocuses } = MIXINS[key];
+
+              return (
+                <button
+                  key={key}
+                  disabled={Object.keys(mixinFocuses as Focuses).every(key => focuses[key] === Focus.Yes) || undefined}
+                  onClick={() => mixinGraphicProps({ focuses: mixinFocuses })}
+                >
+                  {name || key}
+                </button>
+              );
+            })}
+        </div>
         <h3>
           Mix-ins <small>(added to the map)</small>
         </h3>
         <div className={styles.flexRow}>
           {Object.keys(MIXINS).map(key => {
-            const { name, ...graphicProps } = MIXINS[key];
+            const { name, allocations } = MIXINS[key];
 
             return (
-              <button key={key} onClick={() => mixinGraphicProps(graphicProps)}>
+              <button key={key} onClick={() => mixinGraphicProps({ allocations })}>
                 {name || key}
               </button>
             );
@@ -425,10 +382,10 @@ const Editor: React.FC = () => {
             Empty
           </button>
           {Object.keys(PRESETS).map(key => {
-            const { name, ...graphicProps } = PRESETS[key];
+            const { name, allocations } = PRESETS[key];
 
             return (
-              <button key={key} onClick={() => replaceGraphicProps(graphicProps)}>
+              <button key={key} onClick={() => replaceGraphicProps({ allocations })}>
                 {name || key}
               </button>
             );

@@ -1,13 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Allocation,
-  Electorate,
-  ElectorateID,
-  ELECTORATES,
-  ELECTION_YEARS_PRIMARY_ALLIANCES,
-  DEFAULT_ELECTION_YEAR,
-  DEFAULT_RELATIVE_ELECTION_YEAR
-} from '../../lib/constants';
+import React, { useEffect, useState } from 'react';
+import { Allocation, Electorate, ElectorateID, ELECTORATES } from '../../lib/constants';
 import type { LiveResultsElectorate } from '../../lib/data';
 import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from '../../lib/data';
 import pastWinners from './past-winners.json';
@@ -78,16 +70,13 @@ const Card: React.FC<CardProps> = ({ electorateID, hasResult }) => {
   const timeUpdated = result?.updated ? new Date(result.updated) : null;
 
   const electoratePastWinners = pastWinners[electorateID];
-  const allocation = result ? undefined : undefined; // TODO: add allocation if safe/not-a-prediction
-  const relativeAllocation = electoratePastWinners[DEFAULT_RELATIVE_ELECTION_YEAR]
-    ? Allocation[electoratePastWinners[DEFAULT_RELATIVE_ELECTION_YEAR]]
-    : undefined;
+  const allocation = result ? undefined : undefined;
 
   return (
     <div className={styles.root}>
       <div className={styles.flex}>
         <h4 className={styles.title}>
-          <Hex allocation={allocation} relativeAllocation={relativeAllocation} />
+          <Hex allocation={allocation} relativeAllocation={electorate.holder} />
           {electorate.name}
         </h4>
         {hasResult ? timeUpdated && <div>{`Updated ${formatTimeUpdated(timeUpdated)}`}</div> : <div />}
