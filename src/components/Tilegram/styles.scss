@@ -7,7 +7,7 @@
   width: 100%;
   height: 0;
   padding: 0 0 100% 0;
-  --color-allocation: $color_White;
+  --color-allocation: #{$color_White};
 }
 
 @media (orientation: landscape) and (max-height: 50rem) {
