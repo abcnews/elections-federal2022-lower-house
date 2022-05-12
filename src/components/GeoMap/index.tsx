@@ -88,8 +88,6 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         [west, south]
       ];
 
-      console.log(focusedElectoratesGeoProperties);
-
       if (remainingGeoProps.length) {
         nextBounds = remainingGeoProps.reduce<maplibregl.LngLatBoundsLike>(
           (memo, geoProps) => [
@@ -99,8 +97,8 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           nextBounds
         );
       }
-      // Fit bounds to Australia extents of focused electorates
     }
+
     map.fitBounds(new maplibregl.LngLatBounds(nextBounds), FIT_BOUNDS_OPTIONS);
   };
 
