@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout } from '../../lib/constants';
 import Geo from '../Geo';
+// import GeoMap from '../GeoMap';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
 import type { TotalsProps } from '../Totals';
@@ -36,6 +37,7 @@ const Graphic: React.FC<GraphicProps> = props => {
   switch (layout) {
     case Layout.GEO:
       map = <Geo allocations={allocations} focuses={focuses} layer={layer} />;
+      // map = <GeoMap allocations={allocations} focuses={focuses} />;
       break;
     default:
       map = (
