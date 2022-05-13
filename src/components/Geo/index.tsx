@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import { Allocation, Allocations, ElectorateID, ELECTORATES, Focus, Focuses, Layer } from '../../lib/constants';
+import { Allocation, Allocations, ElectorateID, ELECTORATES, NoYes, Focuses, Layer } from '../../lib/constants';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectoratesRenderProps } from './data';
 import { ELECTORATES_PATHS } from './data';
@@ -18,7 +18,7 @@ export type GeoProps = {
 const Geo: React.FC<GeoProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const { allocations, focuses, layer } = props;
-  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
+  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
   const electoratesRenderProps = useMemo(
     () =>
       Object.values(ELECTORATES).reduce<ElectoratesRenderProps>((memo, electorate) => {
@@ -33,7 +33,7 @@ const Geo: React.FC<GeoProps> = props => {
             allocation,
             hasAllocation: allocation && determineIfAllocationIsMade(allocation),
             hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
-            focus: focuses ? focuses[id] : Focus.No,
+            focus: focuses ? focuses[id] : NoYes.No,
             path: ELECTORATES_PATHS[id]
           }
         };
@@ -48,7 +48,7 @@ const Geo: React.FC<GeoProps> = props => {
           <g className={styles.electorates}>
             {Object.values(electoratesRenderProps)
               .sort((a, b) => (a.allocation !== b.allocation && b.allocation === Allocation.None ? 0 : -1))
-              .sort((a, b) => (a.focus !== b.focus && b.focus === Focus.No ? 0 : -1))
+              .sort((a, b) => (a.focus !== b.focus && b.focus === NoYes.No ? 0 : -1))
               .map(({ id, name, allocation, hasAllocation, hasDefinitiveAllocation, focus, path }) => (
                 <path
                   key={id}

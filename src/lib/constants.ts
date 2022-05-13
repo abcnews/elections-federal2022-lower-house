@@ -1,3 +1,12 @@
+// NoYes (used for annotations and focuses)
+
+export enum NoYes {
+  No = 'n',
+  Yes = 'y'
+}
+
+export const NOYES_VALUES: string[] = Object.values(NoYes);
+
 // Allocations
 
 export enum Allocation {
@@ -19,12 +28,12 @@ export enum Allocation {
   PUP = 'm'
 }
 
-export const ALLOCATIONS: string[] = Object.values(Allocation);
+export const ALLOCATION_VALUES: string[] = Object.values(Allocation);
 
-export const UNCERTAIN_ALLOCATIONS = [Allocation.None];
+export const UNCERTAIN_ALLOCATION_VALUES = [Allocation.None];
 
-export const DEFINITIVE_ALLOCATIONS = ALLOCATIONS.filter(
-  allocation => UNCERTAIN_ALLOCATIONS.indexOf(allocation as Allocation) === -1
+export const DEFINITIVE_ALLOCATION_VALUES = ALLOCATION_VALUES.filter(
+  allocation => UNCERTAIN_ALLOCATION_VALUES.indexOf(allocation as Allocation) === -1
 );
 
 export type Allocations = {
@@ -1560,25 +1569,30 @@ export const ALLIANCES: Alliance[] = [
   }
 ];
 
-export const ALLOCATIONS_ALLIANCES = ALLOCATIONS.map(allocation =>
+export const ALLOCATIONS_ALLIANCES = ALLOCATION_VALUES.map(allocation =>
   ALLIANCES.find(alliance => alliance.allocations.indexOf(allocation as Allocation) !== -1)
 );
 
+// Annotations
+
+export type Annotations = {
+  [key: string]: NoYes;
+};
+
+export const INITIAL_ELECTORATES_ANNOTATIONS = ELECTORATE_IDS.reduce((annotations, electorateID) => {
+  annotations[electorateID] = NoYes.No;
+
+  return annotations;
+}, {} as Annotations);
+
 // Focuses
 
-export enum Focus {
-  No = 'n',
-  Yes = 'y'
-}
-
-export const FOCUSES: string[] = Object.values(Focus);
-
 export type Focuses = {
-  [key: string]: Focus;
+  [key: string]: NoYes;
 };
 
 export const INITIAL_ELECTORATES_FOCUSES = ELECTORATE_IDS.reduce((focuses, electorateID) => {
-  focuses[electorateID] = Focus.No;
+  focuses[electorateID] = NoYes.No;
 
   return focuses;
 }, {} as Focuses);

@@ -2,7 +2,7 @@
 
 declare var maplibregl: typeof import('maplibre-gl');
 
-import type { Allocation, ElectorateID, Focus } from '../../lib/constants';
+import type { Allocation, ElectorateID, NoYes } from '../../lib/constants';
 
 export type CapitalCoordinates = {
   name: string;
@@ -27,7 +27,7 @@ export type ElectorateRenderProps = {
   allocation: Allocation;
   hasAllocation: boolean;
   hasDefinitiveAllocation: boolean;
-  focus: Focus;
+  focus: NoYes;
   color: string;
   geoProps: ElectorateGeoProperties;
 };

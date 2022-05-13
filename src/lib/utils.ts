@@ -4,16 +4,17 @@ import {
   ELECTORATE_IDS,
   Allocation,
   Allocations,
-  ALLOCATIONS,
-  DEFINITIVE_ALLOCATIONS,
-  Focus,
+  ALLOCATION_VALUES,
+  DEFINITIVE_ALLOCATION_VALUES,
+  Annotations,
   Focuses,
-  FOCUSES,
+  NoYes,
+  NOYES_VALUES,
   Layout
 } from './constants';
 
 export const getAllocationsCounts = (allocations: Allocations): { [key: string]: number } => {
-  return ALLOCATIONS.reduce(
+  return ALLOCATION_VALUES.reduce(
     (memo, allocation) => ({
       ...memo,
       [allocation]: ELECTORATE_IDS.filter(id => allocations[id] === allocation).length
@@ -25,7 +26,7 @@ export const getAllocationsCounts = (allocations: Allocations): { [key: string]:
 export const determineIfAllocationIsMade = (allocation: Allocation) => allocation !== Allocation.None;
 
 export const determineIfAllocationIsDefinitive = (allocation: Allocation) =>
-  DEFINITIVE_ALLOCATIONS.indexOf(allocation) !== -1;
+  DEFINITIVE_ALLOCATION_VALUES.indexOf(allocation) !== -1;
 
 export const determineIfAllocationWasPreserved = (allocation: Allocation, relativeAllocation: Allocation) =>
   allocation === relativeAllocation &&
@@ -69,23 +70,34 @@ function encode<Dict>(dict: Dict, keys: string[], possibleValues: string[], defa
 }
 
 export const decodeAllocations = (code: string): Allocations =>
-  decode<Allocations>(code, ELECTORATE_IDS, ALLOCATIONS, Allocation.None);
+  decode<Allocations>(code, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None);
 
 export const encodeAllocations = (allocations: Allocations): string =>
-  encode<Allocations>(allocations, ELECTORATE_IDS, ALLOCATIONS, Allocation.None);
+  encode<Allocations>(allocations, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None);
 
-export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, ELECTORATE_IDS, FOCUSES, Focus.No);
+export const decodeAnnotations = (code: string): Annotations =>
+  decode<Annotations>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
 
-export const encodeFocuses = (focuses: Focuses): string => encode<Focuses>(focuses, ELECTORATE_IDS, FOCUSES, Focus.No);
+export const encodeAnnotations = (annotations: Annotations): string =>
+  encode<Annotations>(annotations, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
+
+export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
+
+export const encodeFocuses = (focuses: Focuses): string =>
+  encode<Focuses>(focuses, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
 
 export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
-  const { allocations, focuses, ...otherGraphicProps } = acto(alternatingCase);
+  const { allocations, annotations, focuses, ...otherGraphicProps } = acto(alternatingCase);
   const graphicProps = {
     ...otherGraphicProps
   } as Partial<GraphicProps>;
 
   if (typeof allocations === 'string') {
     graphicProps.allocations = decodeAllocations(allocations);
+  }
+
+  if (typeof annotations === 'string') {
+    graphicProps.annotations = decodeAnnotations(annotations);
   }
 
   if (typeof focuses === 'string') {
@@ -121,6 +133,8 @@ export const graphicPropsToAlternatingCase = (graphicProps, defaultGraphicProps?
 
     if (key === 'allocations') {
       alternatingCase += encodeAllocations(value);
+    } else if (key === 'annotations') {
+      alternatingCase += encodeAnnotations(value);
     } else if (key === 'focuses') {
       alternatingCase += encodeFocuses(value);
     } else if (typeof value === 'boolean') {
@@ -145,6 +159,7 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
   );
 
   graphicProps.allocations = decodeAllocations(graphicProps.allocations);
+  graphicProps.annotations = decodeAnnotations(graphicProps.annotations);
   graphicProps.focuses = decodeFocuses(graphicProps.focuses);
 
   if (typeof graphicProps.layout === 'number') {
@@ -176,6 +191,8 @@ export const graphicPropsToUrlQuery = (graphicProps, defaultGraphicProps?): stri
 
     if (key === 'allocations') {
       urlQuery += encodeAllocations(value);
+    } else if (key === 'annotations') {
+      urlQuery += encodeAnnotations(value);
     } else if (key === 'focuses') {
       urlQuery += encodeFocuses(value);
     } else if (typeof value === 'boolean') {

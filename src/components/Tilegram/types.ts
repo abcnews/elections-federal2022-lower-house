@@ -1,4 +1,4 @@
-import type { Allocation, ElectorateID, Focus, Layout } from '../../lib/constants';
+import type { Allocation, ElectorateID, Layout, NoYes } from '../../lib/constants';
 
 export type NumberCouple = [number, number];
 
@@ -45,7 +45,8 @@ export type ElectorateRenderProps = {
   relativeAllocation: Allocation | undefined;
   wasAllocationPreserved: boolean;
   shouldFlip: boolean;
-  focus: Focus;
+  annotation: NoYes;
+  focus: NoYes;
   gTransform: string;
 };
 

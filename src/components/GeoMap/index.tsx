@@ -3,7 +3,16 @@
 declare var maplibregl: typeof import('maplibre-gl');
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Allocation, Allocations, Electorate, ElectorateID, ELECTORATES, Focus, Focuses } from '../../lib/constants';
+import {
+  Allocation,
+  Allocations,
+  Annotations,
+  Electorate,
+  ElectorateID,
+  ELECTORATES,
+  Focuses,
+  NoYes
+} from '../../lib/constants';
 import { ALLOCATIONS_COLORS } from '../../lib/theme';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
@@ -22,6 +31,7 @@ const FIT_BOUNDS_OPTIONS = {
 
 export type GeoMapProps = {
   allocations?: Allocations;
+  annotations?: Annotations;
   focuses?: Focuses;
   onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
 };
@@ -30,7 +40,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
-  const { allocations, focuses, onTapElectorate } = props;
+  const { allocations, annotations, focuses, onTapElectorate } = props;
   const isInteractive = !!onTapElectorate;
 
   const electoratesRenderProps = useMemo(
@@ -45,7 +55,8 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           allocation,
           hasAllocation: allocation && determineIfAllocationIsMade(allocation),
           hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
-          focus: focuses ? focuses[id] : Focus.No,
+          annotation: annotations ? annotations[id] : NoYes.No,
+          focus: focuses ? focuses[id] : NoYes.No,
           color: ALLOCATIONS_COLORS[allocation || Allocation.None],
           geoProps: ELECTORATES_GEO_PROPERTIES.find(
             geoProps => geoProps.id.toUpperCase() === id
@@ -63,9 +74,10 @@ const GeoMap: React.FC<GeoMapProps> = props => {
     const focusedElectoratesGeoProperties: ElectorateGeoProperties[] = [];
 
     [...electoratesRenderProps].forEach(electorateRenderProps => {
-      const { id, color, focus, geoProps, hasAllocation } = electorateRenderProps;
+      const { id, hasAllocation, annotation, focus, color, geoProps } = electorateRenderProps;
       const geoPropsID = ((id as unknown) as String).toLowerCase();
-      const isFocused = focus === Focus.Yes;
+      const isAnnotated = annotation === NoYes.Yes;
+      const isFocused = focus === NoYes.Yes;
 
       map.setFeatureState(
         {
@@ -84,7 +96,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           source: 'electorate_points',
           id: electorateIdToNumber(geoPropsID)
         },
-        { opacity: isInspecting || isFocused ? 1 : 0 }
+        { opacity: isInspecting || isAnnotated ? 1 : 0 }
       );
 
       if (isFocused) {

@@ -1,14 +1,14 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Allocations, Focuses } from '../../lib/constants';
+import type { Allocations, Annotations, Focuses } from '../../lib/constants';
 import {
   Allocation,
   ElectorateID,
   ELECTORATES,
-  Focus,
   Layer,
   DEFAULT_LAYER,
   Layout,
   DEFAULT_LAYOUT,
+  NoYes,
   SINGLE_STATE_LAYOUTS,
   StateID,
   STATES,
@@ -44,6 +44,7 @@ export type TilegramProps = {
   layout: Layout;
   layer: Layer;
   allocations?: Allocations;
+  annotations?: Annotations;
   focuses?: Focuses;
   relative?: boolean;
   onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
@@ -60,10 +61,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
   const elementsIDs = generateElementIDRecord(['hexClipPath', 'hexPolygon', 'statesPolygons'], componentID);
-  const { allocations, focuses, layer, layout, relative, onTapElectorate } = props;
+  const { allocations, annotations, focuses, layer, layout, relative, onTapElectorate } = props;
   const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
   const relativeAllocations = relative && ELECTORATES_HELD_ALLOCATIONS;
-  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== Focus.No);
+  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
   const isInteractive = !!onTapElectorate;
   const { electoratesPositions, statesPolygons, statesLabelsPositions, hex } = useMemo(
     () => LAYOUTS_CONFIGS[layout] as LayoutConfig,
@@ -91,7 +92,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
             wasAllocationPreserved:
               relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
             shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
-            focus: focuses ? focuses[id] : Focus.No,
+            annotation: annotations ? annotations[id] : NoYes.No,
+            focus: focuses ? focuses[id] : NoYes.No,
             gTransform: `translate(${electoratesPositions[id][0]} ${electoratesPositions[id][1]})`
           }
         };
@@ -210,6 +212,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                 hasDefinitiveAllocation,
                 relativeAllocation,
                 wasAllocationPreserved,
+                annotation,
                 focus,
                 gTransform
               }) => (
@@ -223,6 +226,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
                   data-relative-allocation={relativeAllocation || undefined}
                   data-was-allocation-preserved={wasAllocationPreserved ? '' : undefined}
+                  data-annotation={annotation}
                   data-focus={focus}
                 >
                   <g clipPath={`url(#${elementsIDs.hexClipPath})`}>
@@ -234,7 +238,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     />
                   </g>
                   <use xlinkHref={`#${elementsIDs.hexPolygon}`} className={styles.electorateHexOutline} />
-                  {layer === Layer.ELECTORATES && (isInspecting || focus === Focus.Yes) && (
+                  {layer === Layer.ELECTORATES && (isInspecting || annotation === NoYes.Yes) && (
                     <text className={styles.electorateLabel}>{label}</text>
                   )}
                 </g>

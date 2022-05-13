@@ -72,11 +72,11 @@
   transition: opacity $durationDefault;
 }
 
-.root[data-has-focuses] .electorate[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses] .electorate[data-focus='#{$NoYes_No}'] {
   opacity: $opacityFadedOut;
 }
 
-.root[data-has-focuses][data-is-inspecting] .electorate[data-focus='#{$Focus_No}'] {
+.root[data-has-focuses][data-is-inspecting] .electorate[data-focus='#{$NoYes_No}'] {
   opacity: $opacityFadedOutInspecting;
   transition: none;
 }
@@ -122,19 +122,19 @@
   cursor: pointer;
 }
 
-.electorate[data-focus='#{$Focus_Yes}'] .electorateHex {
+.electorate[data-focus='#{$NoYes_Yes}'] .electorateHex {
   stroke: $color_Black;
 }
 
-.electorate[data-relative-allocation][data-focus='#{$Focus_Yes}'] .electorateHex {
+.electorate[data-relative-allocation][data-focus='#{$NoYes_Yes}'] .electorateHex {
   stroke: var(--color-relative-allocation);
 }
 
-.electorate[data-has-definitive-allocation][data-focus='#{$Focus_Yes}'] .electorateHex {
+.electorate[data-has-definitive-allocation][data-focus='#{$NoYes_Yes}'] .electorateHex {
   stroke: none;
 }
 
-.electorate[data-was-allocation-preserved][data-focus='#{$Focus_Yes}'] .electorateHex {
+.electorate[data-was-allocation-preserved][data-focus='#{$NoYes_Yes}'] .electorateHex {
   stroke: var(--color-allocation);
 }
 

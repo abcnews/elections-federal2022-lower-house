@@ -4,6 +4,7 @@ import React from 'react';
 import { applyColourToPanels } from '../../lib/panels';
 import {
   decodeAllocations,
+  decodeAnnotations,
   decodeFocuses,
   graphicPropsToAlternatingCase,
   urlQueryToGraphicProps
@@ -40,6 +41,7 @@ const preprocessCoreEl = el => {
 const postprocessScrollytellerDefinition = scrollytellerDefinition => {
   scrollytellerDefinition.panels.forEach(({ data }) => {
     data.allocations = decodeAllocations((data.allocations as string) || '');
+    data.annotations = decodeAnnotations((data.annotations as string) || '');
     data.focuses = decodeFocuses((data.focuses as string) || '');
 
     if (typeof data.layout === 'number') {

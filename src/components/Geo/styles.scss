@@ -46,14 +46,14 @@
   stroke: $color_White;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'][data-has-focuses] .electorate[data-focus='#{$Focus_No}'] {
+.root[data-layer='#{$Layer_ELECTORATES}'][data-has-focuses] .electorate[data-focus='#{$NoYes_No}'] {
   opacity: 0.25;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-focus='#{$Focus_Yes}'] {
+.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-focus='#{$NoYes_Yes}'] {
   stroke: $color_Black;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-has-allocation][data-focus='#{$Focus_Yes}'] {
+.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-has-allocation][data-focus='#{$NoYes_Yes}'] {
   stroke: none;
 }

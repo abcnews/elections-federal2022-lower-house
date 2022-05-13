@@ -3,20 +3,22 @@ import type { ItemParams } from 'react-contexify';
 import { Menu, Item, Separator, useContextMenu } from 'react-contexify';
 import 'react-contexify/dist/ReactContexify.css';
 import {
-  Layer,
-  LAYER_LABELS,
-  Layout,
-  LAYOUT_LABELS,
+  Allocation,
+  Allocations,
+  INITIAL_ELECTORATES_ALLOCATIONS,
+  Annotations,
+  INITIAL_ELECTORATES_ANNOTATIONS,
   ElectorateID,
   ELECTORATE_IDS,
   Electorate,
   ELECTORATES,
-  Allocation,
-  Allocations,
-  INITIAL_ELECTORATES_ALLOCATIONS,
-  Focus,
   Focuses,
-  INITIAL_ELECTORATES_FOCUSES
+  INITIAL_ELECTORATES_FOCUSES,
+  Layer,
+  LAYER_LABELS,
+  Layout,
+  LAYOUT_LABELS,
+  NoYes
 } from '../../lib/constants';
 import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from '../../lib/data';
 import {
@@ -43,6 +45,7 @@ const COMPONENTS_STYLES = {
 
 const INITIAL_GRAPHIC_PROPS = {
   allocations: { ...INITIAL_ELECTORATES_ALLOCATIONS },
+  annotations: { ...INITIAL_ELECTORATES_ANNOTATIONS },
   focuses: { ...INITIAL_ELECTORATES_FOCUSES }
 };
 
@@ -71,6 +74,7 @@ const Editor: React.FC = () => {
   const [layer, setLayer] = useState<Layer>(initialUrlParamProps.layer);
   const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
+  const [annotations, setAnnotations] = useState<Annotations>(initialUrlParamProps.annotations);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
   const [relative, setRelative] = useState<boolean>(initialUrlParamProps.relative);
   const [counting, setCounting] = useState<boolean>(initialUrlParamProps.counting);
@@ -104,6 +108,10 @@ const Editor: React.FC = () => {
       ...allocations,
       ...(mixin.allocations || {})
     });
+    setAnnotations({
+      ...annotations,
+      ...(mixin.annotations || {})
+    });
     setFocuses({
       ...focuses,
       ...(mixin.focuses || {})
@@ -114,6 +122,10 @@ const Editor: React.FC = () => {
     setAllocations({
       ...INITIAL_ELECTORATES_ALLOCATIONS,
       ...(replacement.allocations || {})
+    });
+    setAnnotations({
+      ...INITIAL_ELECTORATES_ANNOTATIONS,
+      ...(replacement.annotations || {})
     });
     setFocuses({
       ...INITIAL_ELECTORATES_FOCUSES,
@@ -156,18 +168,35 @@ const Editor: React.FC = () => {
     showContextMenu(event);
   };
 
-  const onTapContextMenuItem = ({ data }: ItemParams<any, { allocation: Allocation }>) => {
+  const onTapContextMenuItem = ({
+    data
+  }: ItemParams<any, { allocation?: Allocation; annotation?: NoYes; focus?: NoYes }>) => {
     if (!data || !lastTappedElectorate) {
       return;
     }
 
-    const { allocation } = data;
+    const electorateID = ElectorateID[lastTappedElectorate.id];
+    const { allocation, annotation, focus } = data;
 
-    mixinGraphicProps({
-      allocations: {
-        [ElectorateID[lastTappedElectorate.id]]: allocation
-      }
-    });
+    if (allocation) {
+      mixinGraphicProps({
+        allocations: {
+          [electorateID]: allocation
+        }
+      });
+    } else if (annotation) {
+      mixinGraphicProps({
+        annotations: {
+          [electorateID]: annotation
+        }
+      });
+    } else if (focus) {
+      mixinGraphicProps({
+        focuses: {
+          [electorateID]: focus
+        }
+      });
+    }
   };
 
   const onChangeFocusedElectorates = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -184,7 +213,7 @@ const Editor: React.FC = () => {
       focuses: ELECTORATE_IDS.reduce<Focuses>(
         (focuses, electorateID) => ({
           ...focuses,
-          [electorateID]: nextFocusedElectorateIDs.indexOf(electorateID) > -1 ? Focus.Yes : Focus.No
+          [electorateID]: nextFocusedElectorateIDs.indexOf(electorateID) > -1 ? NoYes.Yes : NoYes.No
         }),
         {}
       )
@@ -196,7 +225,7 @@ const Editor: React.FC = () => {
       focuses: ELECTORATE_IDS.reduce<Focuses>(
         (focuses, electorateID) => ({
           ...focuses,
-          [electorateID]: Focus.No
+          [electorateID]: NoYes.No
         }),
         {}
       )
@@ -208,11 +237,12 @@ const Editor: React.FC = () => {
       layer,
       layout,
       allocations,
+      annotations,
       focuses,
       relative,
       counting
     }),
-    [layer, layout, allocations, focuses, relative, counting]
+    [layer, layout, allocations, annotations, focuses, relative, counting]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -251,20 +281,38 @@ const Editor: React.FC = () => {
         <Graphic onTapElectorate={onTapElectorate} {...graphicProps} />
         <Menu id={CONTEXT_MENU_ID}>
           {lastTappedElectorate && (
-            <Item disabled>
-              <strong>{lastTappedElectorate.name}</strong>
-            </Item>
-          )}
-          <Separator />
-          <Item data={{ allocation: Allocation.None }} onClick={onTapContextMenuItem}>
-            None
-          </Item>
-          {lastTappedElectorate &&
-            [...candidates[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
-              <Item key={candidate} data={{ allocation: Allocation[candidate] }} onClick={onTapContextMenuItem}>
-                <div data-allocation={Allocation[candidate]}>{candidate}</div>
+            <>
+              <Item disabled>
+                <strong>{lastTappedElectorate.name}</strong>
               </Item>
-            ))}
+              <Separator />
+              <Item
+                data={{
+                  focus: focuses[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? NoYes.No : NoYes.Yes
+                }}
+                onClick={onTapContextMenuItem}
+              >
+                {`${focuses[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Focus`}
+              </Item>
+              <Item
+                data={{
+                  annotation: annotations[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? NoYes.No : NoYes.Yes
+                }}
+                onClick={onTapContextMenuItem}
+              >
+                {`${annotations[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Label`}
+              </Item>
+              <Separator />
+              <Item data={{ allocation: Allocation.None }} onClick={onTapContextMenuItem}>
+                None
+              </Item>
+              {[...candidates[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
+                <Item key={candidate} data={{ allocation: Allocation[candidate] }} onClick={onTapContextMenuItem}>
+                  <div data-allocation={Allocation[candidate]}>{candidate}</div>
+                </Item>
+              ))}
+            </>
+          )}
         </Menu>
       </div>
       <div className={styles.controls}>
@@ -321,10 +369,10 @@ const Editor: React.FC = () => {
 
         <h3>
           {`Focused Electorates `}
-          <small>{`(${Object.keys(focuses).filter(key => focuses[key] === Focus.Yes).length} selected)`}</small>
+          <small>{`(${Object.keys(focuses).filter(key => focuses[key] === NoYes.Yes).length} selected)`}</small>
           <button
             onClick={onClearFocuses}
-            disabled={Object.keys(focuses).filter(key => focuses[key] === Focus.Yes).length === 0}
+            disabled={Object.keys(focuses).filter(key => focuses[key] === NoYes.Yes).length === 0}
           >
             <Icon name="delete" />
           </button>
@@ -332,7 +380,7 @@ const Editor: React.FC = () => {
         <div className={styles.flexRow}>
           <select
             multiple
-            value={Object.keys(focuses).filter(key => focuses[key] === Focus.Yes)}
+            value={Object.keys(focuses).filter(key => focuses[key] === NoYes.Yes)}
             onChange={onChangeFocusedElectorates}
           >
             {ELECTORATE_IDS.map(electorateID => (
@@ -352,7 +400,7 @@ const Editor: React.FC = () => {
               return (
                 <button
                   key={key}
-                  disabled={Object.keys(mixinFocuses as Focuses).every(key => focuses[key] === Focus.Yes) || undefined}
+                  disabled={Object.keys(mixinFocuses as Focuses).every(key => focuses[key] === NoYes.Yes) || undefined}
                   onClick={() => mixinGraphicProps({ focuses: mixinFocuses })}
                 >
                   {name || key}

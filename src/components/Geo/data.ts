@@ -1,4 +1,4 @@
-import { Allocation, ElectorateID, Focus } from '../../lib/constants';
+import { Allocation, ElectorateID, NoYes } from '../../lib/constants';
 
 export type Path = string;
 export type PathRecord = Record<string, Path>;
@@ -10,7 +10,7 @@ export type ElectorateRenderProps = {
   allocation: Allocation;
   hasAllocation: boolean;
   hasDefinitiveAllocation: boolean;
-  focus: Focus;
+  focus: NoYes;
   path: Path;
 };
 

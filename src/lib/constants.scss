@@ -36,6 +36,9 @@ $durationAllocationChange: 0.75s;
 
 // Enums
 
+$NoYes_No: 'n';
+$NoYes_Yes: 'y';
+
 $Allocation_None: 'a';
 $Allocation_ALP: 'b';
 $Allocation_CA: 'c';
@@ -49,9 +52,6 @@ $Allocation_NAT: 'j';
 $Allocation_ONP: 'k';
 $Allocation_OTH: 'l';
 $Allocation_UAP: 'm';
-
-$Focus_No: 'n';
-$Focus_Yes: 'y';
 
 $Layer_ELECTORATES: 'a';
 $Layer_STATES: 'b';

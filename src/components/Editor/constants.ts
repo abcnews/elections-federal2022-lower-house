@@ -6,7 +6,7 @@ import {
   ElectorateSituation,
   ELECTORATES,
   ELECTORATES_HELD_ALLOCATIONS,
-  Focus
+  NoYes
 } from '../../lib/constants';
 
 export type Mixin = {
@@ -108,7 +108,7 @@ const allocationsToFocuses = (allocations: Allocations) =>
   Object.keys(allocations).reduce(
     (memo, electorateID) => ({
       ...memo,
-      [electorateID]: Focus.Yes
+      [electorateID]: NoYes.Yes
     }),
     {} as Focuses
   );
