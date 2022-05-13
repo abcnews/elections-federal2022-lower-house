@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from '../../lib/constants';
-// import Geo from '../Geo';
+import type { GeoMapProps } from '../GeoMap';
 import GeoMap from '../GeoMap';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
@@ -10,7 +10,8 @@ import styles from './styles.scss';
 
 export type GraphicProps = {
   counting?: boolean;
-} & TilegramProps &
+} & GeoMapProps &
+  TilegramProps &
   TotalsProps;
 
 export type PossiblyEncodedGraphicProps =
@@ -27,7 +28,7 @@ export const DEFAULT_PROPS: Partial<GraphicProps> = {
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { children, counting, allocations, focuses, layout, layer, ...otherTilegramProps } = {
+  const { counting, allocations, focuses, layout, layer, onTapElectorate, relative } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -36,12 +37,18 @@ const Graphic: React.FC<GraphicProps> = props => {
 
   switch (layout) {
     case Layout.GEO:
-      // map = <Geo allocations={allocations} focuses={focuses} layer={layer} />;
-      map = <GeoMap allocations={allocations} focuses={focuses} />;
+      map = <GeoMap allocations={allocations} focuses={focuses} onTapElectorate={onTapElectorate} />;
       break;
     default:
       map = (
-        <Tilegram allocations={allocations} focuses={focuses} layout={layout} layer={layer} {...otherTilegramProps} />
+        <Tilegram
+          allocations={allocations}
+          focuses={focuses}
+          layout={layout}
+          layer={layer}
+          relative={relative}
+          onTapElectorate={onTapElectorate}
+        />
       );
       break;
   }

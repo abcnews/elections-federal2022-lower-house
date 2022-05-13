@@ -46,7 +46,7 @@ export type TilegramProps = {
   allocations?: Allocations;
   focuses?: Focuses;
   relative?: boolean;
-  onTapElectorate?: (electorateID: string, event: React.MouseEvent<SVGElement>) => void;
+  onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
 };
 
 export const DEFAULT_PROPS: TilegramProps = {
@@ -234,7 +234,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     />
                   </g>
                   <use xlinkHref={`#${elementsIDs.hexPolygon}`} className={styles.electorateHexOutline} />
-                  {isInspecting && layer === Layer.ELECTORATES && (
+                  {layer === Layer.ELECTORATES && (isInspecting || focus === Focus.Yes) && (
                     <text className={styles.electorateLabel}>{label}</text>
                   )}
                 </g>

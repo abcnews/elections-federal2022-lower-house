@@ -7,7 +7,7 @@ import { Allocation, Allocations, Electorate, ElectorateID, ELECTORATES, Focus, 
 import { ALLOCATIONS_COLORS } from '../../lib/theme';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
-import { CAPITALS_COORDINATES, ELECTORATES_GEO_PROPERTIES } from './constants';
+import { CAPITALS_COORDINATES, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
 import styles from './styles.scss';
 import { electorateIdToNumber, ensureMaplibre } from './utils';
 
@@ -23,12 +23,16 @@ const FIT_BOUNDS_OPTIONS = {
 export type GeoMapProps = {
   allocations?: Allocations;
   focuses?: Focuses;
+  onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
 };
 
 const GeoMap: React.FC<GeoMapProps> = props => {
+  const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
-  const { allocations, focuses } = props;
+  const { allocations, focuses, onTapElectorate } = props;
+  const isInteractive = !!onTapElectorate;
+
   const electoratesRenderProps = useMemo(
     () =>
       Object.values(ELECTORATES).map(electorate => {
@@ -51,44 +55,42 @@ const GeoMap: React.FC<GeoMapProps> = props => {
     [allocations, focuses]
   );
 
-  const updateMapState = () => {
+  const updateMapState = (isInspectionChange = false) => {
     if (!map || !map.getSource('electorate_polygons')) {
       return;
     }
 
     const focusedElectoratesGeoProperties: ElectorateGeoProperties[] = [];
 
-    [...electoratesRenderProps]
-      // .sort((a, b) => (a.focus === Focus.Yes ? 1 : 0))
-      .forEach(electorateRenderProps => {
-        const { id, color, focus, geoProps, hasAllocation, name } = electorateRenderProps;
-        const geoPropsID = ((id as unknown) as String).toLowerCase();
-        const isFocused = focus === Focus.Yes;
+    [...electoratesRenderProps].forEach(electorateRenderProps => {
+      const { id, color, focus, geoProps, hasAllocation } = electorateRenderProps;
+      const geoPropsID = ((id as unknown) as String).toLowerCase();
+      const isFocused = focus === Focus.Yes;
 
-        map.setFeatureState(
-          {
-            source: 'electorate_polygons',
-            sourceLayer: 'federalelectorates2022',
-            id: geoPropsID
-          },
-          {
-            fill: color,
-            stroke: hasAllocation ? '#fff' : isFocused ? '#000' : 'transparent'
-          }
-        );
-
-        map.setFeatureState(
-          {
-            source: 'electorate_points',
-            id: electorateIdToNumber(geoPropsID)
-          },
-          { opacity: isFocused ? 1 : 0 }
-        );
-
-        if (isFocused) {
-          focusedElectoratesGeoProperties.push(geoProps);
+      map.setFeatureState(
+        {
+          source: 'electorate_polygons',
+          sourceLayer: 'federalelectorates2022',
+          id: geoPropsID
+        },
+        {
+          fill: color,
+          stroke: hasAllocation ? '#fff' : isFocused ? '#000' : 'transparent'
         }
-      });
+      );
+
+      map.setFeatureState(
+        {
+          source: 'electorate_points',
+          id: electorateIdToNumber(geoPropsID)
+        },
+        { opacity: isInspecting || isFocused ? 1 : 0 }
+      );
+
+      if (isFocused) {
+        focusedElectoratesGeoProperties.push(geoProps);
+      }
+    });
 
     let nextBounds: maplibregl.LngLatBoundsLike = AUSTRALA_BOUNDS;
 
@@ -111,7 +113,9 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       }
     }
 
-    map.fitBounds(new maplibregl.LngLatBounds(nextBounds), FIT_BOUNDS_OPTIONS);
+    if (!isInspectionChange) {
+      map.fitBounds(new maplibregl.LngLatBounds(nextBounds), FIT_BOUNDS_OPTIONS);
+    }
   };
 
   useEffect(() => {
@@ -123,20 +127,10 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       const bounds = new maplibregl.LngLatBounds(AUSTRALA_BOUNDS);
 
       const _map: maplibregl.Map = new maplibregl.Map({
+        ...(MAP_BASE_CONFIG as maplibregl.MapOptions),
         container: mapElRef.current,
         center: bounds.getCenter(),
-        zoom: 2,
-        minZoom: 2,
-        maxZoom: 12,
-        // interactive: false,
-        attributionControl: false,
-        dragRotate: false,
-        style: {
-          version: 8,
-          sources: {},
-          layers: [],
-          glyphs: 'https://www.abc.net.au/res/sites/news-projects/map-vector-fonts/{fontstack}/{range}.pbf'
-        }
+        interactive: isInteractive
       });
 
       _map.fitBounds(bounds, FIT_BOUNDS_OPTIONS);
@@ -228,6 +222,23 @@ const GeoMap: React.FC<GeoMapProps> = props => {
             'text-halo-width': 1.5
           }
         });
+
+        _map.on('click', event => {
+          if (!onTapElectorate) {
+            return;
+          }
+
+          const { point } = event;
+          const features = _map.queryRenderedFeatures(point, { layers: ['electorate_polygons_fill'] });
+
+          if (features.length > 0) {
+            const { code } = features[0].properties;
+
+            if (code) {
+              onTapElectorate(code.toUpperCase(), { nativeEvent: event.originalEvent } as React.MouseEvent);
+            }
+          }
+        });
       });
     });
   }, [mapElRef]);
@@ -235,6 +246,31 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   useEffect(() => {
     updateMapState();
   }, [map, electoratesRenderProps]);
+
+  useEffect(() => {
+    updateMapState(true);
+  }, [isInspecting]);
+
+  // While the alt key is held down on an interactive graphic, we enable
+  // 'inspecting' mode. Currentnly, this displays labels on each electorate to
+  // help with authoring graphics in the editor.
+  useEffect(() => {
+    if (!isInteractive) {
+      return;
+    }
+
+    function handler(event: KeyboardEvent) {
+      setIsInspecting(event.altKey);
+    }
+
+    window.addEventListener('keydown', handler, false);
+    window.addEventListener('keyup', handler, false);
+
+    return () => {
+      window.removeEventListener('keydown', handler, false);
+      window.removeEventListener('keyup', handler, false);
+    };
+  }, [isInteractive]);
 
   return (
     <div className={styles.root}>

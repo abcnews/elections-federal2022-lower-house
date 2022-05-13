@@ -147,7 +147,7 @@ const Editor: React.FC = () => {
     setCounting(graphicProps.counting || DEFAULT_GRAPHIC_PROPS.counting || false);
   };
 
-  const onTapElectorate = (electorateID: string, event: React.MouseEvent<SVGElement>) => {
+  const onTapElectorate = (electorateID: string, event: React.MouseEvent<Element>) => {
     const electorate = ELECTORATES.find(
       ({ id }) => ((id as unknown) as string) === ElectorateID[electorateID]
     ) as Electorate;

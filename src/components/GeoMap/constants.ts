@@ -1,3 +1,7 @@
+/// <reference types="maplibre-gl" />
+
+declare var maplibregl: typeof import('maplibre-gl');
+
 import type { Allocation, ElectorateID, Focus } from '../../lib/constants';
 
 export type CapitalCoordinates = {
@@ -26,6 +30,21 @@ export type ElectorateRenderProps = {
   focus: Focus;
   color: string;
   geoProps: ElectorateGeoProperties;
+};
+
+export const MAP_BASE_CONFIG: Partial<maplibregl.MapOptions> = {
+  zoom: 2,
+  minZoom: 2,
+  maxZoom: 12,
+  attributionControl: false,
+  dragRotate: false,
+  doubleClickZoom: false,
+  style: {
+    version: 8,
+    sources: {},
+    layers: [],
+    glyphs: 'https://www.abc.net.au/res/sites/news-projects/map-vector-fonts/{fontstack}/{range}.pbf'
+  }
 };
 
 export const CAPITALS_COORDINATES: CapitalCoordinates[] = [
