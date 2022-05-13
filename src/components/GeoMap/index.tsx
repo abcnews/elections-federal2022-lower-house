@@ -3,13 +3,13 @@
 declare var maplibregl: typeof import('maplibre-gl');
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Allocation, Allocations, ElectorateID, ELECTORATES, Focus, Focuses } from '../../lib/constants';
+import { Allocation, Allocations, Electorate, ElectorateID, ELECTORATES, Focus, Focuses } from '../../lib/constants';
 import { ALLOCATIONS_COLORS } from '../../lib/theme';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
 import { CAPITALS_COORDINATES, ELECTORATES_GEO_PROPERTIES } from './constants';
 import styles from './styles.scss';
-import { ensureMaplibre } from './utils';
+import { electorateIdToNumber, ensureMaplibre } from './utils';
 
 const AUSTRALA_BOUNDS: maplibregl.LngLatBoundsLike = [
   [112, -44],
@@ -59,18 +59,30 @@ const GeoMap: React.FC<GeoMapProps> = props => {
     const focusedElectoratesGeoProperties: ElectorateGeoProperties[] = [];
 
     [...electoratesRenderProps]
-      .sort((a, b) => (a.focus === Focus.Yes ? 1 : 0))
+      // .sort((a, b) => (a.focus === Focus.Yes ? 1 : 0))
       .forEach(electorateRenderProps => {
-        const { id, color, focus, geoProps, hasAllocation } = electorateRenderProps;
+        const { id, color, focus, geoProps, hasAllocation, name } = electorateRenderProps;
+        const geoPropsID = ((id as unknown) as String).toLowerCase();
         const isFocused = focus === Focus.Yes;
 
         map.setFeatureState(
           {
             source: 'electorate_polygons',
             sourceLayer: 'federalelectorates2022',
-            id: ((id as unknown) as String).toLowerCase()
+            id: geoPropsID
           },
-          { fill: color, stroke: hasAllocation ? '#fff' : isFocused ? '#000' : 'transparent' }
+          {
+            fill: color,
+            stroke: hasAllocation ? '#fff' : isFocused ? '#000' : 'transparent'
+          }
+        );
+
+        map.setFeatureState(
+          {
+            source: 'electorate_points',
+            id: electorateIdToNumber(geoPropsID)
+          },
+          { opacity: isFocused ? 1 : 0 }
         );
 
         if (isFocused) {
@@ -122,7 +134,8 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         style: {
           version: 8,
           sources: {},
-          layers: []
+          layers: [],
+          glyphs: 'https://www.abc.net.au/res/sites/news-projects/map-vector-fonts/{fontstack}/{range}.pbf'
         }
       });
 
@@ -142,6 +155,27 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           promoteId: { federalelectorates2022: 'code' }
         });
 
+        _map.addSource('electorate_points', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: ELECTORATES_GEO_PROPERTIES.map(geoProps => ({
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [geoProps.longitude, geoProps.latitude]
+              },
+              id: electorateIdToNumber(geoProps.id),
+              properties: {
+                ...geoProps,
+                name: (ELECTORATES.find(
+                  electorate => String(ElectorateID[electorate.id]) === geoProps.id.toUpperCase()
+                ) as Electorate).name
+              }
+            }))
+          }
+        });
+
         _map.addLayer({
           id: 'electorate_polygons_fill',
           type: 'fill',
@@ -159,7 +193,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           'source-layer': 'federalelectorates2022',
           paint: {
             'line-color': '#ddd',
-            'line-width': ['interpolate', ['exponential', 0.5], ['zoom'], 0, 0.5, 6, 1, 10, 1, 15, 2]
+            'line-width': 1
           }
         });
 
@@ -170,7 +204,28 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           'source-layer': 'federalelectorates2022',
           paint: {
             'line-color': ['coalesce', ['feature-state', 'stroke'], 'transparent'],
-            'line-width': ['interpolate', ['exponential', 0.5], ['zoom'], 0, 0.5, 6, 1, 10, 1, 15, 2]
+            'line-width': 1
+          }
+        });
+
+        _map.addLayer({
+          id: 'electorate_points_label',
+          type: 'symbol',
+          source: 'electorate_points',
+          layout: {
+            'text-field': '{name}',
+            'text-anchor': 'center',
+            // 'text-allow-overlap': true,
+            'text-allow-overlap': ['step', ['zoom'], true, 7, false],
+            'text-max-width': 6,
+            'text-font': ['ABC Sans Bold'],
+            'text-size': 13
+          },
+          paint: {
+            'text-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
+            'text-color': '#000',
+            'text-halo-color': '#fff',
+            'text-halo-width': 1.5
           }
         });
       });
