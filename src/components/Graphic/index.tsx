@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout } from '../../lib/constants';
+import BasicGeoMap from '../Geo';
 import type { GeoMapProps } from '../GeoMap';
 import GeoMap from '../GeoMap';
 import type { TilegramProps } from '../Tilegram';
@@ -39,6 +40,10 @@ const Graphic: React.FC<GraphicProps> = props => {
 
   switch (layout) {
     case Layout.GEO:
+      if (willChange) {
+        map = <BasicGeoMap allocations={allocations} focuses={focuses} layer={layer} />;
+        break;
+      }
       map = (
         <GeoMap
           allocations={allocations}
