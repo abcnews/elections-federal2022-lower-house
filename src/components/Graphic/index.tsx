@@ -31,7 +31,7 @@ export const DEFAULT_PROPS: Partial<GraphicProps> = {
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { counting, allocations, annotations, focuses, layout, layer, onTapElectorate, relative, willChange } = {
+  const { counting, allocations, annotations, focuses, inset, layout, onTapElectorate, relative, willChange } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -41,7 +41,7 @@ const Graphic: React.FC<GraphicProps> = props => {
   switch (layout) {
     case Layout.GEO:
       if (willChange) {
-        map = <BasicGeoMap allocations={allocations} focuses={focuses} layer={layer} />;
+        map = <BasicGeoMap allocations={allocations} focuses={focuses} />;
         break;
       }
       map = (
@@ -56,11 +56,11 @@ const Graphic: React.FC<GraphicProps> = props => {
     default:
       map = (
         <Tilegram
+          layout={layout}
           allocations={allocations}
           annotations={annotations}
           focuses={focuses}
-          layout={layout}
-          layer={layer}
+          inset={inset}
           relative={relative}
           onTapElectorate={onTapElectorate}
         />

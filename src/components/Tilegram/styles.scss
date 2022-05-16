@@ -49,22 +49,14 @@
   transition: filter $durationDefault;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'][data-has-focuses] .base {
+.root[data-has-focuses] .base {
   filter: brightness(1.105);
-}
-
-.root[data-layer='#{$Layer_STATES}'] .base {
-  filter: brightness(2);
 }
 
 // Electorates
 
 .electorates {
   transition: opacity $durationDefault;
-}
-
-.root:not([data-layer='#{$Layer_ELECTORATES}']) .electorates {
-  opacity: 0;
 }
 
 .electorate {
@@ -117,7 +109,7 @@
   transition: opacity $durationDefault, fill $durationAllocationChange, stroke $durationAllocationChange;
 }
 
-.root[data-is-interactive][data-layer='#{$Layer_ELECTORATES}'] .electorateHex {
+.root[data-is-interactive] .electorateHex {
   pointer-events: all;
   cursor: pointer;
 }
@@ -188,7 +180,7 @@
   transition: opacity $durationDefault;
 }
 
-.root:not([data-layer='#{$Layer_STATES}'])[data-has-focuses] .statesBorders {
+.root[data-has-focuses] .statesBorders {
   opacity: $opacityFadedOut;
 }
 
@@ -201,19 +193,16 @@
   transition: opacity #{$durationDefault / 2} #{$durationDefault / 2};
 }
 
-.root:not([data-layer='#{$Layer_STATES}']) .statesLabels {
-  transition-delay: 0s;
-}
-
 .root[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
 .root[data-layout='#{$Layout_EXPLODED}'] .statesLabels,
 .root[data-layout='#{$Layout_GRID}'] .statesLabels {
   font-size: 1.375rem;
 }
 
-.root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
-.root:not([data-layer='#{$Layer_STATES}'])[data-layout='#{$Layout_EXPLODED}'] .statesLabels {
+.root:not([data-has-inset-state-labels])[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
+.root:not([data-has-inset-state-labels])[data-layout='#{$Layout_EXPLODED}'] .statesLabels {
   opacity: 0;
+  transition: none;
 }
 
 .stateLabel {
@@ -227,4 +216,16 @@
 .root[data-layout='#{$Layout_COUNTRY}'] .stateLabel[data-state='NT'],
 .root[data-layout='#{$Layout_EXPLODED}'] .stateLabel[data-state='NT'] {
   font-size: 0.8em;
+}
+
+.stateLabel[data-is-outline] {
+  display: none;
+  stroke: $color_White;
+  stroke-opacity: 0.8;
+  stroke-width: $swDemi;
+}
+
+.root[data-has-inset-state-labels][data-layout='#{$Layout_COUNTRY}'] .stateLabel[data-is-outline],
+.root[data-has-inset-state-labels][data-layout='#{$Layout_EXPLODED}'] .stateLabel[data-is-outline] {
+  display: initial;
 }

@@ -27,8 +27,8 @@
 }
 
 .electorate {
-  fill: $color_White;
-  stroke: $color_Black;
+  fill: var(--color-allocation);
+  stroke: $color_LightGrey;
   stroke-width: 0.75;
   transition: fill $durationAllocationChange;
 
@@ -37,23 +37,18 @@
   }
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate {
-  fill: var(--color-allocation);
-  stroke: $color_LightGrey;
-}
-
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-has-definitive-allocation] {
+.electorate[data-has-definitive-allocation] {
   stroke: $color_White;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'][data-has-focuses] .electorate[data-focus='#{$NoYes_No}'] {
+.root[data-has-focuses] .electorate[data-focus='#{$NoYes_No}'] {
   opacity: 0.25;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-focus='#{$NoYes_Yes}'] {
+.root .electorate[data-focus='#{$NoYes_Yes}'] {
   stroke: $color_Black;
 }
 
-.root[data-layer='#{$Layer_ELECTORATES}'] .electorate[data-has-allocation][data-focus='#{$NoYes_Yes}'] {
+.root .electorate[data-has-allocation][data-focus='#{$NoYes_Yes}'] {
   stroke: none;
 }

@@ -173,8 +173,8 @@ export const STATES_LABELS_CELLS: NestedCellRecord = {
     SINGLE: [2, -1]
   },
   VIC: {
-    COUNTRY: [3.5, 3.25],
-    EXPLODED: [4, 3.25],
+    COUNTRY: [3.5, 3.5],
+    EXPLODED: [4, 3.5],
     GRID: [3.5, -1],
     SINGLE: [3.75, -1]
   },

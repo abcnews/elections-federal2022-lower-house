@@ -4,8 +4,6 @@ import {
   Allocation,
   ElectorateID,
   ELECTORATES,
-  Layer,
-  DEFAULT_LAYER,
   Layout,
   DEFAULT_LAYOUT,
   NoYes,
@@ -48,17 +46,17 @@ const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
 
 export type TilegramProps = {
   layout: Layout;
-  layer: Layer;
   allocations?: Allocations;
   annotations?: Annotations;
   focuses?: Focuses;
+  inset?: boolean;
   relative?: boolean;
   onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
 };
 
 export const DEFAULT_PROPS: TilegramProps = {
   layout: DEFAULT_LAYOUT,
-  layer: DEFAULT_LAYER,
+  inset: false,
   relative: false
 };
 
@@ -67,10 +65,11 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
   const elementsIDs = generateElementIDRecord(['hexClipPath', 'hexPolygon', 'statesPolygons'], componentID);
-  const { allocations, annotations, focuses, layer, layout, relative, onTapElectorate } = props;
+  const { allocations, annotations, focuses, inset, layout, onTapElectorate, relative } = props;
   const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
   const relativeAllocations = relative && ELECTORATES_HELD_ALLOCATIONS;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
+  const hasInsetStateLabels = typeof inset === 'boolean' && inset;
   const isInteractive = !!onTapElectorate;
   const { electoratesPositions, statesPolygons, statesLabelsPositions, hex } = useMemo(
     () => LAYOUTS_CONFIGS[layout] as LayoutConfig,
@@ -196,10 +195,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
   return (
     <div
       className={styles.root}
-      data-layer={layer}
       data-layout={layout}
-      data-has-focuses={hasFocuses ? '' : undefined}
       data-is-single-state-layout={isSingleStateLayout ? '' : undefined}
+      data-has-focuses={hasFocuses ? '' : undefined}
+      data-has-inset-state-labels={hasInsetStateLabels ? '' : undefined}
       data-is-interactive={isInteractive ? '' : undefined}
       data-is-inspecting={isInspecting ? '' : undefined}
     >
@@ -244,7 +243,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                     />
                   </g>
                   <use xlinkHref={`#${elementsIDs.hexPolygon}`} className={styles.electorateHexOutline} />
-                  {layer === Layer.ELECTORATES && (isInspecting || annotation === NoYes.Yes) && (
+                  {(isInspecting || annotation === NoYes.Yes) && (
                     <text className={styles.electorateLabel}>{label}</text>
                   )}
                 </g>
@@ -258,9 +257,20 @@ const Tilegram: React.FC<TilegramProps> = props => {
               const position = statesLabelsPositions[stateID];
 
               return (
-                <text key={stateID} className={styles.stateLabel} x={position[0]} y={position[1]} data-state={stateID}>
-                  {label}
-                </text>
+                <React.Fragment key={stateID}>
+                  <text
+                    className={styles.stateLabel}
+                    x={position[0]}
+                    y={position[1]}
+                    data-state={stateID}
+                    data-is-outline
+                  >
+                    {label}
+                  </text>
+                  <text className={styles.stateLabel} x={position[0]} y={position[1]} data-state={stateID}>
+                    {label}
+                  </text>
+                </React.Fragment>
               );
             })}
           </g>

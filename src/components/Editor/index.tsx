@@ -14,8 +14,6 @@ import {
   ELECTORATES,
   Focuses,
   INITIAL_ELECTORATES_FOCUSES,
-  Layer,
-  LAYER_LABELS,
   Layout,
   LAYOUT_LABELS,
   NoYes
@@ -71,13 +69,13 @@ const Editor: React.FC = () => {
     }),
     []
   );
-  const [layer, setLayer] = useState<Layer>(initialUrlParamProps.layer);
   const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
   const [annotations, setAnnotations] = useState<Annotations>(initialUrlParamProps.annotations);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
-  const [relative, setRelative] = useState<boolean>(initialUrlParamProps.relative);
   const [counting, setCounting] = useState<boolean>(initialUrlParamProps.counting);
+  const [inset, setInset] = useState<boolean>(initialUrlParamProps.inset);
+  const [relative, setRelative] = useState<boolean>(initialUrlParamProps.relative);
   const [snapshots, setSnapshots] = useState(JSON.parse(localStorage.getItem(SNAPSHOTS_LOCALSTORAGE_KEY) || '{}'));
   const [lastTappedElectorate, setLastTappedElectorate] = useState<Electorate>();
   const { show: showContextMenu } = useContextMenu({
@@ -234,15 +232,15 @@ const Editor: React.FC = () => {
   const graphicProps = useMemo(
     () => ({
       ...initialUrlParamProps,
-      layer,
       layout,
       allocations,
       annotations,
       focuses,
-      relative,
-      counting
+      counting,
+      inset,
+      relative
     }),
-    [layer, layout, allocations, annotations, focuses, relative, counting]
+    [layout, allocations, annotations, focuses, counting, inset, relative]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -326,32 +324,7 @@ const Editor: React.FC = () => {
             );
           })}
         </div>
-        <h3>Layer</h3>
-        <div className={styles.flexRow}>
-          {Object.keys(LAYER_LABELS).map(key => {
-            return (
-              <button key={key} disabled={key === layer} onClick={() => setLayer(key as Layer)}>
-                {LAYER_LABELS[key]}
-              </button>
-            );
-          })}
-        </div>
-        <h3>Relative</h3>
-        <div className={styles.flexRow}>
-          <span key="none">
-            <label>
-              <input
-                type="checkbox"
-                name="relative"
-                value="relative"
-                checked={relative}
-                onChange={() => setRelative(!relative)}
-              ></input>
-              Show holder outlines and flips
-            </label>
-          </span>
-        </div>
-        <h3>Counting</h3>
+        <h3>Feature Toggles</h3>
         <div className={styles.flexRow}>
           <span key="none">
             <label>
@@ -362,11 +335,38 @@ const Editor: React.FC = () => {
                 checked={counting}
                 onChange={() => setCounting(!counting)}
               ></input>
-              Show totals bars
+              Race-to-76 bars
             </label>
           </span>
         </div>
-
+        <div className={styles.flexRow}>
+          <span key="none">
+            <label>
+              <input
+                type="checkbox"
+                name="inset"
+                value="inset"
+                checked={inset}
+                onChange={() => setInset(!inset)}
+              ></input>
+              Inset state labels
+            </label>
+          </span>
+        </div>
+        <div className={styles.flexRow}>
+          <span key="none">
+            <label>
+              <input
+                type="checkbox"
+                name="relative"
+                value="relative"
+                checked={relative}
+                onChange={() => setRelative(!relative)}
+              ></input>
+              Incumbent outlines and flips
+            </label>
+          </span>
+        </div>
         <h3>
           {`Focused Electorates `}
           <small>{`(${Object.keys(focuses).filter(key => focuses[key] === NoYes.Yes).length} selected)`}</small>

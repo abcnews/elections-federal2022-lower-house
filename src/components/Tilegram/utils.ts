@@ -128,7 +128,7 @@ export const getLayoutConfig = (layout: Layout, cellsWide: number, margin: Margi
         layout === Layout.COUNTRY
           ? 'COUNTRY'
           : layout === Layout.GRID
-          ? 'COUNTRY'
+          ? 'GRID'
           : layout === Layout.EXPLODED
           ? 'EXPLODED'
           : MULTI_STATE_LAYOUTS.indexOf(layout) > -1

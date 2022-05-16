@@ -166,15 +166,18 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
     graphicProps.layout = String(graphicProps.layout);
   }
 
-  if (typeof graphicProps.relative === 'string') {
-    // backwards-compatibility
-    graphicProps.relative = graphicProps.relative === 'true' || graphicProps.relative === '2019';
-  }
-
   if (typeof graphicProps.counting === 'string') {
     graphicProps.counting = graphicProps.counting === 'true';
   }
 
+  if (typeof graphicProps.inset === 'string') {
+    graphicProps.inset = graphicProps.inset === 'true';
+  }
+
+  if (typeof graphicProps.relative === 'string') {
+    // backwards-compatibility
+    graphicProps.relative = graphicProps.relative === 'true' || graphicProps.relative === '2019';
+  }
   return graphicProps;
 };
 

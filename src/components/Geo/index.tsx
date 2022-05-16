@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import { Allocation, Allocations, ElectorateID, ELECTORATES, NoYes, Focuses, Layer } from '../../lib/constants';
+import { Allocation, Allocations, ElectorateID, ELECTORATES, NoYes, Focuses } from '../../lib/constants';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectoratesRenderProps } from './data';
 import { ELECTORATES_PATHS } from './data';
@@ -12,12 +12,11 @@ const PATHS_OFFSET_Y = 45;
 export type GeoProps = {
   allocations?: Allocations;
   focuses?: Focuses;
-  layer?: Layer;
 };
 
 const Geo: React.FC<GeoProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const { allocations, focuses, layer } = props;
+  const { allocations, focuses } = props;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
   const electoratesRenderProps = useMemo(
     () =>
@@ -38,11 +37,11 @@ const Geo: React.FC<GeoProps> = props => {
           }
         };
       }, {}),
-    [allocations, focuses, layer]
+    [allocations, focuses]
   );
 
   return (
-    <div className={styles.root} data-layer={layer} data-has-focuses={hasFocuses ? '' : undefined}>
+    <div className={styles.root} data-has-focuses={hasFocuses ? '' : undefined}>
       <svg ref={svgRef} className={styles.svg} viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}>
         <g transform={`translate(${PATHS_OFFSET_X} ${PATHS_OFFSET_Y})`}>
           <g className={styles.electorates}>

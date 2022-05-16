@@ -1597,20 +1597,6 @@ export const INITIAL_ELECTORATES_FOCUSES = ELECTORATE_IDS.reduce((focuses, elect
   return focuses;
 }, {} as Focuses);
 
-// Layers
-
-export enum Layer {
-  ELECTORATES = 'a',
-  STATES = 'b'
-}
-
-export const LAYER_LABELS: Record<Layer, string> = {
-  [Layer.ELECTORATES]: 'Electorates',
-  [Layer.STATES]: 'States'
-};
-
-export const DEFAULT_LAYER = Layer.ELECTORATES;
-
 export enum Layout {
   GEO = '0',
   COUNTRY = 'a',
