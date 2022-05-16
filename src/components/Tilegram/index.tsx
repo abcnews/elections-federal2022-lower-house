@@ -145,7 +145,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
     }
 
     Object.values(electoratesRenderProps).forEach(({ id, allocation, shouldFlip }) => {
-      const electorateHex = svgEl.querySelector(`.${styles.electorateHex}[data-electorate=${id}]`);
+      const electorateHex = svgEl.querySelector(`[class="${styles.electorateHex}"][data-electorate="${id}"]`);
 
       if (!electorateHex) {
         return;
