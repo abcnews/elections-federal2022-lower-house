@@ -278,7 +278,7 @@ const Editor: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.graphic}>
-        <Graphic onTapElectorate={onTapElectorate} {...graphicProps} />
+        <Graphic onTapElectorate={onTapElectorate} willChange={true} {...graphicProps} />
         <Menu id={CONTEXT_MENU_ID}>
           {lastTappedElectorate && (
             <>

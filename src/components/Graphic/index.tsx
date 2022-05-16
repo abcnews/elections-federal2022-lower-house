@@ -10,6 +10,7 @@ import styles from './styles.scss';
 
 export type GraphicProps = {
   counting?: boolean;
+  willChange?: boolean;
 } & GeoMapProps &
   TilegramProps &
   TotalsProps;
@@ -29,7 +30,7 @@ export const DEFAULT_PROPS: Partial<GraphicProps> = {
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { counting, allocations, annotations, focuses, layout, layer, onTapElectorate, relative } = {
+  const { counting, allocations, annotations, focuses, layout, layer, onTapElectorate, relative, willChange } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -64,9 +65,11 @@ const Graphic: React.FC<GraphicProps> = props => {
 
   return (
     <div className={styles.root}>
-      <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
-        <Totals allocations={allocations} />
-      </header>
+      {(willChange || isCounting) && (
+        <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
+          <Totals allocations={allocations} />
+        </header>
+      )}
       {map}
     </div>
   );

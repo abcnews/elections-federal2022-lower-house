@@ -97,7 +97,7 @@ const Block: React.FC<BlockProps> = ({ panels }) => {
       theme="light"
     >
       <div ref={graphicRef} className={styles.graphic}>
-        <Graphic {...graphicProps} />
+        <Graphic willChange={true} {...graphicProps} />
       </div>
     </Scrollyteller>
   );
