@@ -1,5 +1,5 @@
 import concaveman from 'concaveman';
-import { Layout } from '../../lib/constants';
+import { Layout, MULTI_STATE_LAYOUTS } from '../../lib/constants';
 import { flattenNestedRecords, transformNestedRecordsValues } from '../../lib/utils';
 import { LAYOUTS_STATES_CELLS, STATES_ELECTORATES_CELLS, STATES_LABELS_CELLS, SVG_SIZE } from './constants';
 import type {
@@ -127,10 +127,12 @@ export const getLayoutConfig = (layout: Layout, cellsWide: number, margin: Margi
       STATES_LABELS_CELLS[stateKey][
         layout === Layout.COUNTRY
           ? 'COUNTRY'
+          : layout === Layout.GRID
+          ? 'COUNTRY'
           : layout === Layout.EXPLODED
           ? 'EXPLODED'
-          : layout === Layout.GRID
-          ? 'GRID'
+          : MULTI_STATE_LAYOUTS.indexOf(layout) > -1
+          ? 'SINGLE'
           : 'SINGLE'
       ];
 

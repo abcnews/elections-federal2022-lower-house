@@ -20,7 +20,7 @@ import {
   determineIfAllocationShouldFlip,
   determineIfAllocationWasPreserved
 } from '../../lib/utils';
-import { STATE_LAYOUT_CONFIG_ARGS, SVG_SIZE } from './constants';
+import { MULTI_STATE_LAYOUT_CONFIG_ARGS, SINGLE_STATE_LAYOUT_CONFIG_ARGS, SVG_SIZE } from './constants';
 import Defs from './defs';
 import styles from './styles.scss';
 import type { ElectoratesRenderProps, LayoutConfig, LayoutsConfigs } from './types';
@@ -30,14 +30,20 @@ const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
   [Layout.COUNTRY]: getLayoutConfig(Layout.COUNTRY, 14, [47, 2]),
   [Layout.EXPLODED]: getLayoutConfig(Layout.EXPLODED, 16.75, [20, 2]),
   [Layout.GRID]: getLayoutConfig(Layout.GRID, 20, [2, 72]),
-  [Layout.ACT]: getLayoutConfig(Layout.ACT, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.NSW]: getLayoutConfig(Layout.NSW, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.NT]: getLayoutConfig(Layout.NT, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.QLD]: getLayoutConfig(Layout.QLD, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.SA]: getLayoutConfig(Layout.SA, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.TAS]: getLayoutConfig(Layout.TAS, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.VIC]: getLayoutConfig(Layout.VIC, ...STATE_LAYOUT_CONFIG_ARGS),
-  [Layout.WA]: getLayoutConfig(Layout.WA, ...STATE_LAYOUT_CONFIG_ARGS)
+  [Layout.ACT]: getLayoutConfig(Layout.ACT, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NSW]: getLayoutConfig(Layout.NSW, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NT]: getLayoutConfig(Layout.NT, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.QLD]: getLayoutConfig(Layout.QLD, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.SA]: getLayoutConfig(Layout.SA, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.TAS]: getLayoutConfig(Layout.TAS, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.VIC]: getLayoutConfig(Layout.VIC, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.WA]: getLayoutConfig(Layout.WA, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NSW_QLD]: getLayoutConfig(Layout.NSW_QLD, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.NSW_VIC]: getLayoutConfig(Layout.NSW_VIC, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.QLD_VIC]: getLayoutConfig(Layout.QLD_VIC, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.QLD_WA]: getLayoutConfig(Layout.QLD_WA, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.QLD_NSW_VIC]: getLayoutConfig(Layout.QLD_NSW_VIC, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.SA_TAS_WA]: getLayoutConfig(Layout.SA_TAS_WA, ...MULTI_STATE_LAYOUT_CONFIG_ARGS)
 };
 
 export type TilegramProps = {

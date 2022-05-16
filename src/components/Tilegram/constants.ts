@@ -96,10 +96,44 @@ export const LAYOUTS_STATES_CELLS: Partial<LayoutsStatesCells> = {
   [Layout.WA]: {
     ...LAYOUT_OFFSCREEN,
     WA: [3.5, -1]
+  },
+  [Layout.NSW_QLD]: {
+    ...LAYOUT_OFFSCREEN,
+    NSW: [3.5, 12],
+    QLD: [4.75, 3, true]
+  },
+  [Layout.NSW_VIC]: {
+    ...LAYOUT_OFFSCREEN,
+    NSW: [3.75, 3, true],
+    VIC: [4.25, 12]
+  },
+  [Layout.QLD_VIC]: {
+    ...LAYOUT_OFFSCREEN,
+    QLD: [4.75, 3, true],
+    VIC: [4.25, 12]
+  },
+  [Layout.QLD_WA]: {
+    ...LAYOUT_OFFSCREEN,
+    QLD: [7, 7, true],
+    WA: [2, 5]
+  },
+  [Layout.QLD_NSW_VIC]: {
+    ...LAYOUT_OFFSCREEN,
+    QLD: [1, 2],
+    NSW: [7, 10],
+    VIC: [0, 14]
+  },
+  [Layout.SA_TAS_WA]: {
+    ...LAYOUT_OFFSCREEN,
+    SA: [7.25, 7, true],
+    TAS: [11, 9],
+    WA: [2, 5]
   }
 };
 
-export const STATE_LAYOUT_CONFIG_ARGS: [number, MarginHorizontalVertical] = [10, [2, 102]];
+export const MULTI_STATE_LAYOUT_CONFIG_ARGS: [number, MarginHorizontalVertical] = [16.75, [20, 2]];
+
+export const SINGLE_STATE_LAYOUT_CONFIG_ARGS: [number, MarginHorizontalVertical] = [10, [2, 102]];
 
 export const STATES_LABELS_CELLS: NestedCellRecord = {
   ACT: {

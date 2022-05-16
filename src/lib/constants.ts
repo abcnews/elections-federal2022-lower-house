@@ -1623,7 +1623,13 @@ export enum Layout {
   SA = 'h',
   TAS = 'i',
   VIC = 'j',
-  WA = 'k'
+  WA = 'k',
+  NSW_QLD = 'l',
+  NSW_VIC = 'm',
+  QLD_VIC = 'n',
+  QLD_WA = 'o',
+  QLD_NSW_VIC = 'p',
+  SA_TAS_WA = 'q'
 }
 
 // Layouts
@@ -1642,9 +1648,24 @@ export const LAYOUT_LABELS: Record<Layout, string> = {
   [Layout.SA]: 'SA',
   [Layout.TAS]: 'Tas.',
   [Layout.VIC]: 'Vic.',
-  [Layout.WA]: 'WA'
+  [Layout.WA]: 'WA',
+  [Layout.NSW_QLD]: 'Qld. & NSW',
+  [Layout.NSW_VIC]: 'NSW & Vic.',
+  [Layout.QLD_VIC]: 'Qld. & Vic.',
+  [Layout.QLD_WA]: 'WA & Qld',
+  [Layout.QLD_NSW_VIC]: 'Qld., NSW & Vic.',
+  [Layout.SA_TAS_WA]: 'WA, SA & Tas.'
 };
 
 export const DEFAULT_LAYOUT = Layout.EXPLODED;
-export const MULTI_STATE_LAYOUTS = [Layout.GEO, Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
+export const ALL_STATES_LAYOUTS = [Layout.GEO, Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
+export const MULTI_STATE_LAYOUTS = [
+  ...ALL_STATES_LAYOUTS,
+  Layout.NSW_QLD,
+  Layout.NSW_VIC,
+  Layout.QLD_VIC,
+  Layout.QLD_WA,
+  Layout.QLD_NSW_VIC,
+  Layout.SA_TAS_WA
+];
 export const SINGLE_STATE_LAYOUTS = LAYOUTS.filter(layout => MULTI_STATE_LAYOUTS.indexOf(layout as Layout) === -1);
