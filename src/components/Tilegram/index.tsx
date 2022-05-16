@@ -205,7 +205,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
       <svg ref={svgRef} className={styles.svg} viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}>
         {defs}
         <g>
-          <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.base} />
+          <g className={styles.base}>
+            <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.baseOuter} />
+            <use xlinkHref={`#${elementsIDs.statesPolygons}`} className={styles.baseInner} />
+          </g>
           <g className={styles.electorates} onClick={onTapElectorateHex}>
             {Object.values(electoratesRenderProps).map(
               ({

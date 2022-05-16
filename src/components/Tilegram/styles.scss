@@ -44,13 +44,27 @@
 // Base
 
 .base {
-  stroke: none;
-  fill: $color_LightGrey;
-  transition: filter $durationDefault;
+  transition: opacity $durationDefault;
 }
 
 .root[data-has-focuses] .base {
-  filter: brightness(1.105);
+  opacity: $opacityFadedOut;
+}
+
+.baseOuter {
+  stroke: $color_Black;
+  stroke-width: $swDemi;
+  fill: none;
+}
+
+.root[data-layout='#{$Layout_COUNTRY}'] .baseOuter {
+  opacity: 0;
+}
+
+.baseInner {
+  stroke: $color_White;
+  stroke-width: $swLight;
+  fill: $color_LightGrey;
 }
 
 // Electorates
@@ -169,15 +183,19 @@
   fill: $color_White;
 }
 
-// States (Borders)
+// States (Borders) (only used on Country layout)
 
 .statesBorders {
   pointer-events: none;
   will-change: opacity;
+  opacity: 0;
   fill: none;
   stroke: $color_Black;
   stroke-width: $swMedium;
-  transition: opacity $durationDefault;
+}
+
+.root[data-layout='#{$Layout_COUNTRY}'] .statesBorders {
+  opacity: 1;
 }
 
 .root[data-has-focuses] .statesBorders {
