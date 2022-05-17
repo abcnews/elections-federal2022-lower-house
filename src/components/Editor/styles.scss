@@ -185,3 +185,7 @@ body {
   background-color: var(--color-allocation);
   // vertical-align: top;
 }
+
+:global(.react-contexify__item__content) [data-allocation='#{$Allocation_None}']::before {
+  border: 1px solid #000;
+}

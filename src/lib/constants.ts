@@ -11,6 +11,7 @@ export const NOYES_VALUES: string[] = Object.values(NoYes);
 
 export enum Allocation {
   None = 'a',
+  Any = 'z',
   ALP = 'b',
   CA = 'c',
   CLP = 'd',
@@ -30,10 +31,10 @@ export enum Allocation {
 
 export const ALLOCATION_VALUES: string[] = Object.values(Allocation);
 
-export const UNCERTAIN_ALLOCATION_VALUES = [Allocation.None];
+export const NON_DEFINITIVE_ALLOCATION_VALUES = [Allocation.None, Allocation.Any];
 
 export const DEFINITIVE_ALLOCATION_VALUES = ALLOCATION_VALUES.filter(
-  allocation => UNCERTAIN_ALLOCATION_VALUES.indexOf(allocation as Allocation) === -1
+  allocation => NON_DEFINITIVE_ALLOCATION_VALUES.indexOf(allocation as Allocation) === -1
 );
 
 export type Allocations = {

@@ -302,7 +302,10 @@ const Editor: React.FC = () => {
               </Item>
               <Separator />
               <Item data={{ allocation: Allocation.None }} onClick={onTapContextMenuItem}>
-                None
+                <div data-allocation={Allocation.None}>None</div>
+              </Item>
+              <Item data={{ allocation: Allocation.Any }} onClick={onTapContextMenuItem}>
+                <div data-allocation={Allocation.Any}>Any</div>
               </Item>
               {[...candidates[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
                 <Item key={candidate} data={{ allocation: Allocation[candidate] }} onClick={onTapContextMenuItem}>

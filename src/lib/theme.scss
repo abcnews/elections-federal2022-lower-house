@@ -6,6 +6,10 @@
   --color-allocation: #{$color_White};
 }
 
+[data-allocation='#{$Allocation_Any}'] {
+  --color-allocation: #{$color_Black};
+}
+
 [data-allocation='#{$Allocation_ALP}'] {
   --color-allocation: #{$color_PtyRed};
 }
@@ -46,6 +50,10 @@
 
 [data-relative-allocation='#{$Allocation_None}'] {
   --color-relative-allocation: #{$color_White};
+}
+
+[data-relative-allocation='#{$Allocation_Any}'] {
+  --color-relative-allocation: #{$color_Black};
 }
 
 [data-relative-allocation='#{$Allocation_CA}'],
