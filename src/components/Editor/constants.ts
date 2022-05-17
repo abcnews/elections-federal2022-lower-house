@@ -21,6 +21,14 @@ export type Mixins = {
 
 const [LABOR_ALLIANCE, COALITION_ALLIANCE] = ALLIANCES;
 
+const KEY_SEATS_ALLOCATIONS = ELECTORATES.reduce((memo, electorate) => {
+  if (electorate.isKeySeat === true) {
+    memo[ElectorateID[electorate.id]] = electorate.holder;
+  }
+
+  return memo;
+}, {} as Allocations);
+
 const MARGINALLY_HELD_ALLOCATIONS = ELECTORATES.reduce((memo, electorate) => {
   if (electorate.security === ElectorateSecurity.MARGINAL) {
     memo[ElectorateID[electorate.id]] = electorate.holder;
@@ -113,6 +121,7 @@ const allocationsToFocuses = (allocations: Allocations) =>
     {} as Focuses
   );
 
+const KEY_SEATS_FOCUSES = allocationsToFocuses(KEY_SEATS_ALLOCATIONS);
 const MARGINALLY_HELD_FOCUSES = allocationsToFocuses(MARGINALLY_HELD_ALLOCATIONS);
 const SAFELY_HELD_FOCUSES = allocationsToFocuses(SAFELY_HELD_ALLOCATIONS);
 const VERY_SAFELY_HELD_FOCUSES = allocationsToFocuses(VERY_SAFELY_HELD_ALLOCATIONS);
@@ -122,6 +131,11 @@ const REGIONAL_FOCUSES = allocationsToFocuses(REGIONAL_ALLOCATIONS);
 const RURAL_FOCUSES = allocationsToFocuses(RURAL_ALLOCATIONS);
 
 export const MIXINS: Mixins = {
+  keyseats: {
+    name: 'Key Seats',
+    allocations: KEY_SEATS_ALLOCATIONS,
+    focuses: KEY_SEATS_FOCUSES
+  },
   held: {
     name: 'Held',
     allocations: ELECTORATES_HELD_ALLOCATIONS
