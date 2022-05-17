@@ -20,6 +20,12 @@
   stroke-linejoin: round;
 }
 
+@media (max-resolution: 1.5dppx) {
+  .svg {
+    shape-rendering: initial;
+  }
+}
+
 // Electorates
 
 .electorates {

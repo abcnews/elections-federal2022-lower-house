@@ -30,8 +30,15 @@
   width: 100%;
   left: 0;
   top: 0;
+  shape-rendering: crispEdges;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+@media (max-resolution: 1.5dppx) {
+  .svg {
+    shape-rendering: initial;
+  }
 }
 
 // This polygon only has a stroke/strokeWidth to fix a Chrome rendering bug
@@ -121,13 +128,11 @@
   fill: var(--color-allocation);
   stroke: none;
   stroke-width: $swHeavy;
-  shape-rendering: crispEdges;
   transition: opacity $durationDefault, fill $durationAllocationChange, stroke $durationAllocationChange;
 }
 
 @media (max-resolution: 1.5dppx) {
   .electorateHex {
-    shape-rendering: initial;
     stroke-width: $swHeavyLowDPI;
   }
 }
