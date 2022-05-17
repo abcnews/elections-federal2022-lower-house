@@ -20,6 +20,7 @@ export type PossiblyEncodedGraphicProps =
   | {
       allocations: string;
       annotations: string;
+      certainties: string;
       focuses: string;
       layout: number | string;
     }
@@ -31,7 +32,18 @@ export const DEFAULT_PROPS: Partial<GraphicProps> = {
 };
 
 const Graphic: React.FC<GraphicProps> = props => {
-  const { counting, allocations, annotations, focuses, inset, layout, onTapElectorate, relative, willChange } = {
+  const {
+    counting,
+    allocations,
+    annotations,
+    certainties,
+    focuses,
+    inset,
+    layout,
+    onTapElectorate,
+    relative,
+    willChange
+  } = {
     ...DEFAULT_PROPS,
     ...props
   };
@@ -48,6 +60,7 @@ const Graphic: React.FC<GraphicProps> = props => {
         <GeoMap
           allocations={allocations}
           annotations={annotations}
+          certainties={certainties}
           focuses={focuses}
           onTapElectorate={onTapElectorate}
         />
@@ -59,6 +72,7 @@ const Graphic: React.FC<GraphicProps> = props => {
           layout={layout}
           allocations={allocations}
           annotations={annotations}
+          certainties={certainties}
           focuses={focuses}
           inset={inset}
           relative={relative}

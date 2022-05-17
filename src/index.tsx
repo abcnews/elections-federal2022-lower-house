@@ -8,7 +8,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import './lib/theme.scss';
 import { applyColourToPanels } from './lib/panels';
-import { alternatingCaseToGraphicProps, decodeAllocations, decodeAnnotations, decodeFocuses } from './lib/utils';
+import { alternatingCaseToGraphicProps, decoders } from './lib/utils';
 import Block from './components/Block';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 import Graphic from './components/Graphic';
@@ -68,9 +68,9 @@ const whenScrollytellersLoaded = new Promise((resolve, reject) =>
 
         // Decode encoded props
         scrollytellerDefinition.panels.forEach(({ data }) => {
-          data.allocations = decodeAllocations((data.allocations as string) || '');
-          data.annotations = decodeAnnotations((data.annotations as string) || '');
-          data.focuses = decodeFocuses((data.focuses as string) || '');
+          Object.keys(decoders).forEach(key => {
+            data[key] = decoders[key]((data[key] as string) || '');
+          });
 
           if (typeof data.layout === 'number') {
             data.layout = String(data.layout);

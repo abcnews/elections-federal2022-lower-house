@@ -1586,6 +1586,18 @@ export const INITIAL_ELECTORATES_ANNOTATIONS = ELECTORATE_IDS.reduce((annotation
   return annotations;
 }, {} as Annotations);
 
+// Certainties
+
+export type Certainties = {
+  [key: string]: NoYes;
+};
+
+export const INITIAL_ELECTORATES_CERTAINTIES = ELECTORATE_IDS.reduce((certainties, electorateID) => {
+  certainties[electorateID] = NoYes.Yes;
+
+  return certainties;
+}, {} as Certainties);
+
 // Focuses
 
 export type Focuses = {
@@ -1597,6 +1609,8 @@ export const INITIAL_ELECTORATES_FOCUSES = ELECTORATE_IDS.reduce((focuses, elect
 
   return focuses;
 }, {} as Focuses);
+
+// Layouts
 
 export enum Layout {
   GEO = '0',
@@ -1618,8 +1632,6 @@ export enum Layout {
   QLD_NSW_VIC = 'p',
   SA_TAS_WA = 'q'
 }
-
-// Layouts
 
 export const LAYOUTS: string[] = Object.values(Layout);
 

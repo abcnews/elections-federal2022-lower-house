@@ -7,6 +7,7 @@ import {
   ALLOCATION_VALUES,
   DEFINITIVE_ALLOCATION_VALUES,
   Annotations,
+  Certainties,
   Focuses,
   NoYes,
   NOYES_VALUES,
@@ -69,40 +70,36 @@ function encode<Dict>(dict: Dict, keys: string[], possibleValues: string[], defa
     }, '');
 }
 
-export const decodeAllocations = (code: string): Allocations =>
-  decode<Allocations>(code, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None);
+export const decoders = {
+  allocations: (code: string): Allocations =>
+    decode<Allocations>(code, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None),
+  annotations: (code: string): Annotations => decode<Annotations>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
+  certainties: (code: string): Certainties => decode<Certainties>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
+  focuses: (code: string): Focuses => decode<Focuses>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No)
+};
 
-export const encodeAllocations = (allocations: Allocations): string =>
-  encode<Allocations>(allocations, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None);
-
-export const decodeAnnotations = (code: string): Annotations =>
-  decode<Annotations>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
-
-export const encodeAnnotations = (annotations: Annotations): string =>
-  encode<Annotations>(annotations, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
-
-export const decodeFocuses = (code: string): Focuses => decode<Focuses>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
-
-export const encodeFocuses = (focuses: Focuses): string =>
-  encode<Focuses>(focuses, ELECTORATE_IDS, NOYES_VALUES, NoYes.No);
+const encoders = {
+  allocations: (allocations: Allocations): string =>
+    encode<Allocations>(allocations, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None),
+  annotations: (annotations: Annotations): string =>
+    encode<Annotations>(annotations, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
+  certainties: (certainties: Certainties): string =>
+    encode<Certainties>(certainties, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
+  focuses: (focuses: Focuses): string => encode<Focuses>(focuses, ELECTORATE_IDS, NOYES_VALUES, NoYes.No)
+};
 
 export const alternatingCaseToGraphicProps = (alternatingCase: string) => {
-  const { allocations, annotations, focuses, ...otherGraphicProps } = acto(alternatingCase);
+  const actoObjectGraphicProps = acto(alternatingCase);
+  const { allocations, annotations, certainties, focuses, ...otherGraphicProps } = actoObjectGraphicProps;
   const graphicProps = {
     ...otherGraphicProps
   } as Partial<GraphicProps>;
 
-  if (typeof allocations === 'string') {
-    graphicProps.allocations = decodeAllocations(allocations);
-  }
-
-  if (typeof annotations === 'string') {
-    graphicProps.annotations = decodeAnnotations(annotations);
-  }
-
-  if (typeof focuses === 'string') {
-    graphicProps.focuses = decodeFocuses(focuses);
-  }
+  Object.keys(decoders).forEach(key => {
+    if (typeof actoObjectGraphicProps[key] === 'string') {
+      graphicProps[key] = decoders[key](actoObjectGraphicProps[key]);
+    }
+  });
 
   if (typeof graphicProps.layout === 'number') {
     graphicProps.layout = String(graphicProps.layout) as Layout;
@@ -131,12 +128,8 @@ export const graphicPropsToAlternatingCase = (graphicProps, defaultGraphicProps?
 
     alternatingCase += key.toUpperCase();
 
-    if (key === 'allocations') {
-      alternatingCase += encodeAllocations(value);
-    } else if (key === 'annotations') {
-      alternatingCase += encodeAnnotations(value);
-    } else if (key === 'focuses') {
-      alternatingCase += encodeFocuses(value);
+    if (encoders[key]) {
+      alternatingCase += encoders[key](value);
     } else if (typeof value === 'boolean') {
       alternatingCase += value ? 'true' : 'false';
     } else if (value === null) {
@@ -158,9 +151,9 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
     (key, value) => (key === '' ? value : decodeURIComponent(value))
   );
 
-  graphicProps.allocations = decodeAllocations(graphicProps.allocations);
-  graphicProps.annotations = decodeAnnotations(graphicProps.annotations);
-  graphicProps.focuses = decodeFocuses(graphicProps.focuses);
+  Object.keys(decoders).forEach(key => {
+    graphicProps[key] = decoders[key](graphicProps[key]);
+  });
 
   if (typeof graphicProps.layout === 'number') {
     graphicProps.layout = String(graphicProps.layout);
@@ -192,12 +185,8 @@ export const graphicPropsToUrlQuery = (graphicProps, defaultGraphicProps?): stri
 
     urlQuery += (urlQuery.length > 0 ? '&' : '?') + key + '=';
 
-    if (key === 'allocations') {
-      urlQuery += encodeAllocations(value);
-    } else if (key === 'annotations') {
-      urlQuery += encodeAnnotations(value);
-    } else if (key === 'focuses') {
-      urlQuery += encodeFocuses(value);
+    if (encoders[key]) {
+      urlQuery += encoders[key](value);
     } else if (typeof value === 'boolean') {
       urlQuery += value ? 'true' : 'false';
     } else {

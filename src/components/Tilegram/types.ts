@@ -46,6 +46,7 @@ export type ElectorateRenderProps = {
   wasAllocationPreserved: boolean;
   shouldFlip: boolean;
   annotation: NoYes;
+  certainty: NoYes;
   focus: NoYes;
   gTransform: string;
 };

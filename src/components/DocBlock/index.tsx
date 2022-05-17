@@ -2,13 +2,7 @@ import GoogleDocScrollyteller from '@abcnews/google-doc-scrollyteller';
 import type { PanelDefinition } from '@abcnews/scrollyteller';
 import React from 'react';
 import { applyColourToPanels } from '../../lib/panels';
-import {
-  decodeAllocations,
-  decodeAnnotations,
-  decodeFocuses,
-  graphicPropsToAlternatingCase,
-  urlQueryToGraphicProps
-} from '../../lib/utils';
+import { decoders, graphicPropsToAlternatingCase, urlQueryToGraphicProps } from '../../lib/utils';
 import Block from '../Block';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from '../Graphic';
 import './minimal-odyssey';
@@ -40,9 +34,9 @@ const preprocessCoreEl = el => {
 
 const postprocessScrollytellerDefinition = scrollytellerDefinition => {
   scrollytellerDefinition.panels.forEach(({ data }) => {
-    data.allocations = decodeAllocations((data.allocations as string) || '');
-    data.annotations = decodeAnnotations((data.annotations as string) || '');
-    data.focuses = decodeFocuses((data.focuses as string) || '');
+    Object.keys(decoders).forEach(key => {
+      data[key] = decoders[key]((data[key] as string) || '');
+    });
 
     if (typeof data.layout === 'number') {
       data.layout = String(data.layout);

@@ -7,6 +7,7 @@ import {
   Allocation,
   Allocations,
   Annotations,
+  Certainties,
   Electorate,
   ElectorateID,
   ELECTORATES,
@@ -32,6 +33,7 @@ const FIT_BOUNDS_OPTIONS = {
 export type GeoMapProps = {
   allocations?: Allocations;
   annotations?: Annotations;
+  certainties?: Certainties;
   focuses?: Focuses;
   onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
 };
@@ -40,7 +42,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
-  const { allocations, annotations, focuses, onTapElectorate } = props;
+  const { allocations, annotations, certainties, focuses, onTapElectorate } = props;
   const isInteractive = !!onTapElectorate;
 
   const electoratesRenderProps = useMemo(
@@ -55,6 +57,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           allocation,
           hasAllocation: allocation && determineIfAllocationIsMade(allocation),
           hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
+          certainty: certainties ? certainties[id] : NoYes.Yes,
           annotation: annotations ? annotations[id] : NoYes.No,
           focus: focuses ? focuses[id] : NoYes.No,
           color: ALLOCATIONS_COLORS[allocation || Allocation.None],
@@ -74,9 +77,10 @@ const GeoMap: React.FC<GeoMapProps> = props => {
     const focusedElectoratesGeoProperties: ElectorateGeoProperties[] = [];
 
     [...electoratesRenderProps].forEach(electorateRenderProps => {
-      const { id, hasAllocation, annotation, focus, color, geoProps } = electorateRenderProps;
+      const { id, hasAllocation, annotation, certainty, focus, color, geoProps } = electorateRenderProps;
       const geoPropsID = ((id as unknown) as String).toLowerCase();
       const isAnnotated = annotation === NoYes.Yes;
+      const isCertain = annotation === NoYes.Yes; // TODO - impact stroke/fill, like with hexes?
       const isFocused = focus === NoYes.Yes;
 
       map.setFeatureState(

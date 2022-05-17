@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Allocations, Annotations, Focuses } from '../../lib/constants';
+import type { Allocations, Annotations, Certainties, Focuses } from '../../lib/constants';
 import {
   Allocation,
   ElectorateID,
@@ -48,6 +48,7 @@ export type TilegramProps = {
   layout: Layout;
   allocations?: Allocations;
   annotations?: Annotations;
+  certainties?: Certainties;
   focuses?: Focuses;
   inset?: boolean;
   relative?: boolean;
@@ -65,7 +66,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
   const elementsIDs = generateElementIDRecord(['hexClipPath', 'hexPolygon', 'statesPolygons'], componentID);
-  const { allocations, annotations, focuses, inset, layout, onTapElectorate, relative } = props;
+  const { allocations, annotations, certainties, focuses, inset, layout, onTapElectorate, relative } = props;
   const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
   const relativeAllocations = relative && ELECTORATES_HELD_ALLOCATIONS;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
@@ -98,6 +99,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
               relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
             shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
             annotation: annotations ? annotations[id] : NoYes.No,
+            certainty: certainties ? certainties[id] : NoYes.Yes,
             focus: focuses ? focuses[id] : NoYes.No,
             gTransform: `translate(${electoratesPositions[id][0]} ${electoratesPositions[id][1]})`
           }
@@ -221,6 +223,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                 relativeAllocation,
                 wasAllocationPreserved,
                 annotation,
+                certainty,
                 focus,
                 gTransform
               }) => (
@@ -235,6 +238,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   data-relative-allocation={relativeAllocation || undefined}
                   data-was-allocation-preserved={wasAllocationPreserved ? '' : undefined}
                   data-annotation={annotation}
+                  data-certainty={certainty}
                   data-focus={focus}
                 >
                   <g clipPath={`url(#${elementsIDs.hexClipPath})`}>

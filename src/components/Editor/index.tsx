@@ -5,14 +5,16 @@ import 'react-contexify/dist/ReactContexify.css';
 import {
   Allocation,
   Allocations,
-  INITIAL_ELECTORATES_ALLOCATIONS,
   Annotations,
-  INITIAL_ELECTORATES_ANNOTATIONS,
+  Certainties,
   ElectorateID,
   ELECTORATE_IDS,
   Electorate,
   ELECTORATES,
   Focuses,
+  INITIAL_ELECTORATES_ALLOCATIONS,
+  INITIAL_ELECTORATES_ANNOTATIONS,
+  INITIAL_ELECTORATES_CERTAINTIES,
   INITIAL_ELECTORATES_FOCUSES,
   Layout,
   LAYOUT_LABELS,
@@ -44,6 +46,7 @@ const COMPONENTS_STYLES = {
 const INITIAL_GRAPHIC_PROPS = {
   allocations: { ...INITIAL_ELECTORATES_ALLOCATIONS },
   annotations: { ...INITIAL_ELECTORATES_ANNOTATIONS },
+  certainties: { ...INITIAL_ELECTORATES_CERTAINTIES },
   focuses: { ...INITIAL_ELECTORATES_FOCUSES }
 };
 
@@ -72,6 +75,7 @@ const Editor: React.FC = () => {
   const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
   const [annotations, setAnnotations] = useState<Annotations>(initialUrlParamProps.annotations);
+  const [certainties, setCertainties] = useState<Certainties>(initialUrlParamProps.certainties);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
   const [counting, setCounting] = useState<boolean>(initialUrlParamProps.counting);
   const [inset, setInset] = useState<boolean>(initialUrlParamProps.inset);
@@ -110,6 +114,10 @@ const Editor: React.FC = () => {
       ...annotations,
       ...(mixin.annotations || {})
     });
+    setCertainties({
+      ...certainties,
+      ...(mixin.certainties || {})
+    });
     setFocuses({
       ...focuses,
       ...(mixin.focuses || {})
@@ -124,6 +132,10 @@ const Editor: React.FC = () => {
     setAnnotations({
       ...INITIAL_ELECTORATES_ANNOTATIONS,
       ...(replacement.annotations || {})
+    });
+    setCertainties({
+      ...INITIAL_ELECTORATES_CERTAINTIES,
+      ...(replacement.certainties || {})
     });
     setFocuses({
       ...INITIAL_ELECTORATES_FOCUSES,
@@ -168,13 +180,13 @@ const Editor: React.FC = () => {
 
   const onTapContextMenuItem = ({
     data
-  }: ItemParams<any, { allocation?: Allocation; annotation?: NoYes; focus?: NoYes }>) => {
+  }: ItemParams<any, { allocation?: Allocation; annotation?: NoYes; certainty?: NoYes; focus?: NoYes }>) => {
     if (!data || !lastTappedElectorate) {
       return;
     }
 
     const electorateID = ElectorateID[lastTappedElectorate.id];
-    const { allocation, annotation, focus } = data;
+    const { allocation, annotation, certainty, focus } = data;
 
     if (allocation) {
       mixinGraphicProps({
@@ -186,6 +198,12 @@ const Editor: React.FC = () => {
       mixinGraphicProps({
         annotations: {
           [electorateID]: annotation
+        }
+      });
+    } else if (certainty) {
+      mixinGraphicProps({
+        certainties: {
+          [electorateID]: certainty
         }
       });
     } else if (focus) {
@@ -235,12 +253,13 @@ const Editor: React.FC = () => {
       layout,
       allocations,
       annotations,
+      certainties,
       focuses,
       counting,
       inset,
       relative
     }),
-    [layout, allocations, annotations, focuses, counting, inset, relative]
+    [layout, allocations, annotations, certainties, focuses, counting, inset, relative]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -290,7 +309,7 @@ const Editor: React.FC = () => {
                 }}
                 onClick={onTapContextMenuItem}
               >
-                {`${focuses[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Focus`}
+                {`${focuses[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Focused`}
               </Item>
               <Item
                 data={{
@@ -298,7 +317,15 @@ const Editor: React.FC = () => {
                 }}
                 onClick={onTapContextMenuItem}
               >
-                {`${annotations[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Label`}
+                {`${annotations[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Labeled`}
+              </Item>
+              <Item
+                data={{
+                  certainty: certainties[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? NoYes.No : NoYes.Yes
+                }}
+                onClick={onTapContextMenuItem}
+              >
+                {`${certainties[ElectorateID[lastTappedElectorate.id]] === NoYes.Yes ? '☑︎' : '☐'} Certain`}
               </Item>
               <Separator />
               <Item data={{ allocation: Allocation.None }} onClick={onTapContextMenuItem}>
