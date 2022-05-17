@@ -2,7 +2,7 @@ import React from 'react';
 import { Alliance, Allocation, Allocations } from '../../lib/constants';
 import { ALLIANCES, PRIMARY_ALLIANCES, ELECTORATES } from '../../lib/constants';
 import { usePrevious } from '../../lib/hooks';
-import { getAllocationsCounts } from '../../lib/utils';
+import { determineIfAllocationIsDefinitive, getAllocationsCounts } from '../../lib/utils';
 import styles from './styles.scss';
 
 const MAX_COUNT = ELECTORATES.length;
@@ -31,7 +31,7 @@ const Totals: React.FC<TotalsProps> = props => {
   const previousGovernmentAlliance = usePrevious<Alliance>(governmentAlliance);
   const isConsistentGovernment = previousGovernmentAlliance && primaryAlliances[0].id === previousGovernmentAlliance.id;
   const groups = Object.keys(allocationsCounts)
-    .filter(allocation => allocation !== Allocation.None)
+    .filter(allocation => determineIfAllocationIsDefinitive(allocation as Allocation))
     .reduce(
       (memo, allocation) => {
         const groupIndex =

@@ -13,13 +13,13 @@ import {
   Layout
 } from './constants';
 
-export const getAllocationsCounts = (allocations: Allocations): { [key: string]: number } => {
+export const getAllocationsCounts = (allocations: Allocations) => {
   return ALLOCATION_VALUES.reduce(
     (memo, allocation) => ({
       ...memo,
       [allocation]: ELECTORATE_IDS.filter(id => allocations[id] === allocation).length
     }),
-    {}
+    {} as Record<Allocation, number>
   );
 };
 
