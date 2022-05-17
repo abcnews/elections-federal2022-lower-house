@@ -15,11 +15,13 @@ import {
   Layout
 } from './constants';
 
-export const getAllocationsCounts = (allocations: Allocations) => {
+export const getAllocationsCounts = (allocations: Allocations, certainties?: Certainties) => {
   return ALLOCATION_VALUES.reduce(
     (memo, allocation) => ({
       ...memo,
-      [allocation]: ELECTORATE_IDS.filter(id => allocations[id] === allocation).length
+      [allocation]: ELECTORATE_IDS.filter(
+        id => allocations[id] === allocation && (certainties ? certainties[id] === NoYes.Yes : true)
+      ).length
     }),
     {} as Record<Allocation, number>
   );

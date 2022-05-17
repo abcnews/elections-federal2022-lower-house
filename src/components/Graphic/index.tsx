@@ -92,7 +92,7 @@ const Graphic: React.FC<GraphicProps> = props => {
     <div className={styles.root}>
       {(willChange || isCounting) && (
         <header className={styles.header} data-is-counting={isCounting ? '' : undefined}>
-          <Totals allocations={allocations} />
+          <Totals allocations={allocations} certainties={certainties} />
         </header>
       )}
       {electoratesGraphic}

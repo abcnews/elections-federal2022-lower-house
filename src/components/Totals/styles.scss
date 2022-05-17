@@ -60,6 +60,10 @@
   background-color: var(--color-allocation);
 }
 
+.bar[data-is-uncertain] {
+  opacity: 0.25;
+}
+
 .value {
   color: $color_White;
   position: absolute;

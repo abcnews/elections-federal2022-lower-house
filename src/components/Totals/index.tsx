@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alliance, Allocation, Allocations } from '../../lib/constants';
+import { Alliance, Allocation, Allocations, Certainties } from '../../lib/constants';
 import { ALLIANCES, PRIMARY_ALLIANCES, ELECTORATES } from '../../lib/constants';
 import { usePrevious } from '../../lib/hooks';
 import { determineIfAllocationIsDefinitive, getAllocationsCounts } from '../../lib/utils';
@@ -11,18 +11,21 @@ const DEFAULT_EXTENT_VOTES = WIN_COUNT + 8;
 
 export type TotalsProps = {
   allocations?: Allocations;
+  certainties?: Certainties;
 };
 
 type Group = {
   name: string;
   shortName: string;
   count: number;
+  certainCount: number;
   majorAllocation: Allocation;
 };
 
 const Totals: React.FC<TotalsProps> = props => {
-  const { allocations } = props;
+  const { allocations, certainties } = props;
   const allocationsCounts = getAllocationsCounts(allocations || {});
+  const allocationsCertainCounts = getAllocationsCounts(allocations || {}, certainties);
   const primaryAlliances = PRIMARY_ALLIANCES.map(allianceID => ALLIANCES.find(({ id }) => id === allianceID)) as [
     Alliance,
     Alliance
@@ -42,6 +45,7 @@ const Totals: React.FC<TotalsProps> = props => {
             : 2;
 
         memo[groupIndex].count += allocationsCounts[allocation];
+        memo[groupIndex].certainCount += allocationsCertainCounts[allocation];
 
         return memo;
       },
@@ -50,19 +54,22 @@ const Totals: React.FC<TotalsProps> = props => {
           name: governmentAlliance.name,
           shortName: governmentAlliance.shortName,
           majorAllocation: governmentAlliance.majorAllocation,
-          count: 0
+          count: 0,
+          certainCount: 0
         },
         {
           name: oppositionAlliance.name,
           shortName: oppositionAlliance.shortName,
           majorAllocation: oppositionAlliance.majorAllocation,
-          count: 0
+          count: 0,
+          certainCount: 0
         },
         {
           name: 'Other',
           shortName: 'OTHER',
           majorAllocation: Allocation.OTH,
-          count: 0
+          count: 0,
+          certainCount: 0
         }
       ] as Group[]
     );
@@ -84,16 +91,22 @@ const Totals: React.FC<TotalsProps> = props => {
         ))}
       </div>
       <div className={styles.counts}>
-        {groups.map(({ name, shortName, majorAllocation, count }) => (
-          <div key={shortName} className={styles.count} title={`${name}: ${count}`}>
+        {groups.map(({ name, shortName, majorAllocation, count, certainCount }) => (
+          <div key={shortName} className={styles.count} title={`${name}: ${certainCount}`}>
             <div className={styles.track}>
               <div
                 className={styles.bar}
                 style={{ transform: `translate(${getTransformXPercent(count)}%, 0)` }}
                 data-allocation={majorAllocation}
+                data-is-uncertain
+              ></div>
+              <div
+                className={styles.bar}
+                style={{ transform: `translate(${getTransformXPercent(certainCount)}%, 0)` }}
+                data-allocation={majorAllocation}
                 data-is-single-digit-count={count < 10 ? '' : undefined}
               >
-                <div className={styles.value}>{count}</div>
+                <div className={styles.value}>{certainCount}</div>
               </div>
             </div>
           </div>
