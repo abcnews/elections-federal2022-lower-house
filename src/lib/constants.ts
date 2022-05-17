@@ -291,6 +291,7 @@ export type Electorate = {
   holder: Allocation;
   security: ElectorateSecurity;
   situation: ElectorateSituation;
+  isKeySeat?: boolean;
   name: string;
   abbr: string;
 };
@@ -326,6 +327,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Banks'
   },
   {
@@ -350,6 +352,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Bass'
   },
   {
@@ -390,6 +393,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Blair'
   },
   {
@@ -414,6 +418,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Boothby'
   },
   {
@@ -430,6 +435,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Braddon'
   },
   {
@@ -454,6 +460,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Brisbane'
   },
   {
@@ -518,6 +525,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Casey'
   },
   {
@@ -534,6 +542,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Chisholm'
   },
   {
@@ -566,6 +575,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Corangamite'
   },
   {
@@ -582,6 +592,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Cowan'
   },
   {
@@ -606,6 +617,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.VERY_SAFE,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Curtin'
   },
   {
@@ -622,6 +634,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Deakin'
   },
   {
@@ -630,6 +643,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Dickson'
   },
   {
@@ -638,6 +652,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Dobell'
   },
   {
@@ -646,6 +661,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Dunkley'
   },
   {
@@ -662,6 +678,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Eden-Monaro'
   },
   {
@@ -718,6 +735,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Flynn'
   },
   {
@@ -742,6 +760,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.VERY_SAFE,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Fowler'
   },
   {
@@ -782,6 +801,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Gilmore'
   },
   {
@@ -798,6 +818,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Goldstein'
   },
   {
@@ -822,6 +843,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Greenway'
   },
   {
@@ -830,6 +852,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.VERY_SAFE,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Grey'
   },
   {
@@ -838,6 +861,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Griffith'
   },
   {
@@ -854,6 +878,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Hasluck'
   },
   {
@@ -878,6 +903,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Higgins'
   },
   {
@@ -894,6 +920,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.VERY_SAFE,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Hinkler'
   },
   {
@@ -934,6 +961,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Hunter'
   },
   {
@@ -942,6 +970,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.IND,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Indi'
   },
   {
@@ -990,6 +1019,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Kooyong'
   },
   {
@@ -1014,6 +1044,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Leichhardt'
   },
   {
@@ -1022,6 +1053,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Lilley'
   },
   {
@@ -1030,6 +1062,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Lindsay'
   },
   {
@@ -1038,6 +1071,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Lingiari'
   },
   {
@@ -1046,6 +1080,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Longman'
   },
   {
@@ -1062,6 +1097,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Lyons'
   },
   {
@@ -1086,6 +1122,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Macnamara'
   },
   {
@@ -1094,6 +1131,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Macquarie'
   },
   {
@@ -1134,6 +1172,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.CA,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Mayo'
   },
   {
@@ -1214,6 +1253,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Moreton'
   },
   {
@@ -1238,6 +1278,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.NAT,
     security: ElectorateSecurity.VERY_SAFE,
     situation: ElectorateSituation.RURAL,
+    isKeySeat: true,
     name: 'Nicholls'
   },
   {
@@ -1246,6 +1287,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'North Sydney'
   },
   {
@@ -1286,6 +1328,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Parramatta'
   },
   {
@@ -1294,6 +1337,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.REGIONAL,
+    isKeySeat: true,
     name: 'Paterson'
   },
   {
@@ -1302,6 +1346,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Pearce'
   },
   {
@@ -1334,6 +1379,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Reid'
   },
   {
@@ -1358,6 +1404,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Robertson'
   },
   {
@@ -1390,6 +1437,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.ALP,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.OUTER_METRO,
+    isKeySeat: true,
     name: 'Solomon'
   },
   {
@@ -1414,6 +1462,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Swan'
   },
   {
@@ -1462,6 +1511,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LIB,
     security: ElectorateSecurity.MARGINAL,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Wentworth'
   },
   {
