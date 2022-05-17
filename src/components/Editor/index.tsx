@@ -416,7 +416,7 @@ const Editor: React.FC = () => {
                 checked={relative}
                 onChange={() => setRelative(!relative)}
               ></input>
-              Incumbent outlines and flips
+              Gained seat flips
             </label>
           </span>
         </div>
