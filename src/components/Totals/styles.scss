@@ -60,8 +60,21 @@
   background-color: var(--color-allocation);
 }
 
+// Option A: Vary opacity (appears lighter)
+// .bar[data-is-uncertain] {
+//   opacity: 0.25;
+// }
+
+// Option B: Switch to stroke (like hexes)
+// .bar[data-is-uncertain] {
+//   border: 2px solid var(--color-allocation);
+//   background-color: white;
+// }
+
+// Option C: Use diagonal pattern
 .bar[data-is-uncertain] {
-  opacity: 0.25;
+  background-size: 5px 5px;
+  background-image: repeating-linear-gradient(45deg, #ffffff 0, #ffffff 1.5px, transparent 0, transparent 50%);
 }
 
 .value {
