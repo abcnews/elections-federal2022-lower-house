@@ -125,6 +125,13 @@
   transition: opacity $durationDefault, fill $durationAllocationChange, stroke $durationAllocationChange;
 }
 
+@media (max-resolution: 1.5dppx) {
+  .electorateHex {
+    shape-rendering: initial;
+    stroke-width: $swHeavyLowDPI;
+  }
+}
+
 .root[data-is-interactive] .electorateHex {
   pointer-events: all;
   cursor: pointer;
