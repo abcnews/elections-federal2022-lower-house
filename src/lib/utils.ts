@@ -2,6 +2,7 @@ import acto from '@abcnews/alternating-case-to-object';
 import type { GraphicProps } from '../components/Graphic';
 import {
   ELECTORATE_IDS,
+  ALLIANCES,
   Allocation,
   Allocations,
   ALLOCATION_VALUES,
@@ -38,6 +39,17 @@ export const determineIfAllocationShouldFlip = (allocation: Allocation, relative
   allocation !== relativeAllocation &&
   determineIfAllocationIsDefinitive(allocation) &&
   determineIfAllocationIsDefinitive(relativeAllocation);
+
+export const remapAllocationsToAlliances = (allocations: Allocations) =>
+  Object.keys(allocations).reduce((memo, key) => {
+    const allocation = allocations[key];
+    const alliance = ALLIANCES.find(alliance => alliance.allocations.indexOf(allocation) > -1);
+
+    return {
+      ...memo,
+      [key]: alliance ? alliance.majorAllocation : allocation
+    };
+  }, {} as Allocations);
 
 function decode<Dict>(code: string, keys: string[], possibleValues: string[], defaultValue: string): Dict {
   code = typeof code === 'string' ? code.replace(/(\w)(\d+)/g, (_, char, repeated) => char.repeat(+repeated)) : code;
@@ -157,6 +169,10 @@ export const urlQueryToGraphicProps = (urlQuery: string) => {
 
   if (typeof graphicProps.layout === 'number') {
     graphicProps.layout = String(graphicProps.layout);
+  }
+
+  if (typeof graphicProps.allied === 'string') {
+    graphicProps.allied = graphicProps.allied === 'true';
   }
 
   if (typeof graphicProps.counting === 'string') {

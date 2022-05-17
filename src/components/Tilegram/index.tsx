@@ -105,7 +105,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
           }
         };
       }, {}),
-    [allocations, electoratesPositions, focuses, relativeAllocations]
+    [allocations, annotations, certainties, electoratesPositions, focuses, relativeAllocations]
   );
 
   // Tapping an electorate background calls the onTapElectorate function prop

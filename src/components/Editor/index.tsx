@@ -77,6 +77,7 @@ const Editor: React.FC = () => {
   const [annotations, setAnnotations] = useState<Annotations>(initialUrlParamProps.annotations);
   const [certainties, setCertainties] = useState<Certainties>(initialUrlParamProps.certainties);
   const [focuses, setFocuses] = useState<Focuses>(initialUrlParamProps.focuses);
+  const [allied, setAllied] = useState<boolean>(initialUrlParamProps.allied);
   const [counting, setCounting] = useState<boolean>(initialUrlParamProps.counting);
   const [inset, setInset] = useState<boolean>(initialUrlParamProps.inset);
   const [relative, setRelative] = useState<boolean>(initialUrlParamProps.relative);
@@ -255,11 +256,12 @@ const Editor: React.FC = () => {
       annotations,
       certainties,
       focuses,
+      allied,
       counting,
       inset,
       relative
     }),
-    [layout, allocations, annotations, certainties, focuses, counting, inset, relative]
+    [layout, allocations, annotations, certainties, focuses, allied, counting, inset, relative]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -366,6 +368,20 @@ const Editor: React.FC = () => {
                 onChange={() => setCounting(!counting)}
               ></input>
               Race-to-76 bars
+            </label>
+          </span>
+        </div>
+        <div className={styles.flexRow}>
+          <span key="none">
+            <label>
+              <input
+                type="checkbox"
+                name="allied"
+                value="allied"
+                checked={allied}
+                onChange={() => setAllied(!allied)}
+              ></input>
+              Coalition colours
             </label>
           </span>
         </div>

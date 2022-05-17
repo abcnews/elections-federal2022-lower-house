@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout } from '../../lib/constants';
+import { remapAllocationsToAlliances } from '../../lib/utils';
 import BasicGeoMap from '../Geo';
 import type { GeoMapProps } from '../GeoMap';
 import GeoMap from '../GeoMap';
@@ -10,6 +11,7 @@ import Totals from '../Totals';
 import styles from './styles.scss';
 
 export type GraphicProps = {
+  allied?: boolean;
   counting?: boolean;
   willChange?: boolean;
 } & GeoMapProps &
@@ -28,6 +30,7 @@ export type PossiblyEncodedGraphicProps =
 
 export const DEFAULT_PROPS: Partial<GraphicProps> = {
   ...DEFAULT_TILEGRAM_PROPS,
+  allied: false,
   counting: true
 };
 
@@ -38,6 +41,7 @@ const Graphic: React.FC<GraphicProps> = props => {
     annotations,
     certainties,
     focuses,
+    allied,
     inset,
     layout,
     onTapElectorate,
@@ -48,17 +52,19 @@ const Graphic: React.FC<GraphicProps> = props => {
     ...props
   };
   const isCounting = typeof counting !== 'boolean' || counting;
-  let map: React.ReactElement;
+  const potentiallyAlliedAllocations =
+    allocations && typeof allied === 'boolean' && allied ? remapAllocationsToAlliances(allocations) : allocations;
+  let electoratesGraphic: React.ReactElement;
 
   switch (layout) {
     case Layout.GEO:
       if (willChange) {
-        map = <BasicGeoMap allocations={allocations} focuses={focuses} />;
+        electoratesGraphic = <BasicGeoMap allocations={potentiallyAlliedAllocations} focuses={focuses} />;
         break;
       }
-      map = (
+      electoratesGraphic = (
         <GeoMap
-          allocations={allocations}
+          allocations={potentiallyAlliedAllocations}
           annotations={annotations}
           certainties={certainties}
           focuses={focuses}
@@ -67,10 +73,10 @@ const Graphic: React.FC<GraphicProps> = props => {
       );
       break;
     default:
-      map = (
+      electoratesGraphic = (
         <Tilegram
           layout={layout}
-          allocations={allocations}
+          allocations={potentiallyAlliedAllocations}
           annotations={annotations}
           certainties={certainties}
           focuses={focuses}
@@ -89,7 +95,7 @@ const Graphic: React.FC<GraphicProps> = props => {
           <Totals allocations={allocations} />
         </header>
       )}
-      {map}
+      {electoratesGraphic}
     </div>
   );
 };
