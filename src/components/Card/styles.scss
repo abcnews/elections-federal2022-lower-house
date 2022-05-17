@@ -101,13 +101,13 @@
   }
 }
 
-.hex[data-relative-allocation] polygon {
-  stroke: var(--color-relative-allocation);
-}
-
 .hex[data-allocation] polygon {
   fill: var(--color-allocation);
   stroke: var(--color-allocation);
+}
+
+.hex[data-certainty='#{$NoYes_No}'] polygon {
+  fill: none;
 }
 
 .pastWinners {

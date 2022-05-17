@@ -175,16 +175,13 @@
   white-space: nowrap;
 }
 
-.electorate[data-allocation] {
-  background-color: var(--color-allocation);
+.electorate[data-has-definitive-allocation][data-certainty='#{$NoYes_No}'] {
+  border-color: var(--color-allocation);
 }
 
-.electorate[data-relative-allocation] {
-  border-color: var(--color-relative-allocation);
-}
-
-.electorate[data-has-definitive-allocation] {
+.electorate[data-has-definitive-allocation][data-certainty='#{$NoYes_No}'] {
   border-color: transparent;
+  background-color: var(--color-allocation);
   color: $color_BG;
 }
 

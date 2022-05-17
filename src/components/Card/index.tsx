@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Allocation, Electorate, ElectorateID, ELECTORATES } from '../../lib/constants';
+import { Allocation, Electorate, ElectorateID, ELECTORATES, NoYes } from '../../lib/constants';
 import type { LiveResultsElectorate } from '../../lib/data';
 import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from '../../lib/data';
 import pastWinners from './past-winners.json';
@@ -19,15 +19,11 @@ const isToday = (date: Date, todayDate = new Date()) => {
 
 interface HexProps {
   allocation?: Allocation;
-  relativeAllocation?: Allocation;
+  certainty?: NoYes;
 }
 
-const Hex: React.FC<HexProps> = ({ allocation, relativeAllocation }) => (
-  <div
-    className={styles.hex}
-    data-allocation={allocation || undefined}
-    data-relative-allocation={relativeAllocation || undefined}
-  >
+const Hex: React.FC<HexProps> = ({ allocation, certainty }) => (
+  <div className={styles.hex} data-allocation={allocation || undefined} data-certainty={certainty || undefined}>
     <svg viewBox="0 0 51.3012701892 58">
       <g transform="translate(4 4)">
         <polygon points="0,37.5 21.65,50 43.3,37.5 43.3,12.5 21.65,0 0,12.5 0,37.5"></polygon>
@@ -70,13 +66,15 @@ const Card: React.FC<CardProps> = ({ electorateID, hasResult }) => {
   const timeUpdated = result?.updated ? new Date(result.updated) : null;
 
   const electoratePastWinners = pastWinners[electorateID];
-  const allocation = result ? undefined : undefined;
+  // TODO: determine allocation / certainty on result if available
+  const allocation = Allocation.Any;
+  const certainty = NoYes.No;
 
   return (
     <div className={styles.root}>
       <div className={styles.flex}>
         <h4 className={styles.title}>
-          <Hex allocation={allocation} relativeAllocation={electorate.holder} />
+          <Hex allocation={allocation} certainty={certainty} />
           {electorate.name}
         </h4>
         {hasResult ? timeUpdated && <div>{`Updated ${formatTimeUpdated(timeUpdated)}`}</div> : <div />}

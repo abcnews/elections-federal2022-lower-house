@@ -82,6 +82,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
         const id = ElectorateID[electorate.id];
         const allocation = allocations ? allocations[id] : Allocation.None;
         const relativeAllocation = relativeAllocations ? relativeAllocations[id] : undefined;
+        const certainty = certainties ? certainties[id] : NoYes.Yes;
         const label = electorate[isSingleStateLayout ? 'name' : 'abbr'];
         const hasLongLabel = label.length > 9 || (label.length > 8 && (label.match(/w|m/gi) || []).length > 1);
 
@@ -97,10 +98,11 @@ const Tilegram: React.FC<TilegramProps> = props => {
             relativeAllocation,
             wasAllocationPreserved:
               relativeAllocation && determineIfAllocationWasPreserved(allocation, relativeAllocation),
-            shouldFlip: relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation),
             annotation: annotations ? annotations[id] : NoYes.No,
-            certainty: certainties ? certainties[id] : NoYes.Yes,
+            certainty,
             focus: focuses ? focuses[id] : NoYes.No,
+            shouldFlip:
+              relativeAllocation && determineIfAllocationShouldFlip(allocation, relativeAllocation, certainty),
             gTransform: `translate(${electoratesPositions[id][0]} ${electoratesPositions[id][1]})`
           }
         };

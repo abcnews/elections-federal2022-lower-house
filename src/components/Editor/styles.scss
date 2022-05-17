@@ -175,6 +175,10 @@ body {
   font-family: ABCSans, sans-serif;
 }
 
+:global(.react-contexify__item__content) [data-is-allocation-selected] {
+  font-weight: bold;
+}
+
 :global(.react-contexify__item__content) [data-allocation]::before {
   content: '';
   display: inline-block;

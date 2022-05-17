@@ -338,7 +338,14 @@ const Editor: React.FC = () => {
               </Item>
               {[...candidates[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
                 <Item key={candidate} data={{ allocation: Allocation[candidate] }} onClick={onTapContextMenuItem}>
-                  <div data-allocation={Allocation[candidate]}>{candidate}</div>
+                  <div
+                    data-allocation={Allocation[candidate]}
+                    data-is-allocation-selected={
+                      allocations[ElectorateID[lastTappedElectorate.id]] === Allocation[candidate] ? '' : undefined
+                    }
+                  >
+                    {candidate}
+                  </div>
                 </Item>
               ))}
             </>

@@ -35,8 +35,13 @@ export const determineIfAllocationWasPreserved = (allocation: Allocation, relati
   determineIfAllocationIsDefinitive(allocation) &&
   determineIfAllocationIsDefinitive(relativeAllocation);
 
-export const determineIfAllocationShouldFlip = (allocation: Allocation, relativeAllocation: Allocation) =>
+export const determineIfAllocationShouldFlip = (
+  allocation: Allocation,
+  relativeAllocation: Allocation,
+  certainty: NoYes
+) =>
   allocation !== relativeAllocation &&
+  certainty === NoYes.Yes &&
   determineIfAllocationIsDefinitive(allocation) &&
   determineIfAllocationIsDefinitive(relativeAllocation);
 
@@ -86,7 +91,7 @@ export const decoders = {
   allocations: (code: string): Allocations =>
     decode<Allocations>(code, ELECTORATE_IDS, ALLOCATION_VALUES, Allocation.None),
   annotations: (code: string): Annotations => decode<Annotations>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
-  certainties: (code: string): Certainties => decode<Certainties>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
+  certainties: (code: string): Certainties => decode<Certainties>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.Yes),
   focuses: (code: string): Focuses => decode<Focuses>(code, ELECTORATE_IDS, NOYES_VALUES, NoYes.No)
 };
 
@@ -96,7 +101,7 @@ const encoders = {
   annotations: (annotations: Annotations): string =>
     encode<Annotations>(annotations, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
   certainties: (certainties: Certainties): string =>
-    encode<Certainties>(certainties, ELECTORATE_IDS, NOYES_VALUES, NoYes.No),
+    encode<Certainties>(certainties, ELECTORATE_IDS, NOYES_VALUES, NoYes.Yes),
   focuses: (focuses: Focuses): string => encode<Focuses>(focuses, ELECTORATE_IDS, NOYES_VALUES, NoYes.No)
 };
 

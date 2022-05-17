@@ -92,12 +92,14 @@
 @keyframes electorateHexFlip {
   0% {
     fill: $color_White;
-    stroke: var(--color-relative-allocation);
+    stroke: $color_Black;
+    // stroke: var(--color-relative-allocation);
     transform: none;
   }
   49.99% {
     fill: $color_White;
-    stroke: var(--color-relative-allocation);
+    stroke: $color_Black;
+    // stroke: var(--color-relative-allocation);
     // transform: rotateX(90deg);
     transform: rotateY(90deg);
   }
@@ -128,19 +130,13 @@
   cursor: pointer;
 }
 
-.electorate[data-focus='#{$NoYes_Yes}'] .electorateHex {
+.electorate[data-allocation='#{$Allocation_None}'][data-focus='#{$NoYes_Yes}'] .electorateHex {
   stroke: $color_Black;
+  // stroke-width: $swDemi;
 }
 
-.electorate[data-relative-allocation][data-focus='#{$NoYes_Yes}'] .electorateHex {
-  stroke: var(--color-relative-allocation);
-}
-
-.electorate[data-has-definitive-allocation][data-focus='#{$NoYes_Yes}'] .electorateHex {
-  stroke: none;
-}
-
-.electorate[data-was-allocation-preserved][data-focus='#{$NoYes_Yes}'] .electorateHex {
+.electorate[data-certainty='#{$NoYes_No}'] .electorateHex {
+  fill: $color_White;
   stroke: var(--color-allocation);
 }
 
@@ -179,7 +175,7 @@
   font-size: 0.625rem;
 }
 
-.electorate[data-has-allocation] .electorateLabel {
+.electorate[data-has-allocation][data-certainty='#{$NoYes_Yes}'] .electorateLabel {
   fill: $color_White;
 }
 
