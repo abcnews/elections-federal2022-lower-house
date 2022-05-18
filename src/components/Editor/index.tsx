@@ -20,7 +20,11 @@ import {
   LAYOUT_LABELS,
   NoYes
 } from '../../lib/constants';
-import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from '../../lib/data';
+import {
+  fetchLiveResultsElectorates,
+  getLiveResultsElectorateAllocation,
+  getLiveResultsElectorateCertainty
+} from '../../lib/data';
 import {
   alternatingCaseToGraphicProps,
   graphicPropsToAlternatingCase,
@@ -146,21 +150,29 @@ const Editor: React.FC = () => {
 
   const replaceAllocationsWithLiveResults = async () => {
     const electorates = await fetchLiveResultsElectorates();
+    const allocations = electorates.reduce<Allocations>(
+      (memo, electorate) => {
+        const allocation = getLiveResultsElectorateAllocation(electorate);
 
-    setAllocations(
-      electorates.reduce<Allocations>(
-        (memo, electorate) => {
-          const allocation = getLiveResultsElectorateAllocation(electorate);
+        if (allocation !== Allocation.None) {
+          memo[electorate.code] = allocation;
+        }
 
-          if (allocation !== Allocation.None) {
-            memo[electorate.code] = allocation;
-          }
-
-          return memo;
-        },
-        { ...INITIAL_ELECTORATES_ALLOCATIONS }
-      )
+        return memo;
+      },
+      { ...INITIAL_ELECTORATES_ALLOCATIONS }
     );
+    const certainties = electorates.reduce(
+      (memo, electorate) => ({
+        ...memo,
+        [electorate.code]: getLiveResultsElectorateCertainty(electorate)
+      }),
+      {} as Certainties
+    );
+
+    setAllocations(allocations);
+    console.log(certainties);
+    setCertainties(certainties);
   };
 
   const importMarker = (marker: string) => {
