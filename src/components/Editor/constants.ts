@@ -1,12 +1,15 @@
-import type { Allocations, Focuses } from '../../lib/constants';
 import {
   ALLIANCES,
+  Allocations,
   ElectorateID,
   ElectorateSecurity,
   ElectorateSituation,
   ELECTORATES,
   ELECTORATES_HELD_ALLOCATIONS,
-  NoYes
+  Focuses,
+  NoYes,
+  StateID,
+  STATES
 } from '../../lib/constants';
 
 export type Mixin = {
@@ -130,6 +133,21 @@ const OUTER_METRO_FOCUSES = allocationsToFocuses(OUTER_METRO_ALLOCATIONS);
 const REGIONAL_FOCUSES = allocationsToFocuses(REGIONAL_ALLOCATIONS);
 const RURAL_FOCUSES = allocationsToFocuses(RURAL_ALLOCATIONS);
 
+const STATES_FOCUS_MIXINS = STATES.reduce((memo, state) => {
+  memo[state.id] = {
+    name: state.abbr,
+    focuses: ELECTORATES.reduce((memo, electorate) => {
+      if (electorate.state === state.id) {
+        memo[ElectorateID[electorate.id]] = NoYes.Yes;
+      }
+
+      return memo;
+    }, {} as Focuses)
+  } as Mixin;
+
+  return memo;
+}, {} as Mixins);
+
 export const MIXINS: Mixins = {
   keyseats: {
     name: 'Key Seats',
@@ -186,7 +204,8 @@ export const MIXINS: Mixins = {
     name: 'Rural',
     allocations: RURAL_ALLOCATIONS,
     focuses: RURAL_FOCUSES
-  }
+  },
+  ...STATES_FOCUS_MIXINS
 };
 
 export const PRESETS: Mixins = {

@@ -465,15 +465,17 @@ const Editor: React.FC = () => {
           Mix-ins <small>(added to the map)</small>
         </h3>
         <div className={styles.flexRow}>
-          {Object.keys(MIXINS).map(key => {
-            const { name, allocations } = MIXINS[key];
+          {Object.keys(MIXINS)
+            .filter(key => MIXINS[key].allocations != null)
+            .map(key => {
+              const { name, allocations } = MIXINS[key];
 
-            return (
-              <button key={key} onClick={() => mixinGraphicProps({ allocations })}>
-                {name || key}
-              </button>
-            );
-          })}
+              return (
+                <button key={key} onClick={() => mixinGraphicProps({ allocations })}>
+                  {name || key}
+                </button>
+              );
+            })}
         </div>
         <h3>
           Presets <small>(replace the whole map)</small>
