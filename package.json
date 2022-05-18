@@ -1,6 +1,6 @@
 {
 	"name": "elections-federal2022-lower-house",
-	"version": "1.14.4",
+	"version": "1.14.5",
 	"description": "A project generated from aunty's react project template.",
 	"license": "MIT",
 	"private": true,
