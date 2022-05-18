@@ -7,14 +7,17 @@ enum Color {
   Grey = '#989494',
   LightGrey = '#ddd',
   White = '#000',
+  PtyAqua = '#005d82',
   PtyBlack = '#757575',
-  PtyBlue = '#1467cc',
+  PtyBlue = '#0a52bf',
   PtyBrown = '#804a40',
-  PtyGold = '#ffc200',
+  PtyGold = '#cc8500',
   PtyGreen = '#007056',
+  PtyLightBlue = '#00a1c7',
   PtyLightGreen = '#51a802',
   PtyOrange = '#e5660b',
-  PtyRed = '#d61515'
+  PtyPurple = '#985eb5',
+  PtyRed = '#e11f30'
 }
 
 export const ALLOCATIONS_COLORS: Record<Allocation, Color> = {
