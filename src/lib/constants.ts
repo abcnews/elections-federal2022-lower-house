@@ -1413,6 +1413,7 @@ export const ELECTORATES: Electorate[] = [
     holder: Allocation.LNP,
     security: ElectorateSecurity.SAFE,
     situation: ElectorateSituation.INNER_METRO,
+    isKeySeat: true,
     name: 'Ryan'
   },
   {
