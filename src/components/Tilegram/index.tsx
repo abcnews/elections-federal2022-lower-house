@@ -36,6 +36,7 @@ const LAYOUTS_CONFIGS: Partial<LayoutsConfigs> = {
   [Layout.TAS]: getLayoutConfig(Layout.TAS, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
   [Layout.VIC]: getLayoutConfig(Layout.VIC, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
   [Layout.WA]: getLayoutConfig(Layout.WA, ...SINGLE_STATE_LAYOUT_CONFIG_ARGS),
+  [Layout.ACT_NT]: getLayoutConfig(Layout.ACT_NT, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
   [Layout.NSW_QLD]: getLayoutConfig(Layout.NSW_QLD, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
   [Layout.NSW_VIC]: getLayoutConfig(Layout.NSW_VIC, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),
   [Layout.QLD_VIC]: getLayoutConfig(Layout.QLD_VIC, ...MULTI_STATE_LAYOUT_CONFIG_ARGS),

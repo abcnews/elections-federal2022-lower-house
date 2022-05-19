@@ -97,6 +97,11 @@ export const LAYOUTS_STATES_CELLS: Partial<LayoutsStatesCells> = {
     ...LAYOUT_OFFSCREEN,
     WA: [3.5, -1]
   },
+  [Layout.ACT_NT]: {
+    ...LAYOUT_OFFSCREEN,
+    ACT: [8, 11.5, true],
+    NT: [7.75, 6, true]
+  },
   [Layout.NSW_QLD]: {
     ...LAYOUT_OFFSCREEN,
     NSW: [3.5, 12],

@@ -1680,7 +1680,8 @@ export enum Layout {
   QLD_VIC = 'n',
   QLD_WA = 'o',
   QLD_NSW_VIC = 'p',
-  SA_TAS_WA = 'q'
+  SA_TAS_WA = 'q',
+  ACT_NT = 'r'
 }
 
 export const LAYOUTS: string[] = Object.values(Layout);
@@ -1698,6 +1699,7 @@ export const LAYOUT_LABELS: Record<Layout, string> = {
   [Layout.TAS]: 'Tas.',
   [Layout.VIC]: 'Vic.',
   [Layout.WA]: 'WA',
+  [Layout.ACT_NT]: 'ACT & NT',
   [Layout.NSW_QLD]: 'Qld. & NSW',
   [Layout.NSW_VIC]: 'NSW & Vic.',
   [Layout.QLD_VIC]: 'Qld. & Vic.',
@@ -1710,6 +1712,7 @@ export const DEFAULT_LAYOUT = Layout.EXPLODED;
 export const ALL_STATES_LAYOUTS = [Layout.GEO, Layout.COUNTRY, Layout.EXPLODED, Layout.GRID];
 export const MULTI_STATE_LAYOUTS = [
   ...ALL_STATES_LAYOUTS,
+  Layout.ACT_NT,
   Layout.NSW_QLD,
   Layout.NSW_VIC,
   Layout.QLD_VIC,
