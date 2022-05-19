@@ -3,6 +3,7 @@
 declare var maplibregl: typeof import('maplibre-gl');
 
 import type { Allocation, ElectorateID, NoYes } from '../../lib/constants';
+import { Area } from '../../lib/constants';
 
 export type CapitalCoordinates = {
   name: string;
@@ -11,15 +12,18 @@ export type CapitalCoordinates = {
   minZoom: number;
 };
 
-export type ElectorateGeoProperties = {
-  id: string;
-  latitude: number;
-  longitude: number;
+export type CardinalBoundary = {
   north: number;
   south: number;
   east: number;
   west: number;
 };
+
+export type ElectorateGeoProperties = {
+  id: string;
+  latitude: number;
+  longitude: number;
+} & CardinalBoundary;
 
 export type ElectorateRenderProps = {
   id: ElectorateID;
@@ -45,6 +49,50 @@ export const MAP_BASE_CONFIG: Partial<maplibregl.MapOptions> = {
     layers: [],
     glyphs: 'https://www.abc.net.au/res/sites/news-projects/map-vector-fonts/{fontstack}/{range}.pbf'
   }
+};
+
+export const AREAS_BOUNDS: Record<Area, maplibregl.LngLatBoundsLike> = {
+  [Area.Australia]: [
+    [112, -44],
+    [156, -10]
+  ],
+  [Area.BrisbaneAndSurrounds]: [
+    [152.67620200034025, -27.85975844732532],
+    [153.50771856749492, -27.122141459597835]
+  ],
+  [Area.SydneyAndSurrounds]: [
+    [150.53643051298894, -34.250330919454555],
+    [151.6159583706169, -33.35329642067877]
+  ],
+  [Area.MelbourneAndSurrounds]: [
+    [143.7112326761349, -38.73737902155104],
+    [146.2181523182391, -36.755303142447325]
+  ],
+  [Area.InnerCitySydney]: [
+    [150.97804393208258, -33.9820617904466],
+    [151.29883502771884, -33.71564208020996]
+  ],
+  [Area.InnerCityMelbourne]: [
+    [144.74843032299214, -38.00505753293409],
+    [145.22508324655564, -37.62851493730817]
+  ],
+  [Area.Perth]: [
+    [115.29761105882773, -32.58735478749758],
+    [116.46158922227181, -31.601283791419284]
+  ],
+  [Area.Adelaide]: [
+    [138.1361307284978, -35.308045628940405],
+    [139.08340859017528, -34.53133194772551]
+  ],
+  [Area.Tasmania]: [
+    [143.15169589003773, -43.824678713957354],
+    [149.19913869957333, -39.30289848300832]
+  ],
+  // Start with Australia's bounds
+  [Area.FocusDriven]: [
+    [112, -44],
+    [156, -10]
+  ]
 };
 
 export const CAPITALS_COORDINATES: CapitalCoordinates[] = [

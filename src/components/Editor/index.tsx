@@ -6,6 +6,8 @@ import {
   Allocation,
   Allocations,
   Annotations,
+  Area,
+  AREA_LABELS,
   Certainties,
   ElectorateID,
   ELECTORATE_IDS,
@@ -77,6 +79,7 @@ const Editor: React.FC = () => {
     []
   );
   const [layout, setLayout] = useState<Layout>(initialUrlParamProps.layout);
+  const [area, setArea] = useState<Area>(initialUrlParamProps.area);
   const [allocations, setAllocations] = useState<Allocations>(initialUrlParamProps.allocations);
   const [annotations, setAnnotations] = useState<Annotations>(initialUrlParamProps.annotations);
   const [certainties, setCertainties] = useState<Certainties>(initialUrlParamProps.certainties);
@@ -171,7 +174,6 @@ const Editor: React.FC = () => {
     );
 
     setAllocations(allocations);
-    console.log(certainties);
     setCertainties(certainties);
   };
 
@@ -264,6 +266,7 @@ const Editor: React.FC = () => {
     () => ({
       ...initialUrlParamProps,
       layout,
+      area,
       allocations,
       annotations,
       certainties,
@@ -273,7 +276,7 @@ const Editor: React.FC = () => {
       inset,
       relative
     }),
-    [layout, allocations, annotations, certainties, focuses, allied, counting, inset, relative]
+    [layout, area, allocations, annotations, certainties, focuses, allied, counting, inset, relative]
   );
 
   const graphicPropsAsAlternatingCase = useMemo(
@@ -369,12 +372,36 @@ const Editor: React.FC = () => {
         <div className={styles.flexRow}>
           {Object.keys(LAYOUT_LABELS).map(key => {
             return (
-              <button key={key} disabled={key === layout} onClick={() => setLayout(key as Layout)}>
+              <button
+                key={key}
+                disabled={key === layout}
+                onClick={() => {
+                  setLayout(key as Layout);
+
+                  if (key !== Layout.GEO) {
+                    setArea(Area.Australia);
+                  }
+                }}
+              >
                 {LAYOUT_LABELS[key]}
               </button>
             );
           })}
         </div>
+        {layout === Layout.GEO && (
+          <>
+            <h3>Geo Area</h3>
+            <div className={styles.flexRow}>
+              {Object.keys(AREA_LABELS).map(key => {
+                return (
+                  <button key={key} disabled={key === area} onClick={() => setArea(key as Area)}>
+                    {AREA_LABELS[key]}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
         <h3>Feature Toggles</h3>
         <div className={styles.flexRow}>
           <span key="none">

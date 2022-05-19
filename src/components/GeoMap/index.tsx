@@ -7,6 +7,8 @@ import {
   Allocation,
   Allocations,
   Annotations,
+  Area,
+  DEFAULT_AREA,
   Certainties,
   Electorate,
   ElectorateID,
@@ -17,20 +19,17 @@ import {
 import { ALLOCATIONS_COLORS } from '../../lib/theme';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
-import { CAPITALS_COORDINATES, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
+import { AREAS_BOUNDS, CAPITALS_COORDINATES, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
 import styles from './styles.scss';
 import { electorateIdToNumber, ensureMaplibre } from './utils';
 
-const AUSTRALA_BOUNDS: maplibregl.LngLatBoundsLike = [
-  [112, -44],
-  [156, -10]
-];
-
 const FIT_BOUNDS_OPTIONS = {
-  padding: { top: 25, left: 25, right: 25, bottom: 25 }
+  // padding: { top: 25, left: 25, right: 25, bottom: 25 }
+  padding: { top: 0, left: 0, right: 0, bottom: 0 }
 };
 
 export type GeoMapProps = {
+  area: Area;
   allocations?: Allocations;
   annotations?: Annotations;
   certainties?: Certainties;
@@ -38,11 +37,15 @@ export type GeoMapProps = {
   onTapElectorate?: (electorateID: string, event: React.MouseEvent<Element>) => void;
 };
 
+export const DEFAULT_PROPS = {
+  area: DEFAULT_AREA
+};
+
 const GeoMap: React.FC<GeoMapProps> = props => {
   const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
-  const { allocations, annotations, certainties, focuses, onTapElectorate } = props;
+  const { allocations, annotations, area, certainties, focuses, onTapElectorate } = { ...DEFAULT_PROPS, ...props };
   const isInteractive = !!onTapElectorate;
 
   const electoratesRenderProps = useMemo(
@@ -60,7 +63,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           certainty: certainties ? certainties[id] : NoYes.Yes,
           annotation: annotations ? annotations[id] : NoYes.No,
           focus: focuses ? focuses[id] : NoYes.No,
-          color: ALLOCATIONS_COLORS[allocation || Allocation.None],
+          color: ALLOCATIONS_COLORS[allocation],
           geoProps: ELECTORATES_GEO_PROPERTIES.find(
             geoProps => geoProps.id.toUpperCase() === id
           ) as ElectorateGeoProperties
@@ -108,9 +111,9 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       }
     });
 
-    let nextBounds: maplibregl.LngLatBoundsLike = AUSTRALA_BOUNDS;
+    let nextBounds = AREAS_BOUNDS[area];
 
-    if (focusedElectoratesGeoProperties.length > 0) {
+    if (area === Area.FocusDriven && focusedElectoratesGeoProperties.length > 0) {
       const [{ east, north, south, west }, ...remainingGeoProps] = focusedElectoratesGeoProperties;
 
       nextBounds = [
@@ -140,7 +143,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         return;
       }
 
-      const bounds = new maplibregl.LngLatBounds(AUSTRALA_BOUNDS);
+      const bounds = new maplibregl.LngLatBounds(AREAS_BOUNDS[Area.Australia]);
 
       const _map: maplibregl.Map = new maplibregl.Map({
         ...(MAP_BASE_CONFIG as maplibregl.MapOptions),
@@ -261,10 +264,26 @@ const GeoMap: React.FC<GeoMapProps> = props => {
 
   useEffect(() => {
     updateMapState();
-  }, [map, electoratesRenderProps]);
+  }, [map, area, electoratesRenderProps]);
 
   useEffect(() => {
     updateMapState(true);
+
+    // Debug logs for grabbing boudnaries (remember to set padding to 0)
+    // if (map && isInspecting) {
+    //   const { _ne, _sw } = map.getBounds();
+
+    //   console.debug(
+    //     JSON.stringify(
+    //       [
+    //         [_sw.lng, _sw.lat],
+    //         [_ne.lng, _ne.lat]
+    //       ],
+    //       null,
+    //       2
+    //     )
+    //   );
+    // }
   }, [isInspecting]);
 
   // While the alt key is held down on an interactive graphic, we enable

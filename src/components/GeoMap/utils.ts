@@ -1,4 +1,9 @@
+/// <reference types="maplibre-gl" />
+
+declare var maplibregl: typeof import('maplibre-gl');
+
 import loadScript from 'load-script';
+import { Area } from '../../lib/constants';
 
 export const ensureMaplibre = (): Promise<void> => {
   return new Promise((resolve, reject) => {

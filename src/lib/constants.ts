@@ -1721,3 +1721,35 @@ export const MULTI_STATE_LAYOUTS = [
   Layout.SA_TAS_WA
 ];
 export const SINGLE_STATE_LAYOUTS = LAYOUTS.filter(layout => MULTI_STATE_LAYOUTS.indexOf(layout as Layout) === -1);
+
+// Areas
+
+export enum Area {
+  Australia = 'a',
+  BrisbaneAndSurrounds = 'b',
+  SydneyAndSurrounds = 'c',
+  MelbourneAndSurrounds = 'd',
+  InnerCitySydney = 'e',
+  InnerCityMelbourne = 'f',
+  Perth = 'g',
+  Adelaide = 'h',
+  Tasmania = 'i',
+  FocusDriven = 'z'
+}
+
+export const AREAS: string[] = Object.values(Area);
+
+export const AREA_LABELS: Record<Area, string> = {
+  [Area.Australia]: 'Australia',
+  [Area.BrisbaneAndSurrounds]: 'Brisbane and surrounds',
+  [Area.SydneyAndSurrounds]: 'Sydney and surrounds',
+  [Area.MelbourneAndSurrounds]: 'Melbourne and surrounds',
+  [Area.InnerCitySydney]: 'Inner-city Sydney',
+  [Area.InnerCityMelbourne]: 'Inner-city Melbourne',
+  [Area.Perth]: 'Perth',
+  [Area.Adelaide]: 'Adelaide',
+  [Area.Tasmania]: 'Tasmania',
+  [Area.FocusDriven]: 'Focus-driven'
+};
+
+export const DEFAULT_AREA = Area.Australia;

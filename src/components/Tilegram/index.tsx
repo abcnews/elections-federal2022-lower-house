@@ -67,7 +67,10 @@ const Tilegram: React.FC<TilegramProps> = props => {
   const svgRef = useRef<SVGSVGElement>(null);
   const componentID = useMemo(generateComponentID, []);
   const elementsIDs = generateElementIDRecord(['hexClipPath', 'hexPolygon', 'statesPolygons'], componentID);
-  const { allocations, annotations, certainties, focuses, inset, layout, onTapElectorate, relative } = props;
+  const { allocations, annotations, certainties, focuses, inset, layout, onTapElectorate, relative } = {
+    ...DEFAULT_PROPS,
+    ...props
+  };
   const isSingleStateLayout = SINGLE_STATE_LAYOUTS.indexOf(layout) !== -1;
   const relativeAllocations = relative && ELECTORATES_HELD_ALLOCATIONS;
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);

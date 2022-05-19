@@ -3,7 +3,7 @@ import { Layout } from '../../lib/constants';
 import { remapAllocationsToAlliances } from '../../lib/utils';
 import BasicGeoMap from '../Geo';
 import type { GeoMapProps } from '../GeoMap';
-import GeoMap from '../GeoMap';
+import GeoMap, { DEFAULT_PROPS as DEFAULT_GEO_MAP_PROPS } from '../GeoMap';
 import type { TilegramProps } from '../Tilegram';
 import Tilegram, { DEFAULT_PROPS as DEFAULT_TILEGRAM_PROPS } from '../Tilegram';
 import type { TotalsProps } from '../Totals';
@@ -25,10 +25,12 @@ export type PossiblyEncodedGraphicProps =
       certainties: string;
       focuses: string;
       layout: number | string;
+      area: string;
     }
   | GraphicProps;
 
 export const DEFAULT_PROPS: Partial<GraphicProps> = {
+  ...DEFAULT_GEO_MAP_PROPS,
   ...DEFAULT_TILEGRAM_PROPS,
   allied: false,
   counting: true
@@ -43,6 +45,7 @@ const Graphic: React.FC<GraphicProps> = props => {
     focuses,
     allied,
     inset,
+    area,
     layout,
     onTapElectorate,
     relative,
@@ -64,6 +67,7 @@ const Graphic: React.FC<GraphicProps> = props => {
       }
       electoratesGraphic = (
         <GeoMap
+          area={area}
           allocations={potentiallyAlliedAllocations}
           annotations={annotations}
           certainties={certainties}
