@@ -36,11 +36,11 @@ export default function run(initiatingElement, panels) {
   // const imageURLs = graphicsProps.map(
   //   graphicProps =>
   //     `https://abcnews-cors-anywhere.herokuapp.com/https://fallback-automation.drzax.now.sh/api?url=${encodeURIComponent(
-  //       `https://www.abc.net.au/res/sites/news-projects/elections-federal2022-lower-house/1.16.0/editor/${graphicPropsToUrlQuery(
+  //       `https://www.abc.net.au/res/sites/news-projects/elections-federal2022-lower-house/1.16.1/editor/${graphicPropsToUrlQuery(
   //         graphicProps,
   //         DEFAULT_GRAPHIC_PROPS
   //       )}`
-  //     )}&width=600&selector=.${graphicProps.counting ? 'dhTGht' : 'DiSxJk'}`
+  //     )}&width=600&selector=.${graphicProps.counting ? 'dhTGht' : 'QUCj+0'}`
   // );
 
   const zip = new JSZip();
