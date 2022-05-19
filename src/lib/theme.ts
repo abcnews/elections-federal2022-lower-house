@@ -3,10 +3,10 @@ import { Allocation } from './constants';
 // Note: Keep these in sync with SASS colours in './constants.scss' &  './theme.scss'
 
 enum Color {
-  Black = '#fff',
+  Black = '#000',
   Grey = '#989494',
   LightGrey = '#ddd',
-  White = '#000',
+  White = '#fff',
   PtyAqua = '#005d82',
   PtyBlack = '#757575',
   PtyBlue = '#0a52bf',
