@@ -5,13 +5,6 @@ declare var maplibregl: typeof import('maplibre-gl');
 import type { Allocation, ElectorateID, NoYes } from '../../lib/constants';
 import { Area } from '../../lib/constants';
 
-export type CapitalCoordinates = {
-  name: string;
-  latitude: number;
-  longitude: number;
-  minZoom: number;
-};
-
 export type CardinalBoundary = {
   north: number;
   south: number;
@@ -94,57 +87,6 @@ export const AREAS_BOUNDS: Record<Area, maplibregl.LngLatBoundsLike> = {
     [156, -10]
   ]
 };
-
-export const CAPITALS_COORDINATES: CapitalCoordinates[] = [
-  {
-    name: 'Sydney',
-    latitude: -33.92001097,
-    longitude: 151.1851798,
-    minZoom: 1.7
-  },
-  {
-    name: 'Melbourne',
-    latitude: -37.82003131,
-    longitude: 144.9750162,
-    minZoom: 3
-  },
-  {
-    name: 'Perth',
-    latitude: -31.95501463,
-    longitude: 115.8399987,
-    minZoom: 3.7
-  },
-  {
-    name: 'Darwin',
-    latitude: -12.42535398,
-    longitude: 130.8500386,
-    minZoom: 3.7
-  },
-  {
-    name: 'Canberra',
-    latitude: -35.28302855,
-    longitude: 149.1290262,
-    minZoom: 4
-  },
-  {
-    name: 'Adelaide',
-    latitude: -34.93498777,
-    longitude: 138.6000048,
-    minZoom: 3.7
-  },
-  {
-    name: 'Brisbane',
-    latitude: -27.45503091,
-    longitude: 153.0350927,
-    minZoom: 4
-  },
-  {
-    name: 'Hobart',
-    latitude: -42.85000853,
-    longitude: 147.2950297,
-    minZoom: 5
-  }
-];
 
 export const ELECTORATES_GEO_PROPERTIES: ElectorateGeoProperties[] = [
   {

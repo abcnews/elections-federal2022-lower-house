@@ -19,7 +19,7 @@ import {
 import { ALLOCATIONS_COLORS } from '../../lib/theme';
 import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '../../lib/utils';
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
-import { AREAS_BOUNDS, CAPITALS_COORDINATES, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
+import { AREAS_BOUNDS, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
 import styles from './styles.scss';
 import { electorateIdToNumber, ensureMaplibre } from './utils';
 
