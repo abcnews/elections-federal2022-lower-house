@@ -70,7 +70,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           ) as ElectorateGeoProperties
         };
       }, [] as ElectorateRenderProps[]),
-    [allocations, focuses]
+    [allocations, annotations, certainties, focuses]
   );
 
   const updateMapState = (isInspectionChange = false) => {
