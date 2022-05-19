@@ -177,7 +177,7 @@
   border-color: var(--color-allocation);
 }
 
-.electorate[data-has-definitive-allocation][data-certainty='#{$NoYes_No}'] {
+.electorate[data-has-definitive-allocation][data-certainty='#{$NoYes_Yes}'] {
   border-color: transparent;
   background-color: var(--color-allocation);
   color: $color_BG;
