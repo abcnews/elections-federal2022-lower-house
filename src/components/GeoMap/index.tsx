@@ -42,10 +42,11 @@ export const DEFAULT_PROPS = {
 };
 
 const GeoMap: React.FC<GeoMapProps> = props => {
+  const { allocations, annotations, area, certainties, focuses, onTapElectorate } = { ...DEFAULT_PROPS, ...props };
   const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
-  const { allocations, annotations, area, certainties, focuses, onTapElectorate } = { ...DEFAULT_PROPS, ...props };
+  const [bounds, setBounds] = useState<maplibregl.LngLatBoundsLike>(AREAS_BOUNDS[area]);
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
   const isInteractive = !!onTapElectorate;
 
@@ -113,29 +114,29 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       }
     });
 
-    let nextBounds = AREAS_BOUNDS[area];
-
-    if (area === Area.FocusDriven && focusedElectoratesGeoProperties.length > 0) {
-      const [{ east, north, south, west }, ...remainingGeoProps] = focusedElectoratesGeoProperties;
-
-      nextBounds = [
-        [east, north],
-        [west, south]
-      ];
-
-      if (remainingGeoProps.length) {
-        nextBounds = remainingGeoProps.reduce<maplibregl.LngLatBoundsLike>(
-          (memo, geoProps) => [
-            [Math.max(memo[0][0], geoProps.east), Math.max(memo[0][1], geoProps.north)],
-            [Math.min(memo[1][0], geoProps.west), Math.min(memo[1][1], geoProps.south)]
-          ],
-          nextBounds
-        );
-      }
-    }
-
     if (!isInspectionChange) {
-      map.fitBounds(new maplibregl.LngLatBounds(nextBounds), FIT_BOUNDS_OPTIONS);
+      let nextBounds = AREAS_BOUNDS[area];
+
+      if (area === Area.FocusDriven && focusedElectoratesGeoProperties.length > 0) {
+        const [{ east, north, south, west }, ...remainingGeoProps] = focusedElectoratesGeoProperties;
+
+        nextBounds = [
+          [east, north],
+          [west, south]
+        ];
+
+        if (remainingGeoProps.length) {
+          nextBounds = remainingGeoProps.reduce<maplibregl.LngLatBoundsLike>(
+            (memo, geoProps) => [
+              [Math.max(memo[0][0], geoProps.east), Math.max(memo[0][1], geoProps.north)],
+              [Math.min(memo[1][0], geoProps.west), Math.min(memo[1][1], geoProps.south)]
+            ],
+            nextBounds
+          );
+        }
+      }
+
+      setBounds(nextBounds);
     }
   };
 
@@ -145,16 +146,12 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         return;
       }
 
-      const bounds = new maplibregl.LngLatBounds(AREAS_BOUNDS[Area.Australia]);
-
       const _map: maplibregl.Map = new maplibregl.Map({
         ...(MAP_BASE_CONFIG as maplibregl.MapOptions),
         container: mapElRef.current,
-        center: bounds.getCenter(),
+        center: new maplibregl.LngLatBounds(bounds).getCenter(),
         interactive: isInteractive
       });
-
-      _map.fitBounds(bounds, FIT_BOUNDS_OPTIONS);
 
       setMap(_map);
 
@@ -232,14 +229,12 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           layout: {
             'text-field': '{name}',
             'text-anchor': 'center',
-            // 'text-allow-overlap': true,
-            'text-allow-overlap': ['step', ['zoom'], true, 7, false],
             'text-max-width': 6,
             'text-font': ['ABC Sans Bold'],
             'text-size': 13
           },
           paint: {
-            'text-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
+            'text-opacity': ['coalesce', ['feature-state', 'opacity'], 0],
             'text-color': '#000',
             'text-halo-color': '#fff',
             'text-halo-width': 1.5
@@ -262,6 +257,8 @@ const GeoMap: React.FC<GeoMapProps> = props => {
             }
           }
         });
+
+        updateMapState();
       });
     });
   }, [mapElRef]);
@@ -272,23 +269,13 @@ const GeoMap: React.FC<GeoMapProps> = props => {
 
   useEffect(() => {
     updateMapState(true);
-
-    // Debug logs for grabbing boudnaries (remember to set padding to 0)
-    // if (map && isInspecting) {
-    //   const { _ne, _sw } = map.getBounds();
-
-    //   console.debug(
-    //     JSON.stringify(
-    //       [
-    //         [_sw.lng, _sw.lat],
-    //         [_ne.lng, _ne.lat]
-    //       ],
-    //       null,
-    //       2
-    //     )
-    //   );
-    // }
   }, [isInspecting]);
+
+  useEffect(() => {
+    if (map) {
+      map.fitBounds(new maplibregl.LngLatBounds(bounds), FIT_BOUNDS_OPTIONS);
+    }
+  }, [map, bounds]);
 
   // While the alt key is held down on an interactive graphic, we enable
   // 'inspecting' mode. Currentnly, this displays labels on each electorate to
