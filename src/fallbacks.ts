@@ -3,7 +3,6 @@ import JSZip from 'jszip';
 import type { GraphicProps } from './components/Graphic';
 import { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from './components/Graphic';
 import graphicStyles from './components/Graphic/styles.scss';
-import tilegramStyles from './components/Tilegram/styles.scss';
 import { graphicPropsToUrlQuery } from './lib/utils';
 
 export default function run(initiatingElement, panels) {
@@ -28,20 +27,20 @@ export default function run(initiatingElement, panels) {
 
   const imageURLs = graphicsProps.map(
     graphicProps =>
-      `https://cors-anywhere.herokuapp.com/https://fallback-automation.drzax.now.sh/api?url=${encodeURIComponent(
+      `https://abcnews-cors-anywhere.herokuapp.com/https://fallback-automation.drzax.now.sh/api?url=${encodeURIComponent(
         `${__webpack_public_path__}editor/${graphicPropsToUrlQuery(graphicProps, DEFAULT_GRAPHIC_PROPS)}`
-      )}&width=600&selector=.${graphicProps.counting ? graphicStyles.root : tilegramStyles.root}`
+      )}&width=600&selector=.${graphicProps.counting ? graphicStyles.root : graphicStyles.figure}`
   );
 
   // When developing, fallback-automation.drzax.now.sh needs a public URL
   // const imageURLs = graphicsProps.map(
   //   graphicProps =>
-  //     `https://cors-anywhere.herokuapp.com/https://fallback-automation.drzax.now.sh/api?url=${encodeURIComponent(
-  //       `https://www.abc.net.au/res/sites/news-projects/elections-federal2022-lower-house/1.2.0/editor/${graphicPropsToUrlQuery(
+  //     `https://abcnews-cors-anywhere.herokuapp.com/https://fallback-automation.drzax.now.sh/api?url=${encodeURIComponent(
+  //       `https://www.abc.net.au/res/sites/news-projects/elections-federal2022-lower-house/1.16.0/editor/${graphicPropsToUrlQuery(
   //         graphicProps,
   //         DEFAULT_GRAPHIC_PROPS
   //       )}`
-  //     )}&width=600&selector=.${graphicProps.counting ? '_1Ykpoi' : '_3-hRFt'}`
+  //     )}&width=600&selector=.${graphicProps.counting ? 'dhTGht' : 'DiSxJk'}`
   // );
 
   const zip = new JSZip();
