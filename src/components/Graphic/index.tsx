@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from '../../lib/constants';
 import { remapAllocationsToAlliances } from '../../lib/utils';
-import BasicGeoMap from '../Geo';
+// import BasicGeoMap from '../Geo';
 import type { GeoMapProps } from '../GeoMap';
 import GeoMap, { DEFAULT_PROPS as DEFAULT_GEO_MAP_PROPS } from '../GeoMap';
 import type { TilegramProps } from '../Tilegram';
@@ -61,10 +61,10 @@ const Graphic: React.FC<GraphicProps> = props => {
 
   switch (layout) {
     case Layout.GEO:
-      if (willChange) {
-        electoratesGraphic = <BasicGeoMap allocations={potentiallyAlliedAllocations} focuses={focuses} />;
-        break;
-      }
+      // if (willChange) {
+      //   electoratesGraphic = <BasicGeoMap allocations={potentiallyAlliedAllocations} focuses={focuses} />;
+      //   break;
+      // }
       electoratesGraphic = (
         <GeoMap
           area={area}

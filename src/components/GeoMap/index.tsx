@@ -24,8 +24,8 @@ import styles from './styles.scss';
 import { electorateIdToNumber, ensureMaplibre } from './utils';
 
 const FIT_BOUNDS_OPTIONS = {
-  // padding: { top: 25, left: 25, right: 25, bottom: 25 }
-  padding: { top: 0, left: 0, right: 0, bottom: 0 }
+  padding: { top: 25, left: 25, right: 25, bottom: 25 }
+  // padding: { top: 0, left: 0, right: 0, bottom: 0 }
 };
 
 export type GeoMapProps = {
@@ -46,6 +46,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
   const { allocations, annotations, area, certainties, focuses, onTapElectorate } = { ...DEFAULT_PROPS, ...props };
+  const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
   const isInteractive = !!onTapElectorate;
 
   const electoratesRenderProps = useMemo(
@@ -93,6 +94,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           id: geoPropsID
         },
         {
+          opacity: hasFocuses && !isFocused ? 0.25 : 1,
           fill: color,
           stroke: hasAllocation ? '#fff' : isFocused ? '#000' : 'transparent'
         }
@@ -195,6 +197,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           source: 'electorate_polygons',
           'source-layer': 'federalelectorates2022',
           paint: {
+            'fill-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
             'fill-color': ['coalesce', ['feature-state', 'fill'], '#fff']
           }
         });
@@ -205,6 +208,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
           source: 'electorate_polygons',
           'source-layer': 'federalelectorates2022',
           paint: {
+            'line-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
             'line-color': '#ddd',
             'line-width': 1
           }
