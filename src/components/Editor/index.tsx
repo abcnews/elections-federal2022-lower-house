@@ -37,16 +37,15 @@ import type { GraphicProps } from '../Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from '../Graphic';
 import graphicStyles from '../Graphic/styles.scss';
 import Icon from '../Icon';
-import tilegramStyles from '../Tilegram/styles.scss';
 import totalsStyles from '../Totals/styles.scss';
 import candidates from './candidates.json';
 import { MIXINS, PRESETS } from './constants';
 import styles from './styles.scss';
 
-const COMPONENTS_STYLES = {
-  Graphic: graphicStyles,
-  Totals: totalsStyles,
-  Tilegram: tilegramStyles
+const GRAPHIC_ELEMENT_SELECTORS = {
+  'Full Graphic': graphicStyles.root,
+  'Map / Tilegram': graphicStyles.figure,
+  Totals: totalsStyles.root
 };
 
 const INITIAL_GRAPHIC_PROPS = {
@@ -609,10 +608,10 @@ const Editor: React.FC = () => {
         </ul>
         <h3>Static image downloads</h3>
         <ul>
-          {Object.keys(COMPONENTS_STYLES).map(key => (
+          {Object.keys(GRAPHIC_ELEMENT_SELECTORS).map(key => (
             <li key={key}>
               <a
-                href={`${fallbackAutomationBaseURL}${encodeURIComponent(COMPONENTS_STYLES[key].root)}`}
+                href={`${fallbackAutomationBaseURL}${encodeURIComponent(GRAPHIC_ELEMENT_SELECTORS[key])}`}
                 download={`fallback-${key}-${graphicPropsAsAlternatingCase}.png`}
               >
                 {key}
