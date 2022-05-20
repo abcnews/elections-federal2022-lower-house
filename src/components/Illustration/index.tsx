@@ -2,7 +2,9 @@ import React from 'react';
 import styles from './styles.scss';
 
 export enum IllustrationName {
-  Scobo = 'scobo',
+  Tossup = 'tossup',
+  CoalitionWin = 'coalitionwin',
+  LaborWin = 'laborwin',
   BidenWin = 'bidenwin'
 }
 
@@ -21,7 +23,7 @@ export type IllustrationProps = {
 const Illustration: React.FC<IllustrationProps> = ({ name }) => {
   const aspect = (name && ASPECT_OVERRIDES[name]) || '1:1';
   const extension = (name && EXTENSION_OVERRIDES[name]) || 'svg';
-  const src = `${__webpack_public_path__}illustrations/${name || IllustrationName.Scobo}.${extension}`;
+  const src = `${__webpack_public_path__}illustrations/${name || IllustrationName.Tossup}.${extension}`;
 
   return (
     <div className={styles.root} data-aspect={aspect}>

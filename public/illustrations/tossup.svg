@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 650 650">
-  <image id="_a0" xlink:href="scobo/SCO.svg" width="0" height="1310" preserveAspectRatio="none" transform="translate(325,325) scale(.4,.4) translate(0,-655)"/>
-  <image id="_a1" xlink:href="scobo/BO.svg" width="1135" height="1310" preserveAspectRatio="none" transform="translate(325,325) scale(.4,.4) translate(-567.5,-655)"/>
-  <image id="_a2" xlink:href="scobo/BO.svg" width="0" height="1310" preserveAspectRatio="none" transform="translate(325,325) scale(.4,.4) translate(0,-655)"/>
+  <image id="_a0" xlink:href="morrison.svg" width="0" height="1310" preserveAspectRatio="none" transform="translate(325,325) scale(.4,.4) translate(0,-655)"/>
+  <image id="_a1" xlink:href="albanese.svg" width="1135" height="1310" preserveAspectRatio="none" transform="translate(325,325) scale(.4,.4) translate(-567.5,-655)"/>
+  <image id="_a2" xlink:href="albanese.svg" width="0" height="1310" preserveAspectRatio="none" transform="translate(325,325) scale(.4,.4) translate(0,-655)"/>
   <rect id="_a3" width="0" height="256.9" fill="#ff7c7c" transform="translate(104.9,242) translate(0,0) translate(-6.9,-43.2)"/>
   <rect id="_a4" width="0" height="261.5" fill="#fd5058" transform="translate(104.9,242) translate(0,0) translate(-6.9,-47.7)"/>
   <rect id="_a5" width="0" height="261.5" fill="#7c9bff" transform="translate(104.9,242) translate(0,0) translate(-6.9,-47.7)"/>
