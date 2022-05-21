@@ -39,13 +39,13 @@ export type OdysseyAPI = {
 const whenScrollytellersLoaded = new Promise((resolve, reject) =>
   whenOdysseyLoaded.then(odyssey => {
     const cardsMounts = selectMounts('lhcard');
-
-    const names = selectMounts('scrollytellerNAME', { markAsUsed: false })
+    const uniqueNames = selectMounts('scrollytellerNAME', { markAsUsed: false })
       .map(mountEl => (getMountValue(mountEl).match(/NAME([a-z]+)/) || [])[1])
-      .filter(name => typeof name === 'string');
+      .filter(name => typeof name === 'string')
+      .filter((name, index, names) => names.indexOf(name) === index);
     const scrollytellerDefinitions: ScrollytellerDefinition<PossiblyEncodedGraphicProps>[] = [];
 
-    for (const name of names) {
+    for (const name of uniqueNames) {
       let scrollytellerDefinition: ScrollytellerDefinition<PossiblyEncodedGraphicProps>;
 
       try {
