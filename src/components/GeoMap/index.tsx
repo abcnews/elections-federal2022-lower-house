@@ -19,6 +19,7 @@ import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
 import { AREAS_BOUNDS, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
 import styles from './styles.scss';
+import patternURL from './pattern.png';
 import { electorateIdToNumber } from './utils';
 
 const FIT_BOUNDS_OPTIONS = {
@@ -84,7 +85,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       const { id, hasAllocation, annotation, certainty, focus, color, geoProps } = electorateRenderProps;
       const geoPropsID = ((id as unknown) as String).toLowerCase();
       const isAnnotated = annotation === NoYes.Yes;
-      const isCertain = annotation === NoYes.Yes; // TODO - impact stroke/fill, like with hexes?
+      const isCertain = certainty === NoYes.Yes; // TODO - impact stroke/fill, like with hexes?
       const isFocused = focus === NoYes.Yes;
 
       map.setFeatureState(
@@ -95,6 +96,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         },
         {
           opacity: hasFocuses && !isFocused ? 0.25 : 1,
+          'pattern-opacity': isCertain ? 0 : 1,
           fill: color,
           stroke: hasAllocation ? '#fff' : isFocused ? '#000' : 'transparent'
         }
@@ -190,6 +192,11 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         }
       });
 
+      _map.loadImage(
+        patternURL,
+        (err, image) => err || _map.addImage('diagonal_stripes_pattern', image as ImageBitmap)
+      );
+
       _map.addLayer({
         id: 'electorate_polygons_fill',
         type: 'fill',
@@ -198,6 +205,17 @@ const GeoMap: React.FC<GeoMapProps> = props => {
         paint: {
           'fill-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
           'fill-color': ['coalesce', ['feature-state', 'fill'], '#fff']
+        }
+      });
+
+      _map.addLayer({
+        id: 'electorate_polygons_pattern',
+        type: 'fill',
+        source: 'electorate_polygons',
+        'source-layer': 'federalelectorates2022',
+        paint: {
+          'fill-opacity': ['coalesce', ['feature-state', 'pattern-opacity'], 0],
+          'fill-pattern': 'diagonal_stripes_pattern'
         }
       });
 
