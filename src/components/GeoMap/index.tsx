@@ -47,6 +47,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
   const [bounds, setBounds] = useState<maplibregl.LngLatBoundsLike>(AREAS_BOUNDS[area]);
+  const [resizeDirtyValue, setResizeDirtyValue] = useState<number>(Math.random());
   const hasFocuses = focuses && Object.keys(focuses).some(key => focuses[key] !== NoYes.No);
   const isInteractive = !!onTapElectorate;
 
@@ -271,9 +272,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
 
       _map.on(
         'resize',
-        debounce(() => {
-          _map.fitBounds(new maplibregl.LngLatBounds(bounds), FIT_BOUNDS_OPTIONS);
-        }, 200)
+        debounce(() => setResizeDirtyValue(Math.random()), 200)
       );
 
       _map.on('click', event => {
@@ -308,9 +307,8 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   useEffect(() => {
     if (map) {
       map.fitBounds(new maplibregl.LngLatBounds(bounds), FIT_BOUNDS_OPTIONS);
-      // map.fitBounds(new maplibregl.LngLatBounds(bounds[0]).extend(bounds[1]), FIT_BOUNDS_OPTIONS);
     }
-  }, [map, bounds]);
+  }, [map, bounds, resizeDirtyValue]);
 
   // While the alt key is held down on an interactive graphic, we enable
   // 'inspecting' mode. Currentnly, this displays labels on each electorate to
