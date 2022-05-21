@@ -146,7 +146,11 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   useEffect(() => {
     let wasUnmounted = false;
 
-    ensureMaplibre().then(() => wasUnmounted || setIsMaplibreLoaded(true));
+    ensureMaplibre().then(() => {
+      if (!wasUnmounted) {
+        setIsMaplibreLoaded(true);
+      }
+    });
 
     return () => {
       wasUnmounted = true;
@@ -154,8 +158,6 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   }, []);
 
   useEffect(() => {
-    let wasUnmounted = false;
-
     if (!isMaplibreLoaded || !mapElRef.current || map) {
       return;
     }
@@ -170,7 +172,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
     setMap(_map);
 
     _map.on('load', () => {
-      if (wasUnmounted) {
+      if (!mapElRef.current) {
         return;
       }
 
@@ -260,7 +262,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       });
 
       _map.on('sourcedata', () => {
-        if (wasUnmounted) {
+        if (!mapElRef.current) {
           return;
         }
 
@@ -293,10 +295,6 @@ const GeoMap: React.FC<GeoMapProps> = props => {
 
       updateMapState();
     });
-
-    return () => {
-      wasUnmounted = true;
-    };
   }, [isMaplibreLoaded, mapElRef, map]);
 
   useEffect(() => {
