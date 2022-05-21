@@ -1,8 +1,5 @@
-/// <reference types="maplibre-gl" />
-
-declare var maplibregl: typeof import('maplibre-gl');
-
 import { debounce } from 'debounce';
+import * as maplibregl from 'maplibre-gl';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Allocation,
@@ -22,7 +19,7 @@ import { determineIfAllocationIsDefinitive, determineIfAllocationIsMade } from '
 import type { ElectorateGeoProperties, ElectorateRenderProps } from './constants';
 import { AREAS_BOUNDS, ELECTORATES_GEO_PROPERTIES, MAP_BASE_CONFIG } from './constants';
 import styles from './styles.scss';
-import { electorateIdToNumber, ensureMaplibre } from './utils';
+import { electorateIdToNumber } from './utils';
 
 const FIT_BOUNDS_OPTIONS = {
   padding: { top: 25, left: 25, right: 25, bottom: 25 }
@@ -44,7 +41,6 @@ export const DEFAULT_PROPS = {
 
 const GeoMap: React.FC<GeoMapProps> = props => {
   const { allocations, annotations, area, certainties, focuses, onTapElectorate } = { ...DEFAULT_PROPS, ...props };
-  const [isMaplibreLoaded, setIsMaplibreLoaded] = useState(false);
   const [isElectoratePolygonsLoaded, setIsElectoratePolygonsLoaded] = useState(false);
   const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
@@ -144,21 +140,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   };
 
   useEffect(() => {
-    let wasUnmounted = false;
-
-    ensureMaplibre().then(() => {
-      if (!wasUnmounted) {
-        setIsMaplibreLoaded(true);
-      }
-    });
-
-    return () => {
-      wasUnmounted = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isMaplibreLoaded || !mapElRef.current || map) {
+    if (!mapElRef.current || map) {
       return;
     }
 
@@ -295,7 +277,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
 
       updateMapState();
     });
-  }, [isMaplibreLoaded, mapElRef, map]);
+  }, [mapElRef, map]);
 
   useEffect(() => {
     updateMapState();
