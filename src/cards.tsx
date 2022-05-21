@@ -8,13 +8,14 @@ import { Allocation, ELECTORATE_IDS, INITIAL_ELECTORATES_ALLOCATIONS } from './l
 import { fetchLiveResultsElectorates, getLiveResultsElectorateAllocation } from './lib/data';
 import './lib/theme.scss';
 import Card from './components/Card';
+import { DEFAULT_MODE, Mode, MODES, MODE_LABELS } from './components/Card/constants';
 import cardStyles from './components/Card/styles.scss';
 import type { GraphicProps } from './components/Graphic';
 import Graphic, { DEFAULT_PROPS as DEFAULT_GRAPHIC_PROPS } from './components/Graphic';
 import MarkerCopyButton from './components/MarkerCopyButton';
 
 const Article = () => {
-  const [isResults, setIsResults] = useState(false);
+  const [mode, setMode] = useState<Mode>(DEFAULT_MODE);
   const [graphicProps, setGraphicProps] = useState<GraphicProps>(DEFAULT_GRAPHIC_PROPS as GraphicProps);
 
   useEffect(() => {
@@ -45,6 +46,16 @@ const Article = () => {
     <article style={{ fontFamily: 'ABCSans' }}>
       <style>
         {`
+button {
+  margin-top: 0.5rem;
+  margin-right: 0.25rem;
+}
+.mode-toggle {
+  margin-bottom: 1rem;
+}
+.mode-toggle button {
+  margin-left: 0.25rem;
+}
 .graphic {
   display: flex;
   justify-content: center;
@@ -88,14 +99,19 @@ article .${cardStyles.root} {
   width: 100%;
 }
 */
-button {
-  margin-top: 0.5rem;
-}
       `}
       </style>
-      <h1>
-        Electorate Cards <button onClick={() => setIsResults(!isResults)}>Toggle Results</button>
-      </h1>
+      <h1>Electorate Cards</h1>
+      <div className="mode-toggle">
+        Mode:
+        {Object.keys(MODE_LABELS).map(key => {
+          return (
+            <button key={key} disabled={key === mode} onClick={() => setMode(key as Mode)}>
+              {MODE_LABELS[key]}
+            </button>
+          );
+        })}
+      </div>
       {/* TODO: Live toggle */}
       {/* <div className="graphic">
         <Graphic onTapElectorate={jumpToElectorate} {...graphicProps} />
@@ -103,8 +119,10 @@ button {
       <div className="grid">
         {ELECTORATE_IDS.map(electorateID => (
           <div key={electorateID} id={electorateID}>
-            <Card electorateID={electorateID} hasResult={isResults} />
-            <MarkerCopyButton text={`#lhcardELECTORATE${electorateID.toLowerCase()}${isResults ? 'RESULT' : ''}`} />
+            <Card electorateID={electorateID} mode={mode} />
+            <MarkerCopyButton
+              text={`#lhcardELECTORATE${electorateID.toLowerCase()}${mode === DEFAULT_MODE ? '' : `MODE${mode}`}`}
+            />
           </div>
         ))}
       </div>

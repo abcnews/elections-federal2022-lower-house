@@ -23,19 +23,30 @@ const FEDERAL_2022_LIVE_RESULTS_PROPS = {
 // TODO: update to 2022 when available
 const LIVE_RESULTS_PROPS = FEDERAL_2022_LIVE_RESULTS_PROPS;
 
+interface VoteCount {
+  votes: number;
+  pct: string;
+  swing: string;
+}
+
+interface Candidate {
+  party: {
+    code: Allocation;
+  };
+  predicted?: VoteCount;
+  predicted2CP?: VoteCount;
+  simple: VoteCount;
+  simple2CP?: VoteCount;
+}
+
 export interface LiveResultsElectorate {
+  updated: string;
   code: ElectorateID;
   counted: string;
   isDoubtful: boolean;
-  leadingCandidate?: {
-    party: {
-      code: Allocation;
-    };
-  };
-  predicted?: {
-    predictionString?: string;
-  };
-  updated: string;
+  runners: Candidate[];
+  leadingCandidate?: Candidate;
+  trailingCandidate?: Candidate;
 }
 
 const liveResultsElectoratesPromises: {

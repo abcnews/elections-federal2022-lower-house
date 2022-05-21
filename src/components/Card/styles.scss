@@ -10,6 +10,7 @@
   margin-right: -2.375rem;
   padding: 1rem 1.25rem;
   background-color: #ebebeb;
+  font-family: ABCSans;
   font-size: 0.75rem;
 
   /* Scrollyteller panel layout matching (large-first responsive) */
@@ -45,27 +46,17 @@
   }
 }
 
-.flex {
+.header {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
+  align-items: baseline;
+  gap: 0.5rem;
 }
 
-.flex > :not(.title) {
-  font-family: ABCSans;
-  letter-spacing: 0.05em;
+.header > * {
   white-space: nowrap;
-}
-
-.flex > :first-child {
-  padding-right: 0.5rem;
-}
-
-.flex > :last-child {
-  @media only screen and (min-width: 1023px) {
-    margin-left: auto;
-    align-self: flex-start;
-  }
 }
 
 .title {
@@ -82,78 +73,6 @@
   }
 }
 
-.hex {
-  display: inline-block;
-  margin-right: 0.5em;
-
-  svg {
-    width: 1.25em;
-    height: auto;
-    vertical-align: text-top;
-  }
-
-  polygon {
-    fill: none;
-    stroke: $color_Black;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: $swHeavy;
-  }
-}
-
-.hex[data-allocation] polygon {
-  fill: var(--color-allocation);
-  stroke: var(--color-allocation);
-}
-
-.hex[data-certainty='#{$NoYes_No}'] polygon {
-  fill: none;
-}
-
-.pastWinners {
-  margin-top: 10px;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 3px;
-  overflow: hidden;
-  max-height: 1.5rem;
-}
-
-.pastWinner {
-  border-bottom: 5px solid var(--color-allocation);
-  padding: 0 0 3px 0;
-  flex: 1 0 4rem;
-  text-align: center;
-  font-weight: bold;
-
-  @media only screen and (max-width: 479px) {
-    flex-basis: 2.5rem;
-  }
-}
-
-.result {
-  display: inline-block;
-}
-
-.result + .result {
-  margin-left: 0.5em;
-}
-
-.result::before {
-  content: '';
-  vertical-align: middle;
-  margin-right: 0.25em;
-  width: 1em;
-  height: 1em;
-  background-color: $color_Black;
-  display: inline-block;
-}
-
-.result[data-allocation]::before {
-  background-color: var(--color-allocation);
-}
-
-.name {
-  margin-right: 0.25em;
+.status {
+  letter-spacing: 0.033em;
 }

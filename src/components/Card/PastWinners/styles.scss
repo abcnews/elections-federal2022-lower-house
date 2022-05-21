@@ -1,0 +1,21 @@
+.root {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 3px;
+  overflow: hidden;
+  max-height: 1.5rem;
+}
+
+.winner {
+  border-bottom: 5px solid var(--color-allocation);
+  padding: 0 0 3px 0;
+  flex: 1 0 4rem;
+  text-align: center;
+  font-weight: bold;
+
+  @media only screen and (max-width: 479px) {
+    flex-basis: 2.5rem;
+  }
+}

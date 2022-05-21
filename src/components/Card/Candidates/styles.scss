@@ -1,0 +1,13 @@
+.root {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  font-size: 1.125em;
+  letter-spacing: 0.033em;
+}
+
+.candidate {
+  display: flex;
+  gap: 0.25rem;
+}

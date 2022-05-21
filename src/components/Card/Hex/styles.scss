@@ -1,0 +1,28 @@
+@import '../../../lib/constants.scss';
+
+.root {
+  display: inline-block;
+
+  svg {
+    width: 1.25em;
+    height: auto;
+    vertical-align: text-top;
+  }
+
+  polygon {
+    fill: none;
+    stroke: $color_Black;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: $swHeavy;
+  }
+}
+
+.root[data-allocation] polygon {
+  fill: var(--color-allocation);
+  stroke: var(--color-allocation);
+}
+
+.root[data-certainty='#{$NoYes_No}'] polygon {
+  fill: none;
+}
