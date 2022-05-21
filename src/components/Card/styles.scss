@@ -6,12 +6,15 @@
 
 .root {
   position: relative;
-  margin-left: -2.375rem;
-  margin-right: -2.375rem;
   padding: 1rem 1.25rem;
   background-color: #ebebeb;
   font-family: ABCSans;
   font-size: 0.75rem;
+
+  :global(.Block-content) & {
+    margin-left: -2.375rem;
+    margin-right: -2.375rem;
+  }
 
   /* Scrollyteller panel layout matching (large-first responsive) */
 
@@ -20,16 +23,19 @@
   }
 
   @media only screen and (max-width: 667px) {
-    margin-left: -1.25rem;
-    margin-right: -1.25rem;
     padding: 0.625rem 0.75rem;
+
+    :global(.Block-content) & {
+      margin-left: -1.25rem;
+      margin-right: -1.25rem;
+    }
   }
 
   @media only screen and (min-width: 100rem) and (max-width: 120rem) {
     font-size: 0.6875rem;
   }
 
-  :first-child > & {
+  :global(.Block-content) :first-child > & {
     margin-top: -2.25rem;
 
     @media only screen and (max-width: 667px) {
@@ -37,7 +43,7 @@
     }
   }
 
-  :last-child > & {
+  :global(.Block-content) :last-child > & {
     margin-bottom: -2.25rem;
 
     @media only screen and (max-width: 667px) {

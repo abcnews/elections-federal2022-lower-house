@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Electorate, ElectorateID, ELECTORATES, State, STATES } from '../../lib/constants';
 import type { LiveResultsElectorate } from '../../lib/data';
 import { fetchLiveResultsElectorates } from '../../lib/data';
-import { Mode } from './constants';
+import { Mode, DEFAULT_MODE } from './constants';
 import Candidates from './Candidates';
 import PastWinners from './PastWinners';
 import styles from './styles.scss';
@@ -14,7 +14,10 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = props => {
-  const { electorateID, mode } = props;
+  let { electorateID, mode } = props;
+
+  mode = mode || DEFAULT_MODE;
+
   const isHistoric = mode === Mode.Historic;
   const electorate: Electorate = ELECTORATES.find(({ id }) => ElectorateID[electorateID] === id) as Electorate;
   const state = STATES.find(({ id }) => electorate.state === id) as State;

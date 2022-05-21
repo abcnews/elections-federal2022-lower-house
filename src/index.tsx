@@ -1,15 +1,18 @@
 import 'regenerator-runtime/runtime';
 import acto from '@abcnews/alternating-case-to-object';
-import { getGeneration, GENERATIONS, getTier, TIERS, whenOdysseyLoaded } from '@abcnews/env-utils';
+import { getTier, TIERS, whenOdysseyLoaded } from '@abcnews/env-utils';
 import { getMountValue, isMount, selectMounts } from '@abcnews/mount-utils';
 import type { ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import { loadScrollyteller } from '@abcnews/scrollyteller';
 import React from 'react';
 import { render } from 'react-dom';
 import './lib/theme.scss';
+import { ElectorateID } from './lib/constants';
 import { applyColourToPanels } from './lib/panels';
 import { alternatingCaseToGraphicProps, decoders } from './lib/utils';
 import Block from './components/Block';
+import type { Mode } from './components/Card/constants';
+import Card from './components/Card';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 import Graphic from './components/Graphic';
 import Illustration, { IllustrationName } from './components/Illustration';
@@ -35,6 +38,8 @@ type OdysseyAPI = {
 
 const whenScrollytellersLoaded = new Promise((resolve, reject) =>
   whenOdysseyLoaded.then(odyssey => {
+    const cardsMounts = selectMounts('lhcard');
+
     const names = selectMounts('scrollytellerNAME', { markAsUsed: false })
       .map(mountEl => (getMountValue(mountEl).match(/NAME([a-z]+)/) || [])[1])
       .filter(name => typeof name === 'string');
@@ -72,6 +77,17 @@ const whenScrollytellersLoaded = new Promise((resolve, reject) =>
 
       scrollytellerDefinitions.push(scrollytellerDefinition);
     }
+
+    // Upgrade all scrollytellers' content to show live results
+    cardsMounts.forEach(mount => {
+      const { electorate, mode, hide } = acto(getMountValue(mount));
+
+      if (typeof electorate !== 'string' || (typeof hide === 'boolean' && hide)) {
+        return (((mount as unknown) as HTMLElement).style.display = 'none');
+      }
+
+      render(<Card electorateID={electorate.toUpperCase()} mode={mode as Mode | undefined} />, mount);
+    });
 
     // Return scrollyteller definitions
     resolve(scrollytellerDefinitions);
