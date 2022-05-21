@@ -5,6 +5,7 @@ export enum IllustrationName {
   Tossup = 'tossup',
   CoalitionWin = 'coalitionwin',
   LaborWin = 'laborwin',
+  LaborWinStill = 'laborwinstill',
   BidenWin = 'bidenwin'
 }
 
@@ -13,7 +14,8 @@ const ASPECT_OVERRIDES = {
 };
 
 const EXTENSION_OVERRIDES = {
-  [IllustrationName.BidenWin]: 'jpg'
+  [IllustrationName.BidenWin]: 'jpg',
+  [IllustrationName.LaborWinStill]: 'png'
 };
 
 export type IllustrationProps = {
