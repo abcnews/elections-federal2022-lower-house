@@ -24,7 +24,7 @@ export type OdysseySchedulerClient = {
 
 export type OdysseySchedulerSubscriber = (client: OdysseySchedulerClient) => void;
 
-type OdysseyAPI = {
+export type OdysseyAPI = {
   scheduler: {
     subscribe: (subscriber: OdysseySchedulerSubscriber) => void;
     unsubscribe: (subscriber: OdysseySchedulerSubscriber) => void;
