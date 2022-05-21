@@ -144,10 +144,18 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   };
 
   useEffect(() => {
-    ensureMaplibre().then(() => setIsMaplibreLoaded(true));
+    let wasUnmounted = false;
+
+    ensureMaplibre().then(() => wasUnmounted || setIsMaplibreLoaded(true));
+
+    return () => {
+      wasUnmounted = true;
+    };
   }, []);
 
   useEffect(() => {
+    let wasUnmounted = false;
+
     if (!isMaplibreLoaded || !mapElRef.current || map) {
       return;
     }
@@ -162,6 +170,10 @@ const GeoMap: React.FC<GeoMapProps> = props => {
     setMap(_map);
 
     _map.on('load', () => {
+      if (wasUnmounted) {
+        return;
+      }
+
       _map.addSource('electorate_polygons', {
         type: 'vector',
         tiles: [
@@ -248,6 +260,10 @@ const GeoMap: React.FC<GeoMapProps> = props => {
       });
 
       _map.on('sourcedata', () => {
+        if (wasUnmounted) {
+          return;
+        }
+
         setIsElectoratePolygonsLoaded(!!_map.getSource('electorate_polygons'));
       });
 
@@ -277,6 +293,10 @@ const GeoMap: React.FC<GeoMapProps> = props => {
 
       updateMapState();
     });
+
+    return () => {
+      wasUnmounted = true;
+    };
   }, [isMaplibreLoaded, mapElRef, map]);
 
   useEffect(() => {
@@ -290,6 +310,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   useEffect(() => {
     if (map) {
       map.fitBounds(new maplibregl.LngLatBounds(bounds), FIT_BOUNDS_OPTIONS);
+      // map.fitBounds(new maplibregl.LngLatBounds(bounds[0]).extend(bounds[1]), FIT_BOUNDS_OPTIONS);
     }
   }, [map, bounds]);
 
