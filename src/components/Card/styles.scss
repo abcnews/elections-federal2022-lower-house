@@ -52,7 +52,7 @@
   }
 }
 
-.header {
+.flex {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -61,7 +61,7 @@
   gap: 0.5rem;
 }
 
-.header > * {
+.flex > * {
   white-space: nowrap;
 }
 

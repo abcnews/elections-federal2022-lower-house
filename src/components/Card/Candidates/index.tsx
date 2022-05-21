@@ -13,10 +13,10 @@ interface CandidateView {
 
 interface CandidatesProps {
   result: LiveResultsElectorate;
-  is2PP: boolean;
+  is2CP: boolean;
 }
 
-const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
+const Candidates: React.FC<CandidatesProps> = ({ is2CP, result }) => {
   const { leadingCandidate, runners, trailingCandidate } = result;
 
   if (!leadingCandidate) {
@@ -27,9 +27,9 @@ const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
     );
   }
 
-  const has2PP = !!(trailingCandidate && trailingCandidate.simple2CP);
+  const has2CP = !!(trailingCandidate && trailingCandidate.simple2CP);
 
-  const shortlistedCandidates = (is2PP && has2PP
+  const shortlistedCandidates = (is2CP && has2CP
     ? [leadingCandidate, trailingCandidate]
     : [...runners].sort((a, b) => b.simple.votes - a.simple.votes).slice(0, 3)) as Candidate[];
 
@@ -38,7 +38,7 @@ const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
       ({
         party: candidate.party.code,
         pct: parseFloat(
-          (is2PP && candidate.simple2CP
+          (is2CP && candidate.simple2CP
             ? candidate.predicted2CP || candidate.simple2CP
             : candidate.predicted || candidate.simple
           ).pct
@@ -46,7 +46,7 @@ const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
       } as CandidateView)
   );
 
-  if (!is2PP && candidatesViews.length > 2 && candidatesViews[2].pct < MIN_PCT) {
+  if (!is2CP && candidatesViews.length > 2 && candidatesViews[2].pct < MIN_PCT) {
     candidatesViews.pop();
   }
 
@@ -61,7 +61,7 @@ const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
           </div>
         );
       })}{' '}
-      {/* {is2PP && has2PP && <strong>(2PP)</strong>} */}
+      {/* {is2CP && has2CP && <strong>(2PP)</strong>} */}
     </div>
   );
 };

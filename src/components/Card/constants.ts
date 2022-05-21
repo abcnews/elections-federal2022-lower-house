@@ -1,15 +1,15 @@
 export enum Mode {
   Historic = 'historic',
-  Results1P = '1p',
-  Results2PP = '2pp'
+  ResultsPrimary = 'primary',
+  Results2CP = '2cp'
 }
 
 export const MODES: string[] = Object.values(Mode);
 
 export const MODE_LABELS: Record<Mode, string> = {
   [Mode.Historic]: 'Historic',
-  [Mode.Results1P]: 'Results (first preference)',
-  [Mode.Results2PP]: 'Results (two-party-preferred)'
+  [Mode.ResultsPrimary]: 'Results (primary)',
+  [Mode.Results2CP]: 'Results (two-candidate-preferred)'
 };
 
 export const DEFAULT_MODE = Mode.Historic;

@@ -6,7 +6,7 @@ import { Mode, DEFAULT_MODE } from './constants';
 import Candidates from './Candidates';
 import PastWinners from './PastWinners';
 import styles from './styles.scss';
-import { formatTimeUpdated } from './utils';
+// import { formatTimeUpdated } from './utils';
 
 interface CardProps {
   electorateID: string;
@@ -55,16 +55,23 @@ const Card: React.FC<CardProps> = props => {
   }
 
   const countedStatusText = `${result.counted}% counted`;
-  const updatedStatusText = `Updated ${formatTimeUpdated(new Date(result.updated))}`;
+  // const updatedStatusText = `Updated ${formatTimeUpdated(new Date(result.updated))}`;
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
+      <div className={styles.flex}>
         <h4 className={styles.title}>{`${electorate.name}, ${state.abbr}`}</h4>
         <div className={styles.status}>{countedStatusText}</div>
         {/* <div>{updatedStatusText}</div> */}
       </div>
-      <Candidates result={result} is2PP={mode === Mode.Results2PP} />
+      <div className={styles.flex}>
+        <Candidates result={result} is2CP={mode === Mode.Results2CP} />
+        {result.leadingCandidate && (
+          <strong className={styles.status}>
+            {mode === Mode.Results2CP ? 'Two-candidate-preferred vote' : 'Primary vote'}
+          </strong>
+        )}
+      </div>
     </div>
   );
 };
