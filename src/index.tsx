@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 import acto from '@abcnews/alternating-case-to-object';
-import { getGeneration, GENERATIONS, getTier, TIERS } from '@abcnews/env-utils';
+import { getGeneration, GENERATIONS, getTier, TIERS, whenOdysseyLoaded } from '@abcnews/env-utils';
 import { getMountValue, isMount, selectMounts } from '@abcnews/mount-utils';
 import type { ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import { loadScrollyteller } from '@abcnews/scrollyteller';
@@ -32,26 +32,6 @@ type OdysseyAPI = {
     };
   };
 };
-
-declare global {
-  interface Window {
-    __ODYSSEY__: OdysseyAPI;
-  }
-}
-
-const whenEnvReady = new Promise<void>(resolve =>
-  getGeneration() !== GENERATIONS.P1
-    ? resolve()
-    : import(/* webpackChunkName: "env" */ './polyfills').then(() => resolve())
-);
-
-const whenOdysseyLoaded = new Promise(resolve =>
-  whenEnvReady.then(() =>
-    window.__ODYSSEY__
-      ? resolve(window.__ODYSSEY__)
-      : window.addEventListener('odyssey:api', () => resolve(window.__ODYSSEY__))
-  )
-);
 
 const whenScrollytellersLoaded = new Promise((resolve, reject) =>
   whenOdysseyLoaded.then(odyssey => {
