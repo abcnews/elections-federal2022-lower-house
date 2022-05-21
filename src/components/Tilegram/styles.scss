@@ -183,8 +183,8 @@
   font-size: 0.875rem;
 }
 
-.root[data-is-single-state-layout] .electorate[data-has-long-label] .electorateLabel {
-  font-size: 0.625rem;
+.root[data-is-single-state-layout] .electorate[data-has-long-label]:not([data-has-multi-line-label]) .electorateLabel {
+  font-size: 0.75rem;
 }
 
 .electorate[data-has-allocation][data-certainty='#{$NoYes_Yes}'] .electorateLabel {

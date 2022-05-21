@@ -89,6 +89,8 @@ const Tilegram: React.FC<TilegramProps> = props => {
         const certainty = certainties ? certainties[id] : NoYes.Yes;
         const label = electorate[isSingleStateLayout ? 'name' : 'abbr'];
         const hasLongLabel = label.length > 9 || (label.length > 8 && (label.match(/w|m/gi) || []).length > 1);
+        const multiLineLabel =
+          isSingleStateLayout && hasLongLabel && label.match(/[-\s]/) ? label.match(/\w+\b-?/g) : null;
 
         return {
           ...memo,
@@ -96,6 +98,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
             id,
             label,
             hasLongLabel,
+            multiLineLabel,
             allocation,
             hasAllocation: allocation && determineIfAllocationIsMade(allocation),
             hasDefinitiveAllocation: allocation && determineIfAllocationIsDefinitive(allocation),
@@ -223,6 +226,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                 id,
                 label,
                 hasLongLabel,
+                multiLineLabel,
                 allocation,
                 hasAllocation,
                 hasDefinitiveAllocation,
@@ -238,6 +242,7 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   className={styles.electorate}
                   transform={gTransform}
                   data-has-long-label={hasLongLabel ? '' : undefined}
+                  data-has-multi-line-label={multiLineLabel ? '' : undefined}
                   data-allocation={allocation}
                   data-has-allocation={hasAllocation ? '' : undefined}
                   data-has-definitive-allocation={hasDefinitiveAllocation ? '' : undefined}
@@ -257,7 +262,15 @@ const Tilegram: React.FC<TilegramProps> = props => {
                   </g>
                   <use xlinkHref={`#${elementsIDs.hexPolygon}`} className={styles.electorateHexOutline} />
                   {(isInspecting || annotation === NoYes.Yes) && (
-                    <text className={styles.electorateLabel}>{label}</text>
+                    <text className={styles.electorateLabel}>
+                      {multiLineLabel
+                        ? multiLineLabel.map((line, index) => (
+                            <tspan key={index} x="0" y="-0.6em" dy={`${index * 1.2}em`}>
+                              {line}
+                            </tspan>
+                          ))
+                        : label}
+                    </text>
                   )}
                 </g>
               )

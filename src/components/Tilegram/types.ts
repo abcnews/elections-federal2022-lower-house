@@ -39,6 +39,7 @@ export type ElectorateRenderProps = {
   id: ElectorateID;
   label: string;
   hasLongLabel: boolean;
+  multiLineLabel: string[] | null;
   allocation: Allocation;
   hasAllocation: boolean;
   hasDefinitiveAllocation: boolean;
