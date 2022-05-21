@@ -1,7 +1,6 @@
 import React from 'react';
 import { Layout } from '../../lib/constants';
 import { remapAllocationsToAlliances } from '../../lib/utils';
-// import BasicGeoMap from '../Geo';
 import type { GeoMapProps } from '../GeoMap';
 import GeoMap, { DEFAULT_PROPS as DEFAULT_GEO_MAP_PROPS } from '../GeoMap';
 import type { TilegramProps } from '../Tilegram';
@@ -13,7 +12,6 @@ import styles from './styles.scss';
 export type GraphicProps = {
   allied?: boolean;
   counting?: boolean;
-  willChange?: boolean;
 } & GeoMapProps &
   TilegramProps &
   TotalsProps;
@@ -48,8 +46,7 @@ const Graphic: React.FC<GraphicProps> = props => {
     area,
     layout,
     onTapElectorate,
-    relative,
-    willChange
+    relative
   } = {
     ...DEFAULT_PROPS,
     ...props
@@ -61,10 +58,6 @@ const Graphic: React.FC<GraphicProps> = props => {
 
   switch (layout) {
     case Layout.GEO:
-      // if (willChange) {
-      //   electoratesGraphic = <BasicGeoMap allocations={potentiallyAlliedAllocations} focuses={focuses} />;
-      //   break;
-      // }
       electoratesGraphic = (
         <GeoMap
           area={area}
@@ -95,7 +88,7 @@ const Graphic: React.FC<GraphicProps> = props => {
   return (
     <div className={styles.root}>
       <figure className={styles.figure}>{electoratesGraphic}</figure>
-      {(willChange || isCounting) && (
+      {isCounting && (
         <footer className={styles.footer} data-is-counting={isCounting ? '' : undefined}>
           <Totals allocations={allocations} certainties={certainties} />
         </footer>
