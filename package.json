@@ -42,6 +42,7 @@
 		"@next/polyfill-nomodule": "^9.5.5",
 		"concaveman": "^1.2.1",
 		"core-js": "^3.6.5",
+		"debounce": "^1.2.1",
 		"file-saver": "^2.0.2",
 		"jszip": "^3.5.0",
 		"load-script": "^2.0.0",

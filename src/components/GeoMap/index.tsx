@@ -2,6 +2,7 @@
 
 declare var maplibregl: typeof import('maplibre-gl');
 
+import { debounce } from 'debounce';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Allocation,
@@ -43,6 +44,8 @@ export const DEFAULT_PROPS = {
 
 const GeoMap: React.FC<GeoMapProps> = props => {
   const { allocations, annotations, area, certainties, focuses, onTapElectorate } = { ...DEFAULT_PROPS, ...props };
+  const [isMaplibreLoaded, setIsMaplibreLoaded] = useState(false);
+  const [isElectoratePolygonsLoaded, setIsElectoratePolygonsLoaded] = useState(false);
   const [isInspecting, setIsInspecting] = useState(false);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | undefined>(undefined);
@@ -75,7 +78,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   );
 
   const updateMapState = (isInspectionChange = false) => {
-    if (!map || !map.getSource('electorate_polygons')) {
+    if (!map || !isElectoratePolygonsLoaded) {
       return;
     }
 
@@ -141,131 +144,144 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   };
 
   useEffect(() => {
-    ensureMaplibre().then(() => {
-      if (!mapElRef.current || map) {
-        return;
-      }
+    ensureMaplibre().then(() => setIsMaplibreLoaded(true));
+  }, []);
 
-      const _map: maplibregl.Map = new maplibregl.Map({
-        ...(MAP_BASE_CONFIG as maplibregl.MapOptions),
-        container: mapElRef.current,
-        center: new maplibregl.LngLatBounds(bounds).getCenter(),
-        interactive: isInteractive
-      });
+  useEffect(() => {
+    if (!isMaplibreLoaded || !mapElRef.current || map) {
+      return;
+    }
 
-      setMap(_map);
-
-      _map.on('load', () => {
-        _map.addSource('electorate_polygons', {
-          type: 'vector',
-          tiles: [
-            'https://www.abc.net.au/res/sites/news-projects/map-vector-tiles-federal-electorates-2022/{z}/{x}/{y}.pbf'
-          ],
-          minzoom: 0,
-          maxzoom: 9,
-          bounds: [96.816952, -43.740497, 167.998033, -9.142162],
-          promoteId: { federalelectorates2022: 'code' }
-        });
-
-        _map.addSource('electorate_points', {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: ELECTORATES_GEO_PROPERTIES.map(geoProps => ({
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [geoProps.longitude, geoProps.latitude]
-              },
-              id: electorateIdToNumber(geoProps.id),
-              properties: {
-                ...geoProps,
-                name: (ELECTORATES.find(
-                  electorate => String(ElectorateID[electorate.id]) === geoProps.id.toUpperCase()
-                ) as Electorate).name
-              }
-            }))
-          }
-        });
-
-        _map.addLayer({
-          id: 'electorate_polygons_fill',
-          type: 'fill',
-          source: 'electorate_polygons',
-          'source-layer': 'federalelectorates2022',
-          paint: {
-            'fill-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
-            'fill-color': ['coalesce', ['feature-state', 'fill'], '#fff']
-          }
-        });
-
-        _map.addLayer({
-          id: 'electorate_polygons_baseline',
-          type: 'line',
-          source: 'electorate_polygons',
-          'source-layer': 'federalelectorates2022',
-          paint: {
-            'line-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
-            'line-color': '#ddd',
-            'line-width': 1
-          }
-        });
-
-        _map.addLayer({
-          id: 'electorate_polygons_line',
-          type: 'line',
-          source: 'electorate_polygons',
-          'source-layer': 'federalelectorates2022',
-          paint: {
-            'line-color': ['coalesce', ['feature-state', 'stroke'], 'transparent'],
-            'line-width': 1
-          }
-        });
-
-        _map.addLayer({
-          id: 'electorate_points_label',
-          type: 'symbol',
-          source: 'electorate_points',
-          layout: {
-            'text-field': '{name}',
-            'text-anchor': 'center',
-            'text-max-width': 6,
-            'text-font': ['ABC Sans Bold'],
-            'text-size': 13
-          },
-          paint: {
-            'text-opacity': ['coalesce', ['feature-state', 'opacity'], 0],
-            'text-color': '#000',
-            'text-halo-color': '#fff',
-            'text-halo-width': 1.5
-          }
-        });
-
-        _map.on('click', event => {
-          if (!onTapElectorate) {
-            return;
-          }
-
-          const { point } = event;
-          const features = _map.queryRenderedFeatures(point, { layers: ['electorate_polygons_fill'] });
-
-          if (features.length > 0) {
-            const { code } = features[0].properties;
-
-            if (code) {
-              onTapElectorate(code.toUpperCase(), { nativeEvent: event.originalEvent } as React.MouseEvent);
-            }
-          }
-        });
-
-        updateMapState();
-      });
+    const _map: maplibregl.Map = new maplibregl.Map({
+      ...(MAP_BASE_CONFIG as maplibregl.MapOptions),
+      container: mapElRef.current,
+      center: new maplibregl.LngLatBounds(bounds).getCenter(),
+      interactive: isInteractive
     });
-  }, [mapElRef]);
+
+    setMap(_map);
+
+    _map.on('load', () => {
+      _map.addSource('electorate_polygons', {
+        type: 'vector',
+        tiles: [
+          'https://www.abc.net.au/res/sites/news-projects/map-vector-tiles-federal-electorates-2022/{z}/{x}/{y}.pbf'
+        ],
+        minzoom: 0,
+        maxzoom: 9,
+        bounds: [96.816952, -43.740497, 167.998033, -9.142162],
+        promoteId: { federalelectorates2022: 'code' }
+      });
+
+      _map.addSource('electorate_points', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: ELECTORATES_GEO_PROPERTIES.map(geoProps => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [geoProps.longitude, geoProps.latitude]
+            },
+            id: electorateIdToNumber(geoProps.id),
+            properties: {
+              ...geoProps,
+              name: (ELECTORATES.find(
+                electorate => String(ElectorateID[electorate.id]) === geoProps.id.toUpperCase()
+              ) as Electorate).name
+            }
+          }))
+        }
+      });
+
+      _map.addLayer({
+        id: 'electorate_polygons_fill',
+        type: 'fill',
+        source: 'electorate_polygons',
+        'source-layer': 'federalelectorates2022',
+        paint: {
+          'fill-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
+          'fill-color': ['coalesce', ['feature-state', 'fill'], '#fff']
+        }
+      });
+
+      _map.addLayer({
+        id: 'electorate_polygons_baseline',
+        type: 'line',
+        source: 'electorate_polygons',
+        'source-layer': 'federalelectorates2022',
+        paint: {
+          'line-opacity': ['coalesce', ['feature-state', 'opacity'], 1],
+          'line-color': '#ddd',
+          'line-width': 1
+        }
+      });
+
+      _map.addLayer({
+        id: 'electorate_polygons_line',
+        type: 'line',
+        source: 'electorate_polygons',
+        'source-layer': 'federalelectorates2022',
+        paint: {
+          'line-color': ['coalesce', ['feature-state', 'stroke'], 'transparent'],
+          'line-width': 1
+        }
+      });
+
+      _map.addLayer({
+        id: 'electorate_points_label',
+        type: 'symbol',
+        source: 'electorate_points',
+        layout: {
+          'text-field': '{name}',
+          'text-anchor': 'center',
+          'text-max-width': 6,
+          'text-font': ['ABC Sans Bold'],
+          'text-size': 13
+        },
+        paint: {
+          'text-opacity': ['coalesce', ['feature-state', 'opacity'], 0],
+          'text-color': '#000',
+          'text-halo-color': '#fff',
+          'text-halo-width': 1.5
+        }
+      });
+
+      _map.on('sourcedata', () => {
+        setIsElectoratePolygonsLoaded(!!_map.getSource('electorate_polygons'));
+      });
+
+      _map.on(
+        'resize',
+        debounce(() => {
+          _map.fitBounds(new maplibregl.LngLatBounds(bounds), FIT_BOUNDS_OPTIONS);
+        }, 200)
+      );
+
+      _map.on('click', event => {
+        if (!onTapElectorate) {
+          return;
+        }
+
+        const { point } = event;
+        const features = _map.queryRenderedFeatures(point, { layers: ['electorate_polygons_fill'] });
+
+        if (features.length > 0) {
+          const { code } = features[0].properties;
+
+          if (code) {
+            onTapElectorate(code.toUpperCase(), { nativeEvent: event.originalEvent } as React.MouseEvent);
+          }
+        }
+      });
+
+      updateMapState();
+    });
+  }, [isMaplibreLoaded, mapElRef, map]);
 
   useEffect(() => {
     updateMapState();
-  }, [map, area, electoratesRenderProps]);
+  }, [map, isElectoratePolygonsLoaded, area, electoratesRenderProps]);
 
   useEffect(() => {
     updateMapState(true);
