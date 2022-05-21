@@ -1,6 +1,6 @@
 import React from 'react';
 import { Allocation } from '../../../lib/constants';
-import type { LiveResultsElectorate } from '../../../lib/data';
+import type { Candidate, LiveResultsElectorate } from '../../../lib/data';
 import Hex from '../Hex';
 import styles from './styles.scss';
 
@@ -29,10 +29,11 @@ const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
 
   const has2PP = !!(trailingCandidate && trailingCandidate.simple2CP);
 
-  const candidateViews = (is2PP && has2PP
+  const shortlistedCandidates = (is2PP && has2PP
     ? [leadingCandidate, trailingCandidate]
-    : [...runners].sort((a, b) => b.simple.votes - a.simple.votes).slice(0, 3)
-  ).map(
+    : [...runners].sort((a, b) => b.simple.votes - a.simple.votes).slice(0, 3)) as Candidate[];
+
+  const candidatesViews = shortlistedCandidates.map(
     candidate =>
       ({
         party: candidate.party.code,
@@ -45,13 +46,13 @@ const Candidates: React.FC<CandidatesProps> = ({ is2PP, result }) => {
       } as CandidateView)
   );
 
-  if (!is2PP && candidateViews.length > 2 && candidateViews[2].pct < MIN_PCT) {
-    candidateViews.pop();
+  if (!is2PP && candidatesViews.length > 2 && candidatesViews[2].pct < MIN_PCT) {
+    candidatesViews.pop();
   }
 
   return (
     <div className={styles.root}>
-      {candidateViews.map((candidateView, index) => {
+      {candidatesViews.map((candidateView, index) => {
         return (
           <div key={index} className={styles.candidate}>
             <Hex allocation={Allocation[candidateView.party] || Allocation.OTH} />

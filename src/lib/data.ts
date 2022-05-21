@@ -29,7 +29,7 @@ interface VoteCount {
   swing: string;
 }
 
-interface Candidate {
+export interface Candidate {
   party: {
     code: Allocation;
   };
