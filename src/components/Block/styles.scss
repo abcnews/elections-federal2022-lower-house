@@ -183,6 +183,10 @@
   color: $color_BG;
 }
 
+.party {
+  color: var(--color-allocation);
+}
+
 /* Environment hacks */
 
 [class*='u-richtext'][class*='u-richtext'] > h3 {

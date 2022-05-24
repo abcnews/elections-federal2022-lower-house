@@ -62,7 +62,7 @@ const whenScrollytellersLoaded = new Promise((resolve, reject) =>
           }
         });
 
-        // Upgrade scrollyteller' content to show coloured electorate names
+        // Upgrade scrollyteller' content to show coloured electorate & party names
         applyColourToPanels(scrollytellerDefinition.panels);
       } catch (err) {
         return reject(err);
