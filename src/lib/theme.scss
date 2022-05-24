@@ -46,6 +46,10 @@
   --color-allocation: #{$color_PtyGold};
 }
 
+[data-allocation='#{$Allocation_Teal}'] {
+  --color-allocation: #{$color_PtyLightBlue};
+}
+
 /* Relative allocation colors (for things like flips) */
 
 [data-relative-allocation='#{$Allocation_None}'] {
@@ -90,4 +94,8 @@
 
 [data-relative-allocation='#{$Allocation_UAP}'] {
   --color-relative-allocation: #{$color_PtyGold};
+}
+
+[data-relative-allocation='#{$Allocation_Teal}'] {
+  --color-relative-allocation: #{$color_PtyLightBlue};
 }

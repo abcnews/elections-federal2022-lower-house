@@ -34,5 +34,6 @@ export const ALLOCATIONS_COLORS: Record<Allocation, Color> = {
   [Allocation.NAT]: Color.PtyGreen,
   [Allocation.ONP]: Color.PtyOrange,
   [Allocation.OTH]: Color.PtyBlack,
-  [Allocation.UAP]: Color.PtyGold
+  [Allocation.UAP]: Color.PtyGold,
+  [Allocation.Teal]: Color.PtyLightBlue
 };

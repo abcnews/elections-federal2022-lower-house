@@ -42,6 +42,15 @@ import candidates from './candidates.json';
 import { MIXINS, PRESETS } from './constants';
 import styles from './styles.scss';
 
+const CANDIDATES_WITH_TEALS = Object.keys(candidates).reduce(
+  (memo, electorateID) => ({
+    ...memo,
+    [electorateID]:
+      candidates[electorateID].indexOf('IND') > -1 ? [...candidates[electorateID], 'Teal'] : candidates[electorateID]
+  }),
+  {} as Record<ElectorateID, Allocation[]>
+);
+
 const GRAPHIC_ELEMENT_SELECTORS = {
   'Full Graphic': graphicStyles.root,
   'Map / Tilegram': graphicStyles.figure,
@@ -350,7 +359,7 @@ const Editor: React.FC = () => {
               <Item data={{ allocation: Allocation.Any }} onClick={onTapContextMenuItem}>
                 <div data-allocation={Allocation.Any}>Any</div>
               </Item>
-              {[...candidates[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
+              {[...CANDIDATES_WITH_TEALS[ElectorateID[lastTappedElectorate.id]]].sort().map(candidate => (
                 <Item key={candidate} data={{ allocation: Allocation[candidate] }} onClick={onTapContextMenuItem}>
                   <div
                     data-allocation={Allocation[candidate]}

@@ -24,6 +24,8 @@ export enum Allocation {
   ONP = 'k',
   OTH = 'l',
   UAP = 'm',
+  // An alternatice option for "teal independents"
+  Teal = 't',
   // For previous winners (map to party with same colors),
   NXT = 'c',
   PUP = 'm'
