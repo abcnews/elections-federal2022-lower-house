@@ -128,45 +128,14 @@ whenOdysseyLoaded.then(() => {
     render(<Illustration name={name} />, mount);
   });
 
-  // Render standalone graphics (moving those designated as replacement Block media)
+  // Render standalone graphics
 
   const graphicMounts = selectMounts('lhgraphic');
 
   graphicMounts.forEach(mount => {
     const graphicProps = alternatingCaseToGraphicProps(getMountValue(mount)) as GraphicProps;
-    const parentElement = mount.parentElement;
 
-    if (parentElement && parentElement.className.indexOf('Block-content') > -1) {
-      const blockElement = parentElement.parentElement;
-
-      if (blockElement && blockElement.className.indexOf('Block') > -1) {
-        let blockMediaElement = blockElement.querySelector('.Block-media');
-
-        if (blockMediaElement) {
-          blockMediaElement.innerHTML = '';
-        } else {
-          blockMediaElement = document.createElement('div');
-          blockMediaElement.className = 'Block-media';
-          blockElement.insertBefore(blockMediaElement, blockElement.firstElementChild as Element);
-        }
-
-        const container = document.createElement('div');
-
-        container.className = graphicStyles.blockMediaContainer;
-        blockMediaElement.classList.add('is-fixed');
-        container.appendChild(mount);
-        blockMediaElement.appendChild(container);
-        blockElement.removeChild(parentElement);
-
-        const firstBlockContent = blockElement.querySelector('.Block-content');
-
-        if (firstBlockContent) {
-          firstBlockContent.classList.add(graphicStyles.firstBlockContent);
-        }
-      }
-    } else {
-      mount.classList.add('u-pull');
-    }
+    mount.classList.add('u-pull');
 
     render(<Graphic {...graphicProps} />, mount);
   });
