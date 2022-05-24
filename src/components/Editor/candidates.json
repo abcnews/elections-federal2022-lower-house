@@ -3,8 +3,8 @@
 		"LIB",
 		"ALP",
 		"GRN",
-		"ONP",
 		"UAP",
+		"ONP",
 		"IND",
 		"OTH"
 	],
@@ -487,6 +487,7 @@
 		"ALP",
 		"GRN",
 		"UAP",
+		"IND",
 		"OTH"
 	],
 	"GORT": [
