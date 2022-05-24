@@ -17,7 +17,8 @@ enum Color {
   PtyLightGreen = '#51a802',
   PtyOrange = '#e5660b',
   PtyPurple = '#985eb5',
-  PtyRed = '#e11f30'
+  PtyRed = '#e11f30',
+  PtyTeal = '#0098a6'
 }
 
 export const ALLOCATIONS_COLORS: Record<Allocation, Color> = {
@@ -35,5 +36,5 @@ export const ALLOCATIONS_COLORS: Record<Allocation, Color> = {
   [Allocation.ONP]: Color.PtyOrange,
   [Allocation.OTH]: Color.PtyBlack,
   [Allocation.UAP]: Color.PtyGold,
-  [Allocation.Teal]: Color.PtyLightBlue
+  [Allocation.Teal]: Color.PtyTeal
 };

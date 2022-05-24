@@ -49,8 +49,8 @@
 }
 
 [data-allocation='#{$Allocation_Teal}'] {
-  --color-allocation: #{$color_PtyLightBlue};
-  --color-text-allocation: #{$color_supplementary_PtyLightBlue};
+  --color-allocation: #{$color_PtyTeal};
+  --color-text-allocation: #{$color_supplementary_PtyTeal};
 }
 
 /* Relative allocation colors (for things like flips) */
