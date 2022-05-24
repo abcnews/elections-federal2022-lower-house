@@ -305,9 +305,19 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   }, [isInspecting]);
 
   useEffect(() => {
+    let textIgnorePlacementTimeout: NodeJS.Timeout;
+
     if (map) {
       map.fitBounds(new maplibregl.LngLatBounds(bounds), FIT_BOUNDS_OPTIONS);
+      textIgnorePlacementTimeout = setTimeout(
+        () => map.setLayoutProperty('electorate_points_label', 'text-ignore-placement', area !== Area.Australia),
+        area === Area.Australia ? 250 : 750
+      );
     }
+
+    return () => {
+      clearTimeout(textIgnorePlacementTimeout);
+    };
   }, [map, bounds, resizeDirtyValue]);
 
   // While the alt key is held down on an interactive graphic, we enable
