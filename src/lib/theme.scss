@@ -20,7 +20,6 @@
   --color-text-allocation: #{$color_supplementary_PtyOrange};
 }
 
-[data-allocation='#{$Allocation_CLP}'],
 [data-allocation='#{$Allocation_LIB}'],
 [data-allocation='#{$Allocation_LNP}'] {
   --color-allocation: #{$color_PtyBlue};
@@ -44,6 +43,7 @@
   --color-allocation: #{$color_PtyGreen};
 }
 
+[data-allocation='#{$Allocation_CLP}'],
 [data-allocation='#{$Allocation_UAP}'] {
   --color-allocation: #{$color_PtyGold};
 }
@@ -73,7 +73,6 @@
   --color-relative-allocation: #{$color_PtyRed};
 }
 
-[data-relative-allocation='#{$Allocation_CLP}'],
 [data-relative-allocation='#{$Allocation_LIB}'],
 [data-relative-allocation='#{$Allocation_LNP}'] {
   --color-relative-allocation: #{$color_PtyBlue};
@@ -97,6 +96,7 @@
   --color-relative-allocation: #{$color_PtyGreen};
 }
 
+[data-relative-allocation='#{$Allocation_CLP}'],
 [data-relative-allocation='#{$Allocation_UAP}'] {
   --color-relative-allocation: #{$color_PtyGold};
 }

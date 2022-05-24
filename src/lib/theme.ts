@@ -25,7 +25,7 @@ export const ALLOCATIONS_COLORS: Record<Allocation, Color> = {
   [Allocation.Any]: Color.Black,
   [Allocation.ALP]: Color.PtyRed,
   [Allocation.CA]: Color.PtyOrange,
-  [Allocation.CLP]: Color.PtyBlue,
+  [Allocation.CLP]: Color.PtyGold,
   [Allocation.GRN]: Color.PtyLightGreen,
   [Allocation.IND]: Color.PtyBlack,
   [Allocation.KAP]: Color.PtyBrown,

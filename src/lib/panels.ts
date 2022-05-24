@@ -11,6 +11,8 @@ const PARTIES_ALLOCATIONS = {
   'Liberal Party': Allocation.LIB,
   Liberals: Allocation.LIB,
   Liberal: Allocation.LIB,
+  'Country Liberals': Allocation.CLP,
+  'Country Liberal': Allocation.CLP,
   'National Party': Allocation.NAT,
   Nationals: Allocation.NAT,
   National: Allocation.NAT,
