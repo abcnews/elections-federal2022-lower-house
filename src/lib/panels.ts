@@ -22,6 +22,7 @@ const PARTIES_ALLOCATIONS = {
   'United Australia': Allocation.UAP,
   'Center Alliance': Allocation.KAP,
   Katter: Allocation.KAP,
+  'teal Independent': Allocation.Teal,
   Independent: Allocation.IND,
   CA: Allocation.CA,
   CLP: Allocation.CLP,
