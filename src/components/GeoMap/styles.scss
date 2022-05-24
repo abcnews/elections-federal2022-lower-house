@@ -15,7 +15,15 @@
   top: 0;
   height: 100%;
   width: 100%;
-  border-radius: 16px;
+  border: 1px solid $color_Grey;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.5s 0.25s;
+}
+
+.root[data-area='#{$Area_Australia}'] > [data-map] {
+  border-color: transparent;
+  transition-delay: 1.5s;
 }
 
 .root > [data-map] canvas {

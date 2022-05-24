@@ -332,7 +332,7 @@ const GeoMap: React.FC<GeoMapProps> = props => {
   }, [isInteractive]);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-area={area}>
       <div ref={mapElRef} data-map></div>
     </div>
   );
