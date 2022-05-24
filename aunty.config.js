@@ -5,7 +5,7 @@ const { ProvidePlugin } = require('webpack');
 module.exports = {
   type: 'react',
   build: {
-    entry: ['index', 'cards', 'doc-block', 'editor', 'graphics', 'illustrations', 'polyfills']
+    entry: ['index', 'cards', 'doc-block', 'editor', 'graphics', 'illustrations']
   },
   serve: {
     hot: false
