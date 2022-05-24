@@ -184,7 +184,7 @@
 }
 
 .party {
-  color: var(--color-allocation);
+  color: var(--color-text-allocation, var(--color-allocation));
 }
 
 /* Environment hacks */

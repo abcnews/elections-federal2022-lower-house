@@ -17,6 +17,7 @@
 [data-allocation='#{$Allocation_CA}'],
 [data-allocation='#{$Allocation_ONP}'] {
   --color-allocation: #{$color_PtyOrange};
+  --color-text-allocation: #{$color_supplementary_PtyOrange};
 }
 
 [data-allocation='#{$Allocation_CLP}'],
@@ -27,6 +28,7 @@
 
 [data-allocation='#{$Allocation_GRN}'] {
   --color-allocation: #{$color_PtyLightGreen};
+  --color-text-allocation: #{$color_supplementary_PtyLightGreen};
 }
 
 [data-allocation='#{$Allocation_IND}'],
@@ -48,6 +50,7 @@
 
 [data-allocation='#{$Allocation_Teal}'] {
   --color-allocation: #{$color_PtyLightBlue};
+  --color-text-allocation: #{$color_supplementary_PtyLightBlue};
 }
 
 /* Relative allocation colors (for things like flips) */
@@ -63,6 +66,7 @@
 [data-relative-allocation='#{$Allocation_CA}'],
 [data-relative-allocation='#{$Allocation_ONP}'] {
   --color-relative-allocation: #{$color_PtyOrange};
+  --color-text-relative-allocation: #{$color_supplementary_PtyOrange};
 }
 
 [data-relative-allocation='#{$Allocation_ALP}'] {
@@ -77,6 +81,7 @@
 
 [data-relative-allocation='#{$Allocation_GRN}'] {
   --color-relative-allocation: #{$color_PtyLightGreen};
+  --color-text-relative-allocation: #{$color_supplementary_PtyLightGreen};
 }
 
 [data-relative-allocation='#{$Allocation_IND}'],
@@ -98,4 +103,5 @@
 
 [data-relative-allocation='#{$Allocation_Teal}'] {
   --color-relative-allocation: #{$color_PtyLightBlue};
+  --color-text-relative-allocation: #{$color_supplementary_PtyLightBlue};
 }
