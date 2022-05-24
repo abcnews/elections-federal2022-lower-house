@@ -7,12 +7,12 @@ import { loadScrollyteller } from '@abcnews/scrollyteller';
 import React from 'react';
 import { render } from 'react-dom';
 import './lib/theme.scss';
-import { ElectorateID } from './lib/constants';
 import { applyColourToPanels } from './lib/panels';
 import { alternatingCaseToGraphicProps, decoders } from './lib/utils';
 import Block from './components/Block';
 import type { Mode } from './components/Card/constants';
 import Card from './components/Card';
+import graphicStyles from './components/Graphic/styles.scss';
 import type { GraphicProps, PossiblyEncodedGraphicProps } from './components/Graphic';
 import Graphic from './components/Graphic';
 import Illustration, { IllustrationName } from './components/Illustration';
@@ -101,6 +101,8 @@ whenScrollytellersLoaded.then(scrollytellerDefinitions => {
 });
 
 whenOdysseyLoaded.then(() => {
+  // Render illustrations
+
   const illustrationMounts = selectMounts('lhillustration');
 
   illustrationMounts.forEach(mount => {
@@ -126,12 +128,46 @@ whenOdysseyLoaded.then(() => {
     render(<Illustration name={name} />, mount);
   });
 
+  // Render standalone graphics (moving those designated as replacement Block media)
+
   const graphicMounts = selectMounts('lhgraphic');
 
   graphicMounts.forEach(mount => {
     const graphicProps = alternatingCaseToGraphicProps(getMountValue(mount)) as GraphicProps;
+    const parentElement = mount.parentElement;
 
-    mount.classList.add('u-pull');
+    if (parentElement && parentElement.className.indexOf('Block-content') > -1) {
+      const blockElement = parentElement.parentElement;
+
+      if (blockElement && blockElement.className.indexOf('Block') > -1) {
+        let blockMediaElement = blockElement.querySelector('.Block-media');
+
+        if (blockMediaElement) {
+          blockMediaElement.innerHTML = '';
+        } else {
+          blockMediaElement = document.createElement('div');
+          blockMediaElement.className = 'Block-media';
+          blockElement.insertBefore(blockMediaElement, blockElement.firstElementChild as Element);
+        }
+
+        const container = document.createElement('div');
+
+        container.className = graphicStyles.blockMediaContainer;
+        blockMediaElement.classList.add('is-fixed');
+        container.appendChild(mount);
+        blockMediaElement.appendChild(container);
+        blockElement.removeChild(parentElement);
+
+        const firstBlockContent = blockElement.querySelector('.Block-content');
+
+        if (firstBlockContent) {
+          firstBlockContent.classList.add(graphicStyles.firstBlockContent);
+        }
+      }
+    } else {
+      mount.classList.add('u-pull');
+    }
+
     render(<Graphic {...graphicProps} />, mount);
   });
 

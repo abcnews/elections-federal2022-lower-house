@@ -1,5 +1,20 @@
 @import '../../lib/constants.scss';
 
+.blockMediaContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.blockMediaContainer > [data-mount][id^='lhgraphic'] {
+  width: 100%;
+}
+
+:global(.is-piecemeal) > :global(.Block-content).firstBlockContent:nth-child(2) > :first-child {
+  margin-top: 0 !important;
+}
+
 .root {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -13,28 +28,18 @@
   -moz-osx-font-smoothing: initial;
 }
 
-[data-mount][id^='lhgraphic']:global(.u-pull) > .root {
+[data-mount][id^='lhgraphic']:global(.u-pull) > .root,
+.blockMediaContainer > [data-mount][id^='lhgraphic'] > .root {
   padding: 0 1rem;
   margin: 0 auto;
   max-width: 42rem;
 }
 
 @media (min-width: 668px) {
-  [data-mount][id^='lhgraphic']:global(.u-pull) > .root {
+  [data-mount][id^='lhgraphic']:global(.u-pull) > .root,
+  .blockMediaContainer > [data-mount][id^='lhgraphic'] > .root {
     padding: 0;
     max-width: 40rem;
-  }
-}
-
-[data-mount][id^='lhgraphic']:not(:global(.u-pull)) > .root {
-  border: 0.0625rem solid $color_Grey;
-  background-color: $color_BG;
-  padding: 0.5rem;
-}
-
-@media (min-width: 668px) {
-  [data-mount][id^='lhgraphic']:not(:global(.u-pull)) > .root {
-    padding: 1rem;
   }
 }
 
