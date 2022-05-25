@@ -17,7 +17,6 @@ const PARTIES_ALLOCATIONS = {
   Nationals: Allocation.NAT,
   National: Allocation.NAT,
   Greens: Allocation.GRN,
-  Green: Allocation.GRN,
   'One Nation': Allocation.ONP,
   'United Australia': Allocation.UAP,
   'Center Alliance': Allocation.KAP,
