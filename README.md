@@ -10,9 +10,11 @@ The latest release should be accessible via:
 
 Here's a list of stories based on this code:
 
-| date       | story        | elements used                |
-| ---------- | ------------ | ---------------------------- |
-| 2022/05/?? | [{title}](#) | scrollyteller; illustrations |
+| date       | story                                                                                                                                   | elements used                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| 2022/05/20 | [The Australian election map has been lying to you](https://www.abc.net.au/news/2022-05-20/federal-election-map-lying/101076016)        | scrollyteller (tilegram)                |
+| 2022/05/22 | [How Labor won](https://www.abc.net.au/news/2022-05-22/election-how-labor-anthony-albanese-won/101087904)                               | scrollyteller (tilegram); illustrations |
+| 2022/05/25 | [How the election result has changed our cities](https://www.abc.net.au/news/2022-05-25/election-results-maps-capital-cities/101091036) | scrollyteller (geographical); cards     |
 
 ## Development & deployment
 
