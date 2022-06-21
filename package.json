@@ -38,6 +38,7 @@
 		"@abcnews/google-doc-scrollyteller": "^1.0.1",
 		"@abcnews/mount-utils": "^2.0.0",
 		"@abcnews/scrollyteller": "^4.0.0",
+		"buffer": "^6.0.3",
 		"concaveman": "^1.2.1",
 		"core-js": "^3.6.5",
 		"debounce": "^1.2.1",

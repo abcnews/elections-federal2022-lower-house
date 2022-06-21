@@ -37,6 +37,7 @@ module.exports = {
     // Polyfill some node.js APIs via module resolution fallbacks
     config.resolve.fallback = {
       ...(config.resolve.fallback || {}),
+      "buffer": require.resolve("buffer/"),
       stream: require.resolve('stream-browserify')
     };
 
