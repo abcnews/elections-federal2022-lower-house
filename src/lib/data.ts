@@ -1,7 +1,13 @@
 import type { ElectorateID } from './constants';
 import { Allocation, NoYes } from './constants';
 
-const LIVE_RESULTS_URL = 'https://www.abc.net.au/news-web/api/syndicate/storylab/elections/federal/2022';
+const BASE_URL =
+  String(window.location.hostname).indexOf('githubpreview.dev') > -1
+    ? `${String(window.location.origin)}/`
+    : __webpack_public_path__;
+
+// const LIVE_RESULTS_URL = 'https://www.abc.net.au/news-web/api/syndicate/storylab/elections/federal/2022';
+const LIVE_RESULTS_URL = `${BASE_URL}data/federal2022.json`;
 
 interface VoteCount {
   votes: number;
