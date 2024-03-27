@@ -162,7 +162,7 @@
   fill: none;
   stroke: $color_White;
   stroke-width: $swLight;
-  transition: stroke 0s #{$durationAllocationChange / 2};
+  transition: stroke 0s calc($durationAllocationChange / 2);
 }
 
 .electorate[data-allocation='#{$Allocation_None}'] .electorateHexOutline {
@@ -216,7 +216,7 @@
   opacity: 1;
   pointer-events: none;
   font-size: 1.75rem; // Default for individual states
-  transition: opacity #{$durationDefault / 2} #{$durationDefault / 2};
+  transition: opacity calc($durationDefault / 2) calc($durationDefault / 2);
 }
 
 .root[data-layout='#{$Layout_COUNTRY}'] .statesLabels,
